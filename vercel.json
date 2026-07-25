@@ -1,13 +1,3 @@
 {
-  "functions": {
-    "backend/main.py": {
-      "runtime": "python3.11"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/backend/main.py"
-    }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
