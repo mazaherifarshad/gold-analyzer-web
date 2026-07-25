@@ -1,0 +1,503 @@
+2026-07-16 08:41:03,042 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:41:04,344 | WARNING | call4 failed : could not convert string to float: '4,030.30'
+2026-07-16 08:41:04,594 | WARNING | call3 failed : could not convert string to float: '4,030.30'
+2026-07-16 08:41:04,757 | WARNING | call2 failed : could not convert string to float: '4,030.30'
+2026-07-16 08:41:04,757 | ERROR | Scheduler Error : could not convert string to float: '4,030.30'
+2026-07-16 08:41:04,758 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:41:04,759 | INFO | Scheduler started
+2026-07-16 08:41:04,760 | INFO | Scheduler Started
+2026-07-16 08:42:03,051 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:42:03 +0330)" (scheduled at 2026-07-16 08:42:03.042228+03:30)
+2026-07-16 08:42:03,239 | WARNING | call2 failed : could not convert string to float: '4,030.30'
+2026-07-16 08:42:03,479 | WARNING | call4 failed : could not convert string to float: '4,030.30'
+2026-07-16 08:42:03,675 | WARNING | call3 failed : could not convert string to float: '4,030.30'
+2026-07-16 08:42:03,675 | ERROR | Scheduler Error : could not convert string to float: '4,030.30'
+2026-07-16 08:42:03,676 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:43:03 +0330)" executed successfully
+2026-07-16 08:42:32,257 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:42:32,523 | INFO | TGJU Updated Successfully
+2026-07-16 08:42:32,547 | INFO | Market Saved
+2026-07-16 08:42:32,548 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:42:32,548 | INFO | Scheduler started
+2026-07-16 08:42:32,551 | INFO | Scheduler Started
+2026-07-16 08:43:32,260 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:43:32 +0330)" (scheduled at 2026-07-16 08:43:32.257111+03:30)
+2026-07-16 08:43:33,800 | INFO | TGJU Updated Successfully
+2026-07-16 08:43:33,810 | INFO | Market Saved
+2026-07-16 08:43:33,810 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:44:32 +0330)" executed successfully
+2026-07-16 08:45:05,739 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:45:05,962 | INFO | TGJU Updated Successfully
+2026-07-16 08:45:05,976 | INFO | Market Saved
+2026-07-16 08:45:05,976 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:45:05,977 | INFO | Scheduler started
+2026-07-16 08:45:05,978 | INFO | Scheduler Started
+2026-07-16 08:46:05,745 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:46:05 +0330)" (scheduled at 2026-07-16 08:46:05.739410+03:30)
+2026-07-16 08:46:05,929 | INFO | TGJU Updated Successfully
+2026-07-16 08:46:05,937 | INFO | Market Saved
+2026-07-16 08:46:05,938 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:47:05 +0330)" executed successfully
+2026-07-16 08:47:05,749 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:48:05 +0330)" (scheduled at 2026-07-16 08:47:05.739410+03:30)
+2026-07-16 08:47:05,921 | INFO | TGJU Updated Successfully
+2026-07-16 08:47:05,930 | INFO | Market Saved
+2026-07-16 08:47:05,930 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:48:05 +0330)" executed successfully
+2026-07-16 08:48:05,744 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:49:05 +0330)" (scheduled at 2026-07-16 08:48:05.739410+03:30)
+2026-07-16 08:48:05,945 | INFO | TGJU Updated Successfully
+2026-07-16 08:48:05,954 | INFO | Market Saved
+2026-07-16 08:48:05,954 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:49:05 +0330)" executed successfully
+2026-07-16 08:48:07,014 | INFO | TGJU Updated Successfully
+2026-07-16 08:49:05,740 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:50:05 +0330)" (scheduled at 2026-07-16 08:49:05.739410+03:30)
+2026-07-16 08:49:05,961 | INFO | TGJU Updated Successfully
+2026-07-16 08:49:05,970 | INFO | Market Saved
+2026-07-16 08:49:05,971 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:50:05 +0330)" executed successfully
+2026-07-16 08:50:05,750 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:51:05 +0330)" (scheduled at 2026-07-16 08:50:05.739410+03:30)
+2026-07-16 08:50:05,940 | INFO | TGJU Updated Successfully
+2026-07-16 08:50:05,957 | INFO | Market Saved
+2026-07-16 08:50:05,958 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:51:05 +0330)" executed successfully
+2026-07-16 08:51:05,740 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:52:05 +0330)" (scheduled at 2026-07-16 08:51:05.739410+03:30)
+2026-07-16 08:51:05,925 | INFO | TGJU Updated Successfully
+2026-07-16 08:51:05,938 | INFO | Market Saved
+2026-07-16 08:51:05,939 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:52:05 +0330)" executed successfully
+2026-07-16 08:51:21,492 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:51:21,702 | INFO | TGJU Updated Successfully
+2026-07-16 08:51:21,718 | INFO | Market Saved
+2026-07-16 08:51:21,718 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:51:21,719 | INFO | Scheduler started
+2026-07-16 08:51:21,720 | INFO | Scheduler Started
+2026-07-16 08:51:45,035 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:51:45,270 | INFO | TGJU Updated Successfully
+2026-07-16 08:51:45,290 | INFO | Market Saved
+2026-07-16 08:51:45,291 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:51:45,291 | INFO | Scheduler started
+2026-07-16 08:51:45,292 | INFO | Scheduler Started
+2026-07-16 08:52:09,079 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:52:09,296 | INFO | TGJU Updated Successfully
+2026-07-16 08:52:09,311 | INFO | Market Saved
+2026-07-16 08:52:09,312 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:52:09,312 | INFO | Scheduler started
+2026-07-16 08:52:09,313 | INFO | Scheduler Started
+2026-07-16 08:52:31,291 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:52:31,538 | INFO | TGJU Updated Successfully
+2026-07-16 08:52:31,551 | INFO | Market Saved
+2026-07-16 08:52:31,551 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:52:31,552 | INFO | Scheduler started
+2026-07-16 08:52:31,552 | INFO | Scheduler Started
+2026-07-16 08:52:52,232 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:52:52,456 | INFO | TGJU Updated Successfully
+2026-07-16 08:52:52,468 | INFO | Market Saved
+2026-07-16 08:52:52,469 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:52:52,469 | INFO | Scheduler started
+2026-07-16 08:52:52,471 | INFO | Scheduler Started
+2026-07-16 08:53:52,545 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:53:52,767 | INFO | TGJU Updated Successfully
+2026-07-16 08:53:52,779 | INFO | Market Saved
+2026-07-16 08:53:52,780 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:53:52,780 | INFO | Scheduler started
+2026-07-16 08:53:52,781 | INFO | Scheduler Started
+2026-07-16 08:54:54,386 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:54:54,587 | INFO | TGJU Updated Successfully
+2026-07-16 08:54:54,599 | INFO | Market Saved
+2026-07-16 08:54:54,600 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:54:54,600 | INFO | Scheduler started
+2026-07-16 08:54:54,601 | INFO | Scheduler Started
+2026-07-16 08:55:21,477 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:55:21,715 | INFO | TGJU Updated Successfully
+2026-07-16 08:55:21,728 | INFO | Market Saved
+2026-07-16 08:55:21,728 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:55:21,728 | INFO | Scheduler started
+2026-07-16 08:55:21,729 | INFO | Scheduler Started
+2026-07-16 08:55:43,282 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 08:55:43,468 | INFO | TGJU Updated Successfully
+2026-07-16 08:55:43,479 | INFO | Market Saved
+2026-07-16 08:55:43,491 | INFO | Added job "update_market" to job store "default"
+2026-07-16 08:55:43,492 | INFO | Scheduler started
+2026-07-16 08:55:43,495 | INFO | Scheduler Started
+2026-07-16 08:56:43,290 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:56:43 +0330)" (scheduled at 2026-07-16 08:56:43.282654+03:30)
+2026-07-16 08:56:43,631 | INFO | TGJU Updated Successfully
+2026-07-16 08:56:43,641 | INFO | Market Saved
+2026-07-16 08:56:43,641 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:57:43 +0330)" executed successfully
+2026-07-16 08:57:43,290 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:58:43 +0330)" (scheduled at 2026-07-16 08:57:43.282654+03:30)
+2026-07-16 08:57:43,590 | INFO | TGJU Updated Successfully
+2026-07-16 08:57:43,601 | INFO | Market Saved
+2026-07-16 08:57:43,601 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:58:43 +0330)" executed successfully
+2026-07-16 08:58:43,298 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:59:43 +0330)" (scheduled at 2026-07-16 08:58:43.282654+03:30)
+2026-07-16 08:58:43,529 | INFO | TGJU Updated Successfully
+2026-07-16 08:58:43,542 | INFO | Market Saved
+2026-07-16 08:58:43,543 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 08:59:43 +0330)" executed successfully
+2026-07-16 08:59:43,294 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:00:43 +0330)" (scheduled at 2026-07-16 08:59:43.282654+03:30)
+2026-07-16 08:59:43,518 | INFO | TGJU Updated Successfully
+2026-07-16 08:59:43,525 | INFO | Market Saved
+2026-07-16 08:59:43,526 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:00:43 +0330)" executed successfully
+2026-07-16 09:00:43,299 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:01:43 +0330)" (scheduled at 2026-07-16 09:00:43.282654+03:30)
+2026-07-16 09:00:43,511 | INFO | TGJU Updated Successfully
+2026-07-16 09:00:43,521 | INFO | Market Saved
+2026-07-16 09:00:43,521 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:01:43 +0330)" executed successfully
+2026-07-16 09:01:43,296 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:02:43 +0330)" (scheduled at 2026-07-16 09:01:43.282654+03:30)
+2026-07-16 09:01:43,525 | INFO | TGJU Updated Successfully
+2026-07-16 09:01:43,534 | INFO | Market Saved
+2026-07-16 09:01:43,535 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:02:43 +0330)" executed successfully
+2026-07-16 09:02:43,284 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:03:43 +0330)" (scheduled at 2026-07-16 09:02:43.282654+03:30)
+2026-07-16 09:02:43,602 | INFO | TGJU Updated Successfully
+2026-07-16 09:02:43,618 | INFO | Market Saved
+2026-07-16 09:02:43,619 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:03:43 +0330)" executed successfully
+2026-07-16 09:03:43,283 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:04:43 +0330)" (scheduled at 2026-07-16 09:03:43.282654+03:30)
+2026-07-16 09:03:43,564 | INFO | TGJU Updated Successfully
+2026-07-16 09:03:43,573 | INFO | Market Saved
+2026-07-16 09:03:43,573 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:04:43 +0330)" executed successfully
+2026-07-16 09:04:43,295 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:05:43 +0330)" (scheduled at 2026-07-16 09:04:43.282654+03:30)
+2026-07-16 09:04:43,480 | INFO | TGJU Updated Successfully
+2026-07-16 09:04:43,488 | INFO | Market Saved
+2026-07-16 09:04:43,489 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:05:43 +0330)" executed successfully
+2026-07-16 09:05:43,295 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:06:43 +0330)" (scheduled at 2026-07-16 09:05:43.282654+03:30)
+2026-07-16 09:05:43,445 | INFO | TGJU Updated Successfully
+2026-07-16 09:05:43,455 | INFO | Market Saved
+2026-07-16 09:05:43,456 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:06:43 +0330)" executed successfully
+2026-07-16 09:06:43,291 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:07:43 +0330)" (scheduled at 2026-07-16 09:06:43.282654+03:30)
+2026-07-16 09:06:43,454 | INFO | TGJU Updated Successfully
+2026-07-16 09:06:43,462 | INFO | Market Saved
+2026-07-16 09:06:43,462 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 09:07:43 +0330)" executed successfully
+2026-07-16 15:35:57,943 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:35:58,186 | INFO | TGJU Updated Successfully
+2026-07-16 15:35:58,199 | INFO | Market Saved
+2026-07-16 15:35:58,200 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:35:58,200 | INFO | Scheduler started
+2026-07-16 15:35:58,200 | INFO | Scheduler Started
+2026-07-16 15:36:57,948 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:36:57 +0330)" (scheduled at 2026-07-16 15:36:57.943197+03:30)
+2026-07-16 15:36:58,114 | INFO | TGJU Updated Successfully
+2026-07-16 15:36:58,152 | INFO | Market Saved
+2026-07-16 15:36:58,173 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:37:57 +0330)" executed successfully
+2026-07-16 15:37:51,612 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:37:51,783 | INFO | TGJU Updated Successfully
+2026-07-16 15:37:51,794 | INFO | Market Saved
+2026-07-16 15:37:51,795 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:37:51,795 | INFO | Scheduler started
+2026-07-16 15:37:51,796 | INFO | Scheduler Started
+2026-07-16 15:38:51,617 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:38:51 +0330)" (scheduled at 2026-07-16 15:38:51.612087+03:30)
+2026-07-16 15:38:52,081 | INFO | TGJU Updated Successfully
+2026-07-16 15:38:52,096 | INFO | Market Saved
+2026-07-16 15:38:52,097 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:39:51 +0330)" executed successfully
+2026-07-16 15:39:54,108 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:39:54,378 | INFO | TGJU Updated Successfully
+2026-07-16 15:39:54,394 | INFO | Market Saved
+2026-07-16 15:39:54,395 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:39:54,395 | INFO | Scheduler started
+2026-07-16 15:39:54,397 | INFO | Scheduler Started
+2026-07-16 15:40:54,112 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:40:54 +0330)" (scheduled at 2026-07-16 15:40:54.108075+03:30)
+2026-07-16 15:40:54,324 | INFO | TGJU Updated Successfully
+2026-07-16 15:40:54,335 | INFO | Market Saved
+2026-07-16 15:40:54,336 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:41:54 +0330)" executed successfully
+2026-07-16 15:41:54,117 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:42:54 +0330)" (scheduled at 2026-07-16 15:41:54.108075+03:30)
+2026-07-16 15:41:54,287 | INFO | TGJU Updated Successfully
+2026-07-16 15:41:54,298 | INFO | Market Saved
+2026-07-16 15:41:54,298 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:42:54 +0330)" executed successfully
+2026-07-16 15:42:54,120 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:43:54 +0330)" (scheduled at 2026-07-16 15:42:54.108075+03:30)
+2026-07-16 15:43:43,944 | INFO | TGJU Updated Successfully
+2026-07-16 15:43:43,957 | INFO | Market Saved
+2026-07-16 15:43:43,957 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:43:54 +0330)" executed successfully
+2026-07-16 15:43:54,116 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:44:54 +0330)" (scheduled at 2026-07-16 15:43:54.108075+03:30)
+2026-07-16 15:43:54,305 | INFO | TGJU Updated Successfully
+2026-07-16 15:43:54,312 | INFO | Market Saved
+2026-07-16 15:43:54,312 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:44:54 +0330)" executed successfully
+2026-07-16 15:44:06,008 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:44:06,241 | INFO | TGJU Updated Successfully
+2026-07-16 15:44:06,266 | INFO | Market Saved
+2026-07-16 15:44:06,267 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:44:06,268 | INFO | Scheduler started
+2026-07-16 15:44:06,270 | INFO | Scheduler Started
+2026-07-16 15:44:43,048 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:44:43,262 | INFO | TGJU Updated Successfully
+2026-07-16 15:44:43,272 | INFO | Market Saved
+2026-07-16 15:44:43,273 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:44:43,273 | INFO | Scheduler started
+2026-07-16 15:44:43,275 | INFO | Scheduler Started
+2026-07-16 15:45:43,063 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:45:43 +0330)" (scheduled at 2026-07-16 15:45:43.048585+03:30)
+2026-07-16 15:45:43,246 | INFO | TGJU Updated Successfully
+2026-07-16 15:45:43,255 | INFO | Market Saved
+2026-07-16 15:45:43,256 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:46:43 +0330)" executed successfully
+2026-07-16 15:46:43,059 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:47:43 +0330)" (scheduled at 2026-07-16 15:46:43.048585+03:30)
+2026-07-16 15:46:43,260 | INFO | TGJU Updated Successfully
+2026-07-16 15:46:43,268 | INFO | Market Saved
+2026-07-16 15:46:43,268 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:47:43 +0330)" executed successfully
+2026-07-16 15:47:19,353 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:47:19,553 | INFO | TGJU Updated Successfully
+2026-07-16 15:47:19,567 | INFO | Market Saved
+2026-07-16 15:47:19,567 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:47:19,568 | INFO | Scheduler started
+2026-07-16 15:47:19,571 | INFO | Scheduler Started
+2026-07-16 15:48:19,364 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:48:19 +0330)" (scheduled at 2026-07-16 15:48:19.353759+03:30)
+2026-07-16 15:48:19,568 | INFO | TGJU Updated Successfully
+2026-07-16 15:48:19,578 | INFO | Market Saved
+2026-07-16 15:48:19,579 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:49:19 +0330)" executed successfully
+2026-07-16 15:48:47,253 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:48:47,480 | INFO | TGJU Updated Successfully
+2026-07-16 15:48:47,492 | INFO | Market Saved
+2026-07-16 15:48:47,492 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:48:47,493 | INFO | Scheduler started
+2026-07-16 15:48:47,494 | INFO | Scheduler Started
+2026-07-16 15:49:07,275 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:49:07,483 | INFO | TGJU Updated Successfully
+2026-07-16 15:49:07,498 | INFO | Market Saved
+2026-07-16 15:49:07,499 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:49:07,499 | INFO | Scheduler started
+2026-07-16 15:49:07,500 | INFO | Scheduler Started
+2026-07-16 15:49:41,911 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:49:42,105 | INFO | TGJU Updated Successfully
+2026-07-16 15:49:42,118 | INFO | Market Saved
+2026-07-16 15:49:42,118 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:49:42,118 | INFO | Scheduler started
+2026-07-16 15:49:42,119 | INFO | Scheduler Started
+2026-07-16 15:50:04,367 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:50:04,640 | INFO | TGJU Updated Successfully
+2026-07-16 15:50:04,653 | INFO | Market Saved
+2026-07-16 15:50:04,653 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:50:04,654 | INFO | Scheduler started
+2026-07-16 15:50:04,655 | INFO | Scheduler Started
+2026-07-16 15:50:55,729 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-16 15:50:55,929 | INFO | TGJU Updated Successfully
+2026-07-16 15:50:55,943 | INFO | Market Saved
+2026-07-16 15:50:55,943 | INFO | Added job "update_market" to job store "default"
+2026-07-16 15:50:55,944 | INFO | Scheduler started
+2026-07-16 15:50:55,945 | INFO | Scheduler Started
+2026-07-16 15:51:55,737 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:51:55 +0330)" (scheduled at 2026-07-16 15:51:55.729170+03:30)
+2026-07-16 15:51:55,924 | INFO | TGJU Updated Successfully
+2026-07-16 15:51:55,933 | INFO | Market Saved
+2026-07-16 15:51:55,933 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:52:55 +0330)" executed successfully
+2026-07-16 15:52:55,741 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:53:55 +0330)" (scheduled at 2026-07-16 15:52:55.729170+03:30)
+2026-07-16 15:52:55,949 | INFO | TGJU Updated Successfully
+2026-07-16 15:52:55,959 | INFO | Market Saved
+2026-07-16 15:52:55,959 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:53:55 +0330)" executed successfully
+2026-07-16 15:53:55,741 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:54:55 +0330)" (scheduled at 2026-07-16 15:53:55.729170+03:30)
+2026-07-16 15:53:55,940 | INFO | TGJU Updated Successfully
+2026-07-16 15:53:55,949 | INFO | Market Saved
+2026-07-16 15:53:55,949 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:54:55 +0330)" executed successfully
+2026-07-16 15:54:55,744 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:55:55 +0330)" (scheduled at 2026-07-16 15:54:55.729170+03:30)
+2026-07-16 15:54:55,953 | INFO | TGJU Updated Successfully
+2026-07-16 15:54:55,964 | INFO | Market Saved
+2026-07-16 15:54:55,965 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:55:55 +0330)" executed successfully
+2026-07-16 15:55:55,735 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:56:55 +0330)" (scheduled at 2026-07-16 15:55:55.729170+03:30)
+2026-07-16 15:55:55,950 | INFO | TGJU Updated Successfully
+2026-07-16 15:55:55,975 | INFO | Market Saved
+2026-07-16 15:55:55,975 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:56:55 +0330)" executed successfully
+2026-07-16 15:56:55,741 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:57:55 +0330)" (scheduled at 2026-07-16 15:56:55.729170+03:30)
+2026-07-16 15:56:56,855 | INFO | TGJU Updated Successfully
+2026-07-16 15:56:57,047 | INFO | Market Saved
+2026-07-16 15:56:57,050 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:57:55 +0330)" executed successfully
+2026-07-16 15:57:55,730 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:58:55 +0330)" (scheduled at 2026-07-16 15:57:55.729170+03:30)
+2026-07-16 15:57:55,951 | INFO | TGJU Updated Successfully
+2026-07-16 15:57:55,965 | INFO | Market Saved
+2026-07-16 15:57:55,965 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:58:55 +0330)" executed successfully
+2026-07-16 15:58:55,736 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:59:55 +0330)" (scheduled at 2026-07-16 15:58:55.729170+03:30)
+2026-07-16 15:58:55,899 | INFO | TGJU Updated Successfully
+2026-07-16 15:58:55,909 | INFO | Market Saved
+2026-07-16 15:58:55,909 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 15:59:55 +0330)" executed successfully
+2026-07-16 15:59:55,749 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:00:55 +0330)" (scheduled at 2026-07-16 15:59:55.729170+03:30)
+2026-07-16 15:59:55,950 | INFO | TGJU Updated Successfully
+2026-07-16 15:59:55,958 | INFO | Market Saved
+2026-07-16 15:59:55,959 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:00:55 +0330)" executed successfully
+2026-07-16 16:00:55,741 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:01:55 +0330)" (scheduled at 2026-07-16 16:00:55.729170+03:30)
+2026-07-16 16:00:55,964 | INFO | TGJU Updated Successfully
+2026-07-16 16:00:55,973 | INFO | Market Saved
+2026-07-16 16:00:55,974 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:01:55 +0330)" executed successfully
+2026-07-16 16:01:55,733 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:02:55 +0330)" (scheduled at 2026-07-16 16:01:55.729170+03:30)
+2026-07-16 16:01:56,035 | INFO | TGJU Updated Successfully
+2026-07-16 16:01:56,043 | INFO | Market Saved
+2026-07-16 16:01:56,043 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:02:55 +0330)" executed successfully
+2026-07-16 16:02:55,734 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:03:55 +0330)" (scheduled at 2026-07-16 16:02:55.729170+03:30)
+2026-07-16 16:03:06,815 | WARNING | call4 failed : HTTPSConnectionPool(host='call4.tgju.org', port=443): Max retries exceeded with url: /ajax.json?rev=1 (Caused by NameResolutionError("HTTPSConnection(host='call4.tgju.org', port=443): Failed to resolve 'call4.tgju.org' ([Errno 11001] getaddrinfo failed)"))
+2026-07-16 16:03:07,877 | WARNING | call2 failed : HTTPSConnectionPool(host='call2.tgju.org', port=443): Max retries exceeded with url: /ajax.json?rev=1 (Caused by NameResolutionError("HTTPSConnection(host='call2.tgju.org', port=443): Failed to resolve 'call2.tgju.org' ([Errno 11001] getaddrinfo failed)"))
+2026-07-16 16:03:08,058 | INFO | TGJU Updated Successfully
+2026-07-16 16:03:08,066 | INFO | Market Saved
+2026-07-16 16:03:08,066 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:03:55 +0330)" executed successfully
+2026-07-16 16:03:55,731 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:04:55 +0330)" (scheduled at 2026-07-16 16:03:55.729170+03:30)
+2026-07-16 16:03:55,902 | INFO | TGJU Updated Successfully
+2026-07-16 16:03:55,914 | INFO | Market Saved
+2026-07-16 16:03:55,914 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:04:55 +0330)" executed successfully
+2026-07-16 16:04:55,743 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:05:55 +0330)" (scheduled at 2026-07-16 16:04:55.729170+03:30)
+2026-07-16 16:04:55,970 | INFO | TGJU Updated Successfully
+2026-07-16 16:04:55,979 | INFO | Market Saved
+2026-07-16 16:04:55,979 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:05:55 +0330)" executed successfully
+2026-07-16 16:05:55,731 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:06:55 +0330)" (scheduled at 2026-07-16 16:05:55.729170+03:30)
+2026-07-16 16:05:55,936 | INFO | TGJU Updated Successfully
+2026-07-16 16:05:55,947 | INFO | Market Saved
+2026-07-16 16:05:55,948 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:06:55 +0330)" executed successfully
+2026-07-16 16:06:55,740 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:07:55 +0330)" (scheduled at 2026-07-16 16:06:55.729170+03:30)
+2026-07-16 16:06:55,940 | INFO | TGJU Updated Successfully
+2026-07-16 16:06:55,953 | INFO | Market Saved
+2026-07-16 16:06:55,954 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-16 16:07:55 +0330)" executed successfully
+2026-07-19 12:14:58,488 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-19 12:14:58,768 | INFO | TGJU Updated Successfully
+2026-07-19 12:14:58,788 | INFO | Market Saved
+2026-07-19 12:14:58,789 | INFO | Added job "update_market" to job store "default"
+2026-07-19 12:14:58,789 | INFO | Scheduler started
+2026-07-19 12:14:58,791 | INFO | Scheduler Started
+2026-07-19 12:15:58,504 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:15:58 +0330)" (scheduled at 2026-07-19 12:15:58.488014+03:30)
+2026-07-19 12:15:59,267 | INFO | TGJU Updated Successfully
+2026-07-19 12:15:59,274 | INFO | Market Saved
+2026-07-19 12:15:59,275 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:16:58 +0330)" executed successfully
+2026-07-19 12:16:58,497 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:17:58 +0330)" (scheduled at 2026-07-19 12:16:58.488014+03:30)
+2026-07-19 12:16:58,717 | INFO | TGJU Updated Successfully
+2026-07-19 12:16:58,727 | INFO | Market Saved
+2026-07-19 12:16:58,728 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:17:58 +0330)" executed successfully
+2026-07-19 12:17:58,501 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:18:58 +0330)" (scheduled at 2026-07-19 12:17:58.488014+03:30)
+2026-07-19 12:17:58,748 | INFO | TGJU Updated Successfully
+2026-07-19 12:17:58,758 | INFO | Market Saved
+2026-07-19 12:17:58,758 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:18:58 +0330)" executed successfully
+2026-07-19 12:18:58,501 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:19:58 +0330)" (scheduled at 2026-07-19 12:18:58.488014+03:30)
+2026-07-19 12:18:58,733 | INFO | TGJU Updated Successfully
+2026-07-19 12:18:58,748 | INFO | Market Saved
+2026-07-19 12:18:58,749 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:19:58 +0330)" executed successfully
+2026-07-19 12:19:58,501 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:20:58 +0330)" (scheduled at 2026-07-19 12:19:58.488014+03:30)
+2026-07-19 12:19:58,760 | INFO | TGJU Updated Successfully
+2026-07-19 12:19:58,771 | INFO | Market Saved
+2026-07-19 12:19:58,771 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:20:58 +0330)" executed successfully
+2026-07-19 12:20:58,499 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:21:58 +0330)" (scheduled at 2026-07-19 12:20:58.488014+03:30)
+2026-07-19 12:20:58,804 | INFO | TGJU Updated Successfully
+2026-07-19 12:20:58,836 | INFO | Market Saved
+2026-07-19 12:20:58,836 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:21:58 +0330)" executed successfully
+2026-07-19 12:21:58,500 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:22:58 +0330)" (scheduled at 2026-07-19 12:21:58.488014+03:30)
+2026-07-19 12:21:58,922 | INFO | TGJU Updated Successfully
+2026-07-19 12:21:58,937 | INFO | Market Saved
+2026-07-19 12:21:58,938 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:22:58 +0330)" executed successfully
+2026-07-19 12:22:58,488 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:23:58 +0330)" (scheduled at 2026-07-19 12:22:58.488014+03:30)
+2026-07-19 12:22:58,739 | INFO | TGJU Updated Successfully
+2026-07-19 12:22:58,748 | INFO | Market Saved
+2026-07-19 12:22:58,749 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:23:58 +0330)" executed successfully
+2026-07-19 12:23:58,499 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:24:58 +0330)" (scheduled at 2026-07-19 12:23:58.488014+03:30)
+2026-07-19 12:23:58,774 | INFO | TGJU Updated Successfully
+2026-07-19 12:23:58,787 | INFO | Market Saved
+2026-07-19 12:23:58,788 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:24:58 +0330)" executed successfully
+2026-07-19 12:24:58,503 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:25:58 +0330)" (scheduled at 2026-07-19 12:24:58.488014+03:30)
+2026-07-19 12:24:58,763 | INFO | TGJU Updated Successfully
+2026-07-19 12:24:58,771 | INFO | Market Saved
+2026-07-19 12:24:58,771 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:25:58 +0330)" executed successfully
+2026-07-19 12:25:58,521 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:26:58 +0330)" (scheduled at 2026-07-19 12:25:58.488014+03:30)
+2026-07-19 12:25:58,837 | INFO | TGJU Updated Successfully
+2026-07-19 12:25:58,886 | INFO | Market Saved
+2026-07-19 12:25:58,914 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:26:58 +0330)" executed successfully
+2026-07-19 12:26:58,490 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:27:58 +0330)" (scheduled at 2026-07-19 12:26:58.488014+03:30)
+2026-07-19 12:26:58,952 | INFO | TGJU Updated Successfully
+2026-07-19 12:26:58,985 | INFO | Market Saved
+2026-07-19 12:26:58,987 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:27:58 +0330)" executed successfully
+2026-07-19 12:27:58,496 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:28:58 +0330)" (scheduled at 2026-07-19 12:27:58.488014+03:30)
+2026-07-19 12:27:59,122 | INFO | TGJU Updated Successfully
+2026-07-19 12:27:59,134 | INFO | Market Saved
+2026-07-19 12:27:59,134 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:28:58 +0330)" executed successfully
+2026-07-19 12:28:58,492 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:29:58 +0330)" (scheduled at 2026-07-19 12:28:58.488014+03:30)
+2026-07-19 12:28:58,749 | INFO | TGJU Updated Successfully
+2026-07-19 12:28:58,756 | INFO | Market Saved
+2026-07-19 12:28:58,756 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:29:58 +0330)" executed successfully
+2026-07-19 12:29:58,499 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:30:58 +0330)" (scheduled at 2026-07-19 12:29:58.488014+03:30)
+2026-07-19 12:29:58,720 | INFO | TGJU Updated Successfully
+2026-07-19 12:29:58,729 | INFO | Market Saved
+2026-07-19 12:29:58,730 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:30:58 +0330)" executed successfully
+2026-07-19 12:30:58,500 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:31:58 +0330)" (scheduled at 2026-07-19 12:30:58.488014+03:30)
+2026-07-19 12:30:58,709 | INFO | TGJU Updated Successfully
+2026-07-19 12:30:58,718 | INFO | Market Saved
+2026-07-19 12:30:58,718 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:31:58 +0330)" executed successfully
+2026-07-19 12:31:58,503 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:32:58 +0330)" (scheduled at 2026-07-19 12:31:58.488014+03:30)
+2026-07-19 12:31:58,809 | INFO | TGJU Updated Successfully
+2026-07-19 12:31:58,816 | INFO | Market Saved
+2026-07-19 12:31:58,817 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:32:58 +0330)" executed successfully
+2026-07-19 12:32:58,494 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:33:58 +0330)" (scheduled at 2026-07-19 12:32:58.488014+03:30)
+2026-07-19 12:32:58,801 | INFO | TGJU Updated Successfully
+2026-07-19 12:32:58,811 | INFO | Market Saved
+2026-07-19 12:32:58,811 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:33:58 +0330)" executed successfully
+2026-07-19 12:33:58,494 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:34:58 +0330)" (scheduled at 2026-07-19 12:33:58.488014+03:30)
+2026-07-19 12:33:58,701 | INFO | TGJU Updated Successfully
+2026-07-19 12:33:58,711 | INFO | Market Saved
+2026-07-19 12:33:58,712 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:34:58 +0330)" executed successfully
+2026-07-19 12:34:58,503 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:35:58 +0330)" (scheduled at 2026-07-19 12:34:58.488014+03:30)
+2026-07-19 12:34:58,688 | INFO | TGJU Updated Successfully
+2026-07-19 12:34:58,700 | INFO | Market Saved
+2026-07-19 12:34:58,700 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:35:58 +0330)" executed successfully
+2026-07-19 12:44:47,015 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-19 12:44:47,209 | INFO | TGJU Updated Successfully
+2026-07-19 12:44:47,221 | INFO | Market Saved
+2026-07-19 12:44:47,222 | INFO | Added job "update_market" to job store "default"
+2026-07-19 12:44:47,222 | INFO | Scheduler started
+2026-07-19 12:44:47,223 | INFO | Scheduler Started
+2026-07-19 12:45:47,024 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:45:47 +0330)" (scheduled at 2026-07-19 12:45:47.015801+03:30)
+2026-07-19 12:45:47,189 | INFO | TGJU Updated Successfully
+2026-07-19 12:45:47,199 | INFO | Market Saved
+2026-07-19 12:45:47,200 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:46:47 +0330)" executed successfully
+2026-07-19 12:46:47,031 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:47:47 +0330)" (scheduled at 2026-07-19 12:46:47.015801+03:30)
+2026-07-19 12:46:47,231 | INFO | TGJU Updated Successfully
+2026-07-19 12:46:47,241 | INFO | Market Saved
+2026-07-19 12:46:47,242 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:47:47 +0330)" executed successfully
+2026-07-19 12:47:47,021 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:48:47 +0330)" (scheduled at 2026-07-19 12:47:47.015801+03:30)
+2026-07-19 12:47:47,211 | INFO | TGJU Updated Successfully
+2026-07-19 12:47:47,223 | INFO | Market Saved
+2026-07-19 12:47:47,223 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:48:47 +0330)" executed successfully
+2026-07-19 12:48:47,026 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:49:47 +0330)" (scheduled at 2026-07-19 12:48:47.015801+03:30)
+2026-07-19 12:48:47,280 | INFO | TGJU Updated Successfully
+2026-07-19 12:48:47,292 | INFO | Market Saved
+2026-07-19 12:48:47,295 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:49:47 +0330)" executed successfully
+2026-07-19 12:49:47,021 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:50:47 +0330)" (scheduled at 2026-07-19 12:49:47.015801+03:30)
+2026-07-19 12:49:47,287 | INFO | TGJU Updated Successfully
+2026-07-19 12:49:47,301 | INFO | Market Saved
+2026-07-19 12:49:47,302 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:50:47 +0330)" executed successfully
+2026-07-19 12:50:47,026 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:51:47 +0330)" (scheduled at 2026-07-19 12:50:47.015801+03:30)
+2026-07-19 12:50:47,285 | INFO | TGJU Updated Successfully
+2026-07-19 12:50:47,295 | INFO | Market Saved
+2026-07-19 12:50:47,295 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-19 12:51:47 +0330)" executed successfully
+2026-07-21 10:03:00,098 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 10:03:00,100 | INFO | Added job "update_market" to job store "default"
+2026-07-21 10:03:00,100 | INFO | Scheduler started
+2026-07-21 10:05:11,921 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 10:05:11,923 | INFO | Added job "update_market" to job store "default"
+2026-07-21 10:05:11,923 | INFO | Scheduler started
+2026-07-21 10:06:00,943 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 10:06:00,946 | INFO | Added job "update_market" to job store "default"
+2026-07-21 10:06:00,946 | INFO | Scheduler started
+2026-07-21 10:07:00,947 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:07:00 +0330)" (scheduled at 2026-07-21 10:07:00.943029+03:30)
+2026-07-21 10:07:01,312 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:08:00 +0330)" executed successfully
+2026-07-21 10:07:43,289 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 10:07:43,289 | INFO | Added job "update_market" to job store "default"
+2026-07-21 10:07:43,290 | INFO | Scheduler started
+2026-07-21 10:08:23,451 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 10:08:23,452 | INFO | Added job "update_market" to job store "default"
+2026-07-21 10:08:23,452 | INFO | Scheduler started
+2026-07-21 10:09:23,460 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:09:23 +0330)" (scheduled at 2026-07-21 10:09:23.451524+03:30)
+2026-07-21 10:09:23,679 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:10:23 +0330)" executed successfully
+2026-07-21 10:10:23,467 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:11:23 +0330)" (scheduled at 2026-07-21 10:10:23.451524+03:30)
+2026-07-21 10:10:23,716 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:11:23 +0330)" executed successfully
+2026-07-21 10:11:23,462 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:12:23 +0330)" (scheduled at 2026-07-21 10:11:23.451524+03:30)
+2026-07-21 10:11:23,700 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:12:23 +0330)" executed successfully
+2026-07-21 10:12:23,464 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:13:23 +0330)" (scheduled at 2026-07-21 10:12:23.451524+03:30)
+2026-07-21 10:12:23,691 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:13:23 +0330)" executed successfully
+2026-07-21 10:13:23,460 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:14:23 +0330)" (scheduled at 2026-07-21 10:13:23.451524+03:30)
+2026-07-21 10:13:23,905 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:14:23 +0330)" executed successfully
+2026-07-21 10:14:23,452 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:15:23 +0330)" (scheduled at 2026-07-21 10:14:23.451524+03:30)
+2026-07-21 10:14:23,689 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:15:23 +0330)" executed successfully
+2026-07-21 10:15:23,454 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:16:23 +0330)" (scheduled at 2026-07-21 10:15:23.451524+03:30)
+2026-07-21 10:15:23,725 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:16:23 +0330)" executed successfully
+2026-07-21 10:16:23,459 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:17:23 +0330)" (scheduled at 2026-07-21 10:16:23.451524+03:30)
+2026-07-21 10:16:23,661 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 10:17:23 +0330)" executed successfully
+2026-07-21 15:10:30,618 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 15:10:30,619 | INFO | Added job "update_market" to job store "default"
+2026-07-21 15:10:30,619 | INFO | Scheduler started
+2026-07-21 15:11:25,101 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 15:11:25,101 | INFO | Added job "update_market" to job store "default"
+2026-07-21 15:11:25,102 | INFO | Scheduler started
+2026-07-21 15:12:25,118 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:12:25 +0330)" (scheduled at 2026-07-21 15:12:25.101183+03:30)
+2026-07-21 15:12:25,393 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:13:25 +0330)" executed successfully
+2026-07-21 15:13:25,104 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:14:25 +0330)" (scheduled at 2026-07-21 15:13:25.101183+03:30)
+2026-07-21 15:13:25,277 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:14:25 +0330)" executed successfully
+2026-07-21 15:14:25,113 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:15:25 +0330)" (scheduled at 2026-07-21 15:14:25.101183+03:30)
+2026-07-21 15:14:25,273 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:15:25 +0330)" executed successfully
+2026-07-21 15:15:04,044 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 15:15:04,044 | INFO | Added job "update_market" to job store "default"
+2026-07-21 15:15:04,044 | INFO | Scheduler started
+2026-07-21 15:16:04,049 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:16:04 +0330)" (scheduled at 2026-07-21 15:16:04.043973+03:30)
+2026-07-21 15:16:04,255 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:17:04 +0330)" executed successfully
+2026-07-21 15:17:04,059 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:18:04 +0330)" (scheduled at 2026-07-21 15:17:04.043973+03:30)
+2026-07-21 15:17:04,309 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:18:04 +0330)" executed successfully
+2026-07-21 15:18:04,054 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:19:04 +0330)" (scheduled at 2026-07-21 15:18:04.043973+03:30)
+2026-07-21 15:18:04,286 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:19:04 +0330)" executed successfully
+2026-07-21 15:19:04,049 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:20:04 +0330)" (scheduled at 2026-07-21 15:19:04.043973+03:30)
+2026-07-21 15:19:04,338 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:20:04 +0330)" executed successfully
+2026-07-21 15:20:04,053 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:21:04 +0330)" (scheduled at 2026-07-21 15:20:04.043973+03:30)
+2026-07-21 15:20:04,256 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:21:04 +0330)" executed successfully
+2026-07-21 15:20:36,117 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 15:20:36,118 | INFO | Added job "update_market" to job store "default"
+2026-07-21 15:20:36,118 | INFO | Scheduler started
+2026-07-21 15:21:37,657 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-21 15:21:37,658 | INFO | Added job "update_market" to job store "default"
+2026-07-21 15:21:37,658 | INFO | Scheduler started
+2026-07-21 15:22:37,658 | INFO | Running job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:22:37 +0330)" (scheduled at 2026-07-21 15:22:37.657271+03:30)
+2026-07-21 15:22:37,820 | INFO | Job "update_market (trigger: interval[0:01:00], next run at: 2026-07-21 15:23:37 +0330)" executed successfully

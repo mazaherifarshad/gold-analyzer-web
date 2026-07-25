@@ -1,0 +1,115 @@
+:root{
+
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --text:#202124;
+    --sub:#6b7280;
+    --border:#e5e7eb;
+    --shadow:0 3px 12px rgba(0,0,0,.08);
+
+}
+
+[data-theme="dark"]{
+
+    --bg:#111827;
+    --card:#1f2937;
+    --text:#f3f4f6;
+    --sub:#9ca3af;
+    --border:#374151;
+    --shadow:0 5px 18px rgba(0,0,0,.35);
+
+}
+
+body{
+
+    background:var(--bg);
+    color:var(--text);
+    transition:.25s;
+
+}
+
+.app{
+
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+
+}
+
+.status-card,
+.price-card,
+.signal-card,
+.risk-card,
+.bubble-card,
+.trend-card,
+.market-score-card,
+.update-card{
+
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    transition:.25s;
+
+}
+
+.header h1{
+
+    color:var(--text);
+
+}
+
+.header p{
+
+    color:var(--sub);
+
+}
+
+.theme-btn{
+
+    position:absolute;
+    right:20px;
+    top:20px;
+
+    border:none;
+    border-radius:10px;
+
+    padding:10px 16px;
+
+    cursor:pointer;
+
+    background:#2563eb;
+    color:white;
+
+}
+
+@media (max-width:768px){
+
+    .app{
+
+        padding:12px;
+
+    }
+
+    .cards,
+    .prices{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .header h1{
+
+        font-size:28px;
+
+    }
+
+    .theme-btn{
+
+        position:static;
+        margin-bottom:15px;
+        width:100%;
+
+    }
+
+}

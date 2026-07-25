@@ -1,0 +1,666 @@
+{
+  "project_root": "C:\\Users\\project.control\\Desktop\\gold-analyzer-web",
+  "scan_time": "2026-07-23T16:29:33.353271",
+  "files": {
+    "gold-analyzer-web.code-workspace": {
+      "type": "other",
+      "size_bytes": 60,
+      "size_kb": 0.06,
+      "modified": "2026-07-19T12:38:02.553611",
+      "extension": ".code-workspace",
+      "directory": ""
+    },
+    "index.html": {
+      "type": "config",
+      "size_bytes": 326,
+      "size_kb": 0.32,
+      "modified": "2026-07-21T09:55:19.838162",
+      "extension": ".html",
+      "directory": ""
+    },
+    "package-lock.json": {
+      "type": "config",
+      "size_bytes": 72587,
+      "size_kb": 70.89,
+      "modified": "2026-07-19T12:28:15.266720",
+      "extension": ".json",
+      "directory": ""
+    },
+    "package.json": {
+      "type": "config",
+      "size_bytes": 396,
+      "size_kb": 0.39,
+      "modified": "2026-07-19T12:26:47.384414",
+      "extension": ".json",
+      "directory": ""
+    },
+    "README.md": {
+      "type": "documentation",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:24:42.598650",
+      "extension": ".md",
+      "directory": ""
+    },
+    "vite.config.js": {
+      "type": "javascript",
+      "size_bytes": 141,
+      "size_kb": 0.14,
+      "modified": "2026-07-19T12:29:26.022120",
+      "extension": ".js",
+      "directory": ""
+    },
+    "backend\\config.py": {
+      "type": "python",
+      "size_bytes": 342,
+      "size_kb": 0.33,
+      "modified": "2026-07-16T08:23:05.729035",
+      "extension": ".py",
+      "directory": "backend"
+    },
+    "backend\\requirements.txt": {
+      "type": "documentation",
+      "size_bytes": 1808,
+      "size_kb": 1.77,
+      "modified": "2026-07-15T16:30:04.156700",
+      "extension": ".txt",
+      "directory": "backend"
+    },
+    "backend\\scheduler.py": {
+      "type": "python",
+      "size_bytes": 477,
+      "size_kb": 0.47,
+      "modified": "2026-07-21T10:07:39.120730",
+      "extension": ".py",
+      "directory": "backend"
+    },
+    "backend\\server.py": {
+      "type": "python",
+      "size_bytes": 678,
+      "size_kb": 0.66,
+      "modified": "2026-07-21T10:02:57.086495",
+      "extension": ".py",
+      "directory": "backend"
+    },
+    "backend\\analysis\\ai_score.py": {
+      "type": "python",
+      "size_bytes": 5965,
+      "size_kb": 5.83,
+      "modified": "2026-07-22T08:13:01.182707",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\bubble.py": {
+      "type": "python",
+      "size_bytes": 498,
+      "size_kb": 0.49,
+      "modified": "2026-07-22T08:32:58.870710",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\divergence.py": {
+      "type": "python",
+      "size_bytes": 1799,
+      "size_kb": 1.76,
+      "modified": "2026-07-21T15:26:51.651975",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\engine.py": {
+      "type": "python",
+      "size_bytes": 8855,
+      "size_kb": 8.65,
+      "modified": "2026-07-22T08:29:56.627875",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\indicators.py": {
+      "type": "python",
+      "size_bytes": 651,
+      "size_kb": 0.64,
+      "modified": "2026-07-21T08:32:10.847973",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\intrinsic.py": {
+      "type": "python",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:19:10.257725",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\iran_market.py": {
+      "type": "python",
+      "size_bytes": 2740,
+      "size_kb": 2.68,
+      "modified": "2026-07-21T15:32:26.445977",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\market_structure.py": {
+      "type": "python",
+      "size_bytes": 1178,
+      "size_kb": 1.15,
+      "modified": "2026-07-21T15:29:33.229732",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\momentum.py": {
+      "type": "python",
+      "size_bytes": 1201,
+      "size_kb": 1.17,
+      "modified": "2026-07-21T15:20:32.747516",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\multi_timeframe.py": {
+      "type": "python",
+      "size_bytes": 2265,
+      "size_kb": 2.21,
+      "modified": "2026-07-22T08:33:25.271722",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\recommendation.py": {
+      "type": "python",
+      "size_bytes": 4951,
+      "size_kb": 4.83,
+      "modified": "2026-07-22T08:17:39.235493",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\risk.py": {
+      "type": "python",
+      "size_bytes": 507,
+      "size_kb": 0.5,
+      "modified": "2026-07-19T13:00:16.628262",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\smart_money.py": {
+      "type": "python",
+      "size_bytes": 2249,
+      "size_kb": 2.2,
+      "modified": "2026-07-21T15:33:55.036787",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\support_resistance.py": {
+      "type": "python",
+      "size_bytes": 2072,
+      "size_kb": 2.02,
+      "modified": "2026-07-21T15:34:21.181877",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\trend.py": {
+      "type": "python",
+      "size_bytes": 995,
+      "size_kb": 0.97,
+      "modified": "2026-07-21T15:11:21.968174",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\volatility.py": {
+      "type": "python",
+      "size_bytes": 1823,
+      "size_kb": 1.78,
+      "modified": "2026-07-21T15:35:18.309936",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\analysis\\volume.py": {
+      "type": "python",
+      "size_bytes": 1589,
+      "size_kb": 1.55,
+      "modified": "2026-07-21T15:33:21.861509",
+      "extension": ".py",
+      "directory": "backend\\analysis"
+    },
+    "backend\\api\\analysis.py": {
+      "type": "python",
+      "size_bytes": 198,
+      "size_kb": 0.19,
+      "modified": "2026-07-21T08:32:39.741333",
+      "extension": ".py",
+      "directory": "backend\\api"
+    },
+    "backend\\api\\history.py": {
+      "type": "python",
+      "size_bytes": 793,
+      "size_kb": 0.77,
+      "modified": "2026-07-16T08:55:18.348070",
+      "extension": ".py",
+      "directory": "backend\\api"
+    },
+    "backend\\api\\market.py": {
+      "type": "python",
+      "size_bytes": 1744,
+      "size_kb": 1.7,
+      "modified": "2026-07-16T08:29:50.556729",
+      "extension": ".py",
+      "directory": "backend\\api"
+    },
+    "backend\\api\\news.py": {
+      "type": "python",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-16T08:30:05.598124",
+      "extension": ".py",
+      "directory": "backend\\api"
+    },
+    "backend\\api\\status.py": {
+      "type": "python",
+      "size_bytes": 542,
+      "size_kb": 0.53,
+      "modified": "2026-07-16T15:35:20.850905",
+      "extension": ".py",
+      "directory": "backend\\api"
+    },
+    "backend\\candle\\candle_builder.py": {
+      "type": "python",
+      "size_bytes": 858,
+      "size_kb": 0.84,
+      "modified": "2026-07-22T14:32:08.115897",
+      "extension": ".py",
+      "directory": "backend\\candle"
+    },
+    "backend\\candle\\candle_database.py": {
+      "type": "python",
+      "size_bytes": 1113,
+      "size_kb": 1.09,
+      "modified": "2026-07-22T14:54:51.553035",
+      "extension": ".py",
+      "directory": "backend\\candle"
+    },
+    "backend\\candle\\candle_engine.py": {
+      "type": "python",
+      "size_bytes": 3605,
+      "size_kb": 3.52,
+      "modified": "2026-07-22T14:52:36.895188",
+      "extension": ".py",
+      "directory": "backend\\candle"
+    },
+    "backend\\database\\database.py": {
+      "type": "python",
+      "size_bytes": 1565,
+      "size_kb": 1.53,
+      "modified": "2026-07-16T08:24:00.501543",
+      "extension": ".py",
+      "directory": "backend\\database"
+    },
+    "backend\\database\\market.db": {
+      "type": "database",
+      "size_bytes": 28672,
+      "size_kb": 28.0,
+      "modified": "2026-07-21T15:22:37.817306",
+      "extension": ".db",
+      "directory": "backend\\database"
+    },
+    "backend\\models\\schemas.py": {
+      "type": "python",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:20:15.736099",
+      "extension": ".py",
+      "directory": "backend\\models"
+    },
+    "backend\\services\\logger.py": {
+      "type": "python",
+      "size_bytes": 369,
+      "size_kb": 0.36,
+      "modified": "2026-07-16T08:23:42.904414",
+      "extension": ".py",
+      "directory": "backend\\services"
+    },
+    "backend\\services\\market_updater.py": {
+      "type": "python",
+      "size_bytes": 721,
+      "size_kb": 0.7,
+      "modified": "2026-07-21T10:05:57.826676",
+      "extension": ".py",
+      "directory": "backend\\services"
+    },
+    "backend\\services\\scheduler.py": {
+      "type": "python",
+      "size_bytes": 1174,
+      "size_kb": 1.15,
+      "modified": "2026-07-16T08:23:32.674773",
+      "extension": ".py",
+      "directory": "backend\\services"
+    },
+    "backend\\services\\tgju.py": {
+      "type": "python",
+      "size_bytes": 1845,
+      "size_kb": 1.8,
+      "modified": "2026-07-16T08:42:29.045347",
+      "extension": ".py",
+      "directory": "backend\\services"
+    },
+    "backend\\services\\tgju_service.py": {
+      "type": "python",
+      "size_bytes": 1148,
+      "size_kb": 1.12,
+      "modified": "2026-07-21T15:09:06.472571",
+      "extension": ".py",
+      "directory": "backend\\services"
+    },
+    "backend\\utils\\formatter.py": {
+      "type": "python",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:20:29.658071",
+      "extension": ".py",
+      "directory": "backend\\utils"
+    },
+    "backend\\utils\\helpers.py": {
+      "type": "python",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:20:22.073799",
+      "extension": ".py",
+      "directory": "backend\\utils"
+    },
+    "public\\favicon.ico": {
+      "type": "other",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:23:53.870098",
+      "extension": ".ico",
+      "directory": "public"
+    },
+    "public\\icon-192.png": {
+      "type": "other",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:23:59.669356",
+      "extension": ".png",
+      "directory": "public"
+    },
+    "public\\icon-512.png": {
+      "type": "other",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:24:05.766912",
+      "extension": ".png",
+      "directory": "public"
+    },
+    "public\\manifest.json": {
+      "type": "config",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:23:42.676899",
+      "extension": ".json",
+      "directory": "public"
+    },
+    "public\\service-worker.js": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:23:48.086131",
+      "extension": ".js",
+      "directory": "public"
+    },
+    "src\\App.css": {
+      "type": "config",
+      "size_bytes": 1511,
+      "size_kb": 1.48,
+      "modified": "2026-07-21T09:55:52.370917",
+      "extension": ".css",
+      "directory": "src"
+    },
+    "src\\App.jsx": {
+      "type": "javascript",
+      "size_bytes": 775,
+      "size_kb": 0.76,
+      "modified": "2026-07-21T15:07:11.170482",
+      "extension": ".jsx",
+      "directory": "src"
+    },
+    "src\\main.jsx": {
+      "type": "javascript",
+      "size_bytes": 228,
+      "size_kb": 0.22,
+      "modified": "2026-07-19T12:33:19.327754",
+      "extension": ".jsx",
+      "directory": "src"
+    },
+    "src\\assets\\icon.png": {
+      "type": "other",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:23:08.464287",
+      "extension": ".png",
+      "directory": "src\\assets"
+    },
+    "src\\assets\\logo.png": {
+      "type": "other",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:23:00.755002",
+      "extension": ".png",
+      "directory": "src\\assets"
+    },
+    "src\\components\\AnalysisPanel.jsx": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:21:31.869566",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\BubbleCard.jsx": {
+      "type": "javascript",
+      "size_bytes": 334,
+      "size_kb": 0.33,
+      "modified": "2026-07-21T08:44:18.034609",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\Charts.jsx": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:21:38.948946",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\Dashboard.jsx": {
+      "type": "javascript",
+      "size_bytes": 1994,
+      "size_kb": 1.95,
+      "modified": "2026-07-21T15:14:08.679500",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\Error.jsx": {
+      "type": "javascript",
+      "size_bytes": 145,
+      "size_kb": 0.14,
+      "modified": "2026-07-21T08:41:27.682370",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\Header.jsx": {
+      "type": "javascript",
+      "size_bytes": 684,
+      "size_kb": 0.67,
+      "modified": "2026-07-21T15:07:32.435889",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\Loading.jsx": {
+      "type": "javascript",
+      "size_bytes": 139,
+      "size_kb": 0.14,
+      "modified": "2026-07-21T08:41:05.604758",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\MarketCards.jsx": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:21:26.132536",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\MarketScoreCard.jsx": {
+      "type": "javascript",
+      "size_bytes": 347,
+      "size_kb": 0.34,
+      "modified": "2026-07-21T08:43:17.570317",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\NewsPanel.jsx": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:21:54.767542",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\PriceCard.jsx": {
+      "type": "javascript",
+      "size_bytes": 347,
+      "size_kb": 0.34,
+      "modified": "2026-07-21T08:42:09.891736",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\RiskCard.jsx": {
+      "type": "javascript",
+      "size_bytes": 309,
+      "size_kb": 0.3,
+      "modified": "2026-07-21T08:43:41.483600",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\ScoreGauge.jsx": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:21:44.572151",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\SignalCard.jsx": {
+      "type": "javascript",
+      "size_bytes": 569,
+      "size_kb": 0.56,
+      "modified": "2026-07-21T15:12:51.357605",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\TrendCard.jsx": {
+      "type": "javascript",
+      "size_bytes": 451,
+      "size_kb": 0.44,
+      "modified": "2026-07-21T15:20:35.806922",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\TrendPanel.jsx": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:21:49.420544",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\components\\UpdateCard.jsx": {
+      "type": "javascript",
+      "size_bytes": 203,
+      "size_kb": 0.2,
+      "modified": "2026-07-21T15:14:33.332365",
+      "extension": ".jsx",
+      "directory": "src\\components"
+    },
+    "src\\hooks\\useApi.js": {
+      "type": "javascript",
+      "size_bytes": 900,
+      "size_kb": 0.88,
+      "modified": "2026-07-21T09:56:46.709727",
+      "extension": ".js",
+      "directory": "src\\hooks"
+    },
+    "src\\pages\\Dashboard.jsx": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:21:11.486727",
+      "extension": ".jsx",
+      "directory": "src\\pages"
+    },
+    "src\\services\\analysis.js": {
+      "type": "javascript",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:22:18.339143",
+      "extension": ".js",
+      "directory": "src\\services"
+    },
+    "src\\services\\api.js": {
+      "type": "javascript",
+      "size_bytes": 123,
+      "size_kb": 0.12,
+      "modified": "2026-07-21T08:38:58.213740",
+      "extension": ".js",
+      "directory": "src\\services"
+    },
+    "src\\styles\\App.css": {
+      "type": "config",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:23:18.325675",
+      "extension": ".css",
+      "directory": "src\\styles"
+    },
+    "src\\styles\\Dashboard.css": {
+      "type": "config",
+      "size_bytes": 0,
+      "size_kb": 0,
+      "modified": "2026-07-15T15:23:24.278841",
+      "extension": ".css",
+      "directory": "src\\styles"
+    },
+    "src\\styles\\Theme.css": {
+      "type": "config",
+      "size_bytes": 1414,
+      "size_kb": 1.38,
+      "modified": "2026-07-21T15:06:34.738891",
+      "extension": ".css",
+      "directory": "src\\styles"
+    }
+  },
+  "directories": [
+    "",
+    "backend",
+    "backend\\analysis",
+    "backend\\api",
+    "backend\\candle",
+    "backend\\config",
+    "backend\\database",
+    "backend\\models",
+    "backend\\services",
+    "backend\\utils",
+    "database",
+    "public",
+    "src",
+    "src\\assets",
+    "src\\components",
+    "src\\hooks",
+    "src\\pages",
+    "src\\services",
+    "src\\styles"
+  ],
+  "summary": {
+    "total_files": 79,
+    "total_dirs": 19,
+    "python_files": 37,
+    "javascript_files": 25,
+    "other_files": 6
+  }
+}
