@@ -10,6 +10,8 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 from datetime import datetime
 import uvicorn
+import sqlite3
+import os
 
 from backend.database.connection import session_scope
 from backend.database.models import MarketCandle, MarketHistory, AnalysisResult
@@ -229,7 +231,9 @@ async def root():
             "/analysis",
             "/analysis/{symbol}",
             "/candles/{symbol}",
-            "/update"
+            "/update",
+            "/repair-db",
+            "/health"
         ]
     }
 
@@ -310,6 +314,58 @@ async def update_data():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/repair-db")
+async def repair_database():
+    """تعمیر دیتابیس - اضافه کردن ستون‌های گم‌شده"""
+    try:
+        # مسیر دیتابیس
+        db_path = os.path.join(os.path.dirname(__file__), "database", "market.db")
+        
+        # اتصال به دیتابیس
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        # بررسی وجود ستون‌ها در market_history
+        cursor.execute("PRAGMA table_info(market_history)")
+        columns = [col[1] for col in cursor.fetchall()]
+        
+        # اضافه کردن ستون‌های گم‌شده
+        added = []
+        if 'raw_data' not in columns:
+            cursor.execute("ALTER TABLE market_history ADD COLUMN raw_data TEXT")
+            added.append('raw_data')
+        
+        if 'source' not in columns:
+            cursor.execute("ALTER TABLE market_history ADD COLUMN source TEXT DEFAULT 'tgju'")
+            added.append('source')
+        
+        # بررسی وجود ستون‌ها در market_candles
+        cursor.execute("PRAGMA table_info(market_candles)")
+        columns = [col[1] for col in cursor.fetchall()]
+        
+        if 'tick_count' not in columns:
+            cursor.execute("ALTER TABLE market_candles ADD COLUMN tick_count INTEGER DEFAULT 0")
+            added.append('tick_count (market_candles)')
+        
+        if 'updated_at' not in columns:
+            cursor.execute("ALTER TABLE market_candles ADD COLUMN updated_at DATETIME")
+            added.append('updated_at (market_candles)')
+        
+        conn.commit()
+        conn.close()
+        
+        return {
+            "status": "success", 
+            "message": "Database repaired successfully",
+            "columns_added": added
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error", 
+            "message": str(e)
+        }
 
 @app.get("/health")
 async def health_check():
