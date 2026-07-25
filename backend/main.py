@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 FastAPI Server - Gold Market Analyzer API
-نسخه نهایی با مدیریت مستقل دیتابیس و اندپوینت بازسازی اجباری
+نسخه نهایی با مدیریت دیتابیس و جلوگیری از خطای تکراری
 """
 
 from fastapi import FastAPI, HTTPException
@@ -18,7 +18,7 @@ from pathlib import Path
 from contextlib import contextmanager
 
 # ============ تنظیمات دیتابیس ============
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Index, UniqueConstraint, Text
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Index, UniqueConstraint, Text, and_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
@@ -338,7 +338,7 @@ def fetch_and_store_all():
     return prices
 
 def build_candles_for_all_symbols():
-    """ساخت شمع از تیک‌ها"""
+    """ساخت شمع از تیک‌ها - با جلوگیری از درج تکراری"""
     symbols = ['gold', 'usd', 'ounce', 'coin']
     
     with session_scope() as session:
@@ -353,18 +353,38 @@ def build_candles_for_all_symbols():
             # ساخت شمع ۱ دقیقه
             for i in range(len(ticks) - 1):
                 candle_time = ticks[i].created_at.replace(second=0, microsecond=0)
-                candle = MarketCandle(
-                    symbol=symbol,
-                    timeframe='1m',
-                    candle_time=candle_time,
-                    open=ticks[i].price,
-                    high=max(ticks[i].price, ticks[i+1].price),
-                    low=min(ticks[i].price, ticks[i+1].price),
-                    close=ticks[i+1].price,
-                    volume=2,
-                    tick_count=2
-                )
-                session.add(candle)
+                
+                # بررسی وجود شمع تکراری
+                existing = session.query(MarketCandle).filter(
+                    and_(
+                        MarketCandle.symbol == symbol,
+                        MarketCandle.timeframe == '1m',
+                        MarketCandle.candle_time == candle_time
+                    )
+                ).first()
+                
+                if existing:
+                    # اگر شمع وجود دارد، آن را به‌روز می‌کنیم
+                    existing.open = ticks[i].price
+                    existing.high = max(ticks[i].price, ticks[i+1].price)
+                    existing.low = min(ticks[i].price, ticks[i+1].price)
+                    existing.close = ticks[i+1].price
+                    existing.volume += 2
+                    existing.tick_count += 2
+                else:
+                    # شمع جدید ایجاد می‌کنیم
+                    candle = MarketCandle(
+                        symbol=symbol,
+                        timeframe='1m',
+                        candle_time=candle_time,
+                        open=ticks[i].price,
+                        high=max(ticks[i].price, ticks[i+1].price),
+                        low=min(ticks[i].price, ticks[i+1].price),
+                        close=ticks[i+1].price,
+                        volume=2,
+                        tick_count=2
+                    )
+                    session.add(candle)
 
 # ============ API Endpoints ============
 
@@ -500,38 +520,30 @@ async def update_data_get():
 @app.get("/reset-db")
 async def reset_database():
     """بازسازی کامل دیتابیس - هشدار: تمام داده‌ها حذف می‌شوند!"""
-    import sqlite3
-    import os
-    from pathlib import Path
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
-    from sqlalchemy.pool import StaticPool
+    global engine, SessionLocal
     
     try:
-        # 1. مسیر دیتابیس
-        db_path = Path(__file__).parent / 'database' / 'market.db'
+        # 1. بستن تمام اتصالات موجود
+        # با ایجاد engine جدید، اتصالات قبلی بسته می‌شوند
         
-        # 2. بستن تمام اتصالات موجود (با ریست engine)
-        global engine, SessionLocal
+        # 2. حذف فایل دیتابیس
+        if DB_PATH.exists():
+            os.remove(DB_PATH)
+            print(f"✅ Database file removed: {DB_PATH}")
         
-        # 3. حذف فایل دیتابیس
-        if db_path.exists():
-            os.remove(db_path)
-            print(f"✅ Database file removed: {db_path}")
-        
-        # 4. ایجاد یک engine جدید و مستقل
+        # 3. ایجاد یک engine جدید و مستقل
         temp_engine = create_engine(
-            f"sqlite:///{db_path}",
+            f"sqlite:///{DB_PATH}",
             connect_args={'check_same_thread': False},
             poolclass=StaticPool,
             echo=False
         )
         
-        # 5. ایجاد همه جداول با مدل‌های تعریف‌شده
+        # 4. ایجاد همه جداول با مدل‌های تعریف‌شده
         Base.metadata.create_all(temp_engine)
         print("✅ Tables recreated successfully")
         
-        # 6. به‌روزرسانی engine و SessionLocal برای استفاده در کل برنامه
+        # 5. به‌روزرسانی engine و SessionLocal برای استفاده در کل برنامه
         engine = temp_engine
         SessionLocal = sessionmaker(
             autocommit=False,
