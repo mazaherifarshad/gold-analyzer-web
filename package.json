@@ -1,5 +1,5 @@
 {
-  "name": "gold-analyzer-pwa",
+  "name": "gold-analyzer-web",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -10,10 +10,7 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "axios": "^1.6.0",
-    "react-router-dom": "^6.20.0",
-    "chart.js": "^4.4.0",
-    "react-chartjs-2": "^5.2.0"
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",
