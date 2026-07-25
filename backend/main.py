@@ -232,7 +232,7 @@ async def root():
             "/analysis/{symbol}",
             "/candles/{symbol}",
             "/update",
-            "/repair-db",
+            "/fix-db",
             "/health"
         ]
     }
@@ -315,8 +315,8 @@ async def update_data():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/repair-db")
-async def repair_database():
+@app.get("/fix-db")
+async def fix_database():
     """تعمیر دیتابیس - اضافه کردن ستون‌های گم‌شده"""
     try:
         # مسیر دیتابیس
