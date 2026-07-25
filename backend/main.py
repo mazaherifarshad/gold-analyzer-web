@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 FastAPI Server - Gold Market Analyzer API
-نسخه نهایی با مدیریت مستقل دیتابیس
+نسخه نهایی با مدیریت مستقل دیتابیس و اندپوینت بازسازی اجباری
 """
 
 from fastapi import FastAPI, HTTPException
@@ -12,19 +12,20 @@ from datetime import datetime
 import uvicorn
 import sqlite3
 import os
+import random
+import requests
 from pathlib import Path
+from contextlib import contextmanager
 
-# ============ تنظیمات دیتابیس (مستقل) ============
+# ============ تنظیمات دیتابیس ============
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Index, UniqueConstraint, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
-from contextlib import contextmanager
 
-# تعریف Base
 Base = declarative_base()
 
-# ============ مدل‌های دیتابیس (همان‌هایی که داشتیم) ============
+# ============ مدل‌های دیتابیس ============
 class MarketHistory(Base):
     __tablename__ = 'market_history'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -95,6 +96,9 @@ SessionLocal = sessionmaker(
     bind=engine
 )
 
+# ایجاد جداول در اولین اجرا
+Base.metadata.create_all(engine)
+
 @contextmanager
 def session_scope():
     """مدیریت خودکار Session"""
@@ -107,9 +111,6 @@ def session_scope():
         raise
     finally:
         session.close()
-
-# ============ ایجاد جداول ============
-Base.metadata.create_all(engine)
 
 # ============ FastAPI App ============
 app = FastAPI(
@@ -301,9 +302,6 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
 # ============ توابع سرویس‌ها (برای دریافت داده) ============
 def fetch_and_store_all():
     """دریافت داده از TGJU و ذخیره در دیتابیس"""
-    import random
-    import requests
-    
     subdomains = ["call2", "call3", "call4"]
     call = random.choice(subdomains)
     url = f"https://{call}.tgju.org/ajax.json?rev=test"
@@ -341,10 +339,7 @@ def fetch_and_store_all():
 
 def build_candles_for_all_symbols():
     """ساخت شمع از تیک‌ها"""
-    from datetime import timedelta
-    
     symbols = ['gold', 'usd', 'ounce', 'coin']
-    timeframes = ['1m', '5m', '15m', '30m', '1h']
     
     with session_scope() as session:
         for symbol in symbols:
@@ -394,9 +389,6 @@ async def root():
 @app.get("/prices", response_model=List[PriceResponse])
 async def get_prices():
     """دریافت قیمت‌های لحظه‌ای"""
-    import random
-    import requests
-    
     subdomains = ["call2", "call3", "call4"]
     call = random.choice(subdomains)
     url = f"https://{call}.tgju.org/ajax.json?rev=test"
@@ -508,19 +500,51 @@ async def update_data_get():
 @app.get("/reset-db")
 async def reset_database():
     """بازسازی کامل دیتابیس - هشدار: تمام داده‌ها حذف می‌شوند!"""
+    import sqlite3
+    import os
+    from pathlib import Path
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.pool import StaticPool
+    
     try:
-        # حذف فایل دیتابیس
-        if DB_PATH.exists():
-            os.remove(DB_PATH)
+        # 1. مسیر دیتابیس
+        db_path = Path(__file__).parent / 'database' / 'market.db'
         
-        # ایجاد مجدد جداول
-        Base.metadata.create_all(engine)
+        # 2. بستن تمام اتصالات موجود (با ریست engine)
+        global engine, SessionLocal
+        
+        # 3. حذف فایل دیتابیس
+        if db_path.exists():
+            os.remove(db_path)
+            print(f"✅ Database file removed: {db_path}")
+        
+        # 4. ایجاد یک engine جدید و مستقل
+        temp_engine = create_engine(
+            f"sqlite:///{db_path}",
+            connect_args={'check_same_thread': False},
+            poolclass=StaticPool,
+            echo=False
+        )
+        
+        # 5. ایجاد همه جداول با مدل‌های تعریف‌شده
+        Base.metadata.create_all(temp_engine)
+        print("✅ Tables recreated successfully")
+        
+        # 6. به‌روزرسانی engine و SessionLocal برای استفاده در کل برنامه
+        engine = temp_engine
+        SessionLocal = sessionmaker(
+            autocommit=False,
+            autoflush=False,
+            bind=engine
+        )
         
         return {
             "status": "success",
             "message": "Database reset successfully. All tables recreated.",
             "timestamp": datetime.now().isoformat()
         }
+        
     except Exception as e:
         return {
             "status": "error",
