@@ -232,6 +232,7 @@ async def root():
             "/analysis/{symbol}",
             "/candles/{symbol}",
             "/update",
+            "/update-get",
             "/fix-db",
             "/health"
         ]
@@ -299,7 +300,7 @@ async def get_candles(symbol: str, timeframe: str = '1m', limit: int = 50):
 
 @app.post("/update")
 async def update_data():
-    """به‌روزرسانی داده‌ها از TGJU"""
+    """به‌روزرسانی داده‌ها از TGJU با POST"""
     try:
         # دریافت داده‌های جدید
         fetch_and_store_all()
@@ -314,6 +315,27 @@ async def update_data():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/update-get")
+async def update_data_get():
+    """به‌روزرسانی داده‌ها از TGJU با GET (برای تست در مرورگر)"""
+    try:
+        # دریافت داده‌های جدید
+        fetch_and_store_all()
+        
+        # ساخت شمع‌ها
+        build_candles_for_all_symbols()
+        
+        return {
+            "status": "success",
+            "message": "Data updated successfully",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
 
 @app.get("/fix-db")
 async def fix_database():
