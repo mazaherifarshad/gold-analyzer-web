@@ -156,6 +156,11 @@ class PortfolioResponse(BaseModel):
     scenarios: List[Dict]
     timestamp: str
 
+# ============ اطلاعات نسخه و سازنده ============
+APP_VERSION = "V1.0"
+DEVELOPER = "F.Mazaheri"
+COPYRIGHT = "© 2026 Gold Market Analyzer. All rights reserved."
+
 # ============ تابع تحلیل ============
 def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
     """تحلیل یک نماد با استفاده از شمع‌ها"""
@@ -512,7 +517,9 @@ def get_portfolio_recommendations(capital: float, risk_tolerance: str = 'moderat
 async def root():
     return {
         "name": "Gold Market Analyzer API",
-        "version": "1.0.0",
+        "version": APP_VERSION,
+        "developer": DEVELOPER,
+        "copyright": COPYRIGHT,
         "status": "online",
         "endpoints": [
             "/prices",
@@ -780,7 +787,9 @@ async def get_portfolio(capital: float = 10000000, risk: str = 'moderate'):
             "capital": capital,
             "risk_level": risk,
             "recommendations": recommendations,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
+            "version": APP_VERSION,
+            "developer": DEVELOPER
         }
     except Exception as e:
         return {
