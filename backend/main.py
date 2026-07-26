@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 FastAPI Server - Gold Market Analyzer API
-نسخه نهایی با مدیریت دیتابیس و اندپوینت تعمیر
+نسخه نهایی با مدیریت دیتابیس، اندپوینت تعمیر و مشاور سرمایه‌گذاری
 """
 
 from fastapi import FastAPI, HTTPException
@@ -122,7 +122,7 @@ app = FastAPI(
 # ============ CORS ============
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # برای تست، همه دامنه‌ها
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -146,6 +146,14 @@ class AnalysisResponse(BaseModel):
     recommendation: str
     confidence: int
     reasons: List[str]
+    timestamp: str
+
+class PortfolioRequest(BaseModel):
+    capital: float
+    risk: str = 'moderate'
+
+class PortfolioResponse(BaseModel):
+    scenarios: List[Dict]
     timestamp: str
 
 # ============ تابع تحلیل ============
@@ -386,6 +394,118 @@ def build_candles_for_all_symbols():
                     )
                     session.add(candle)
 
+# ============ تابع مشاور سرمایه‌گذاری ============
+def get_portfolio_recommendations(capital: float, risk_tolerance: str = 'moderate') -> List[Dict]:
+    """تولید پیشنهادات سرمایه‌گذاری"""
+    
+    # دریافت تحلیل‌های فعلی
+    symbols = ['gold', 'usd', 'ounce', 'coin']
+    analyses = {}
+    for symbol in symbols:
+        result = analyze_symbol(symbol)
+        if 'error' not in result:
+            analyses[symbol] = result
+    
+    if not analyses:
+        return []
+    
+    # تعریف نام‌ها و قیمت‌ها
+    asset_info = {
+        'gold': {'name': 'طلا ۱۸ عیار', 'max_weight': 0.35},
+        'usd': {'name': 'دلار آمریکا', 'max_weight': 0.25},
+        'ounce': {'name': 'انس جهانی', 'max_weight': 0.15},
+        'coin': {'name': 'سکه بهار آزادی', 'max_weight': 0.25}
+    }
+    
+    # محاسبه بازده و ریسک هر دارایی
+    returns = {}
+    risks = {}
+    for symbol, analysis in analyses.items():
+        # بازده مورد انتظار بر اساس روند و RSI
+        trend_factor = (analysis['trend_score'] - 50) / 50
+        rsi_factor = (analysis['rsi'] - 50) / 50
+        expected_return = trend_factor * 0.6 + rsi_factor * 0.4
+        returns[symbol] = max(0, min(1, expected_return + 0.5))
+        
+        # ریسک بر اساس نوسان و موقعیت
+        volatility_risk = min(1, analysis['volatility'] / 5)
+        trend_risk = abs(analysis['trend_score'] - 50) / 50
+        risks[symbol] = volatility_risk * 0.6 + trend_risk * 0.4
+    
+    # تنظیم ضریب ریسک
+    risk_multipliers = {
+        'conservative': 0.3,
+        'moderate': 0.6,
+        'aggressive': 0.9
+    }
+    risk_factor = risk_multipliers.get(risk_tolerance, 0.6)
+    
+    # تولید ۳ سناریو
+    scenarios = [
+        {'name': 'محافظه‌کارانه', 'risk': 'conservative', 'color': '🟢'},
+        {'name': 'متعادل', 'risk': 'moderate', 'color': '🟡'},
+        {'name': 'جسورانه', 'risk': 'aggressive', 'color': '🔴'}
+    ]
+    
+    recommendations = []
+    for scenario in scenarios:
+        # محاسبه وزن‌ها
+        allocations = {}
+        total_score = 0
+        
+        for symbol in returns:
+            sharpe = returns[symbol] / (risks[symbol] + 0.01)
+            risk_mult = risk_multipliers.get(scenario['risk'], 0.6)
+            adjusted_sharpe = sharpe * (1 + (1 - risk_mult) * 0.5)
+            allocations[symbol] = adjusted_sharpe
+            total_score += adjusted_sharpe
+        
+        if total_score == 0:
+            total_score = 1
+        
+        # نرمال‌سازی و اعمال محدودیت‌ها
+        for symbol in allocations:
+            raw_weight = allocations[symbol] / total_score
+            max_weight = asset_info.get(symbol, {}).get('max_weight', 0.3)
+            allocations[symbol] = min(raw_weight, max_weight)
+        
+        # نرمال‌سازی مجدد
+        total = sum(allocations.values())
+        if total > 0:
+            for symbol in allocations:
+                allocations[symbol] = allocations[symbol] / total
+        
+        # محاسبه مقادیر به تومان
+        amounts = {}
+        for symbol, weight in allocations.items():
+            amount = capital * weight
+            price = analyses.get(symbol, {}).get('current_price', 1)
+            quantity = amount / price if price > 0 else 0
+            amounts[symbol] = {
+                'amount_toman': amount,
+                'quantity': quantity,
+                'weight_percent': weight * 100,
+                'price': price
+            }
+        
+        # محاسبه بازده و ریسک کل سبد
+        total_return = 0
+        total_risk = 0
+        for symbol, weight in allocations.items():
+            total_return += weight * returns.get(symbol, 0)
+            total_risk += weight * risks.get(symbol, 0)
+        
+        recommendations.append({
+            'scenario': scenario['name'],
+            'color': scenario['color'],
+            'allocations': amounts,
+            'expected_return': total_return * 100,
+            'expected_risk': total_risk * 100,
+            'sharpe_ratio': total_return / (total_risk + 0.01)
+        })
+    
+    return recommendations
+
 # ============ API Endpoints ============
 
 @app.get("/")
@@ -403,7 +523,8 @@ async def root():
             "/update-get",
             "/fix-db",
             "/reset-db",
-            "/health"
+            "/health",
+            "/portfolio"
         ]
     }
 
@@ -637,6 +758,34 @@ async def health_check():
             "status": "unhealthy",
             "error": str(e),
             "timestamp": datetime.now().isoformat()
+        }
+
+@app.get("/portfolio")
+async def get_portfolio(capital: float = 10000000, risk: str = 'moderate'):
+    """
+    دریافت پیشنهادات سرمایه‌گذاری
+    - capital: مبلغ سرمایه به تومان (پیش‌فرض: ۱۰,۰۰۰,۰۰۰)
+    - risk: سطح ریسک (conservative, moderate, aggressive)
+    """
+    try:
+        recommendations = get_portfolio_recommendations(capital, risk)
+        if not recommendations:
+            return {
+                "status": "error",
+                "message": "Unable to generate recommendations. Not enough data."
+            }
+        
+        return {
+            "status": "success",
+            "capital": capital,
+            "risk_level": risk,
+            "recommendations": recommendations,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
         }
 
 # ============ اجرا ============
