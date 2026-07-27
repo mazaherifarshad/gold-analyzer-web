@@ -30,11 +30,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 12px 20px;
   border-radius: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   transition: all 0.3s ease;
 }
 
@@ -50,25 +50,25 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .header-logo-text {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   background: linear-gradient(135deg, #ffd700, #ff6b00);
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: bold;
   color: #0f0f1a;
   font-family: 'Vazirmatn', sans-serif;
 }
 
 .header h1 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   background: linear-gradient(135deg, #ffd700, #ff6b00);
   -webkit-background-clip: text;
@@ -78,18 +78,47 @@
 .header-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.update-time {
+  color: #888;
+  font-size: 12px;
+}
+
+.update-btn-small {
+  background: transparent;
+  border: 1px solid #2d2d44;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.update-btn-small:hover {
+  transform: rotate(180deg);
+  border-color: #ffd700;
 }
 
 .theme-btn {
   background: transparent;
   border: 1px solid #2d2d44;
-  border-radius: 8px;
-  padding: 6px 12px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .app.dark .theme-btn {
@@ -100,41 +129,73 @@
   border-color: #ddd;
 }
 
-.update-btn {
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-family: 'Vazirmatn', sans-serif;
+/* ===== نمایشگر ارزش خرید (کیلومتر) ===== */
+.buy-meter {
+  background: #1a1a2e;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid #2d2d44;
 }
 
-.app.dark .update-btn {
+.app.light .buy-meter {
+  background: #ffffff;
+  border-color: #e8e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.meter-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.meter-bar {
+  position: relative;
+  height: 12px;
   background: #2d2d44;
-  color: white;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 4px;
 }
 
-.app.light .update-btn {
-  background: #e0e0e8;
-  color: #1a1a2e;
+.meter-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.8s ease;
 }
 
-.update-btn:hover {
-  transform: scale(1.02);
-  opacity: 0.9;
+.meter-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+.meter-status {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 4px;
 }
 
 /* ===== قیمت‌ها ===== */
 .prices-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .price-card {
-  padding: 16px 20px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
   text-align: center;
   transition: all 0.3s ease;
 }
@@ -149,28 +210,28 @@
 }
 
 .price-symbol {
-  font-size: 14px;
+  font-size: 12px;
   color: #888;
 }
 
 .price-value {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
-  margin-top: 4px;
+  margin-top: 2px;
   color: #ffd700;
 }
 
 /* ===== تحلیل‌ها ===== */
 .analysis-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .analysis-card {
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   transition: all 0.3s;
   border: 1px solid transparent;
 }
@@ -187,40 +248,31 @@
 }
 
 .analysis-card:hover {
-  transform: translateY(-4px);
-}
-
-.app.dark .analysis-card:hover {
-  border-color: #ffd70033;
-}
-
-.app.light .analysis-card:hover {
-  border-color: #ffd700;
-  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .card-header h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .card-header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .recommendation {
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 12px;
+  padding: 2px 12px;
+  border-radius: 16px;
+  font-size: 11px;
   font-weight: bold;
   color: #000;
 }
@@ -229,24 +281,14 @@
   background: transparent;
   border: 1px solid #555;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 14px;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.app.dark .info-btn {
-  color: #aaa;
-  border-color: #555;
-}
-
-.app.light .info-btn {
-  color: #555;
-  border-color: #ccc;
 }
 
 .info-btn:hover {
@@ -258,31 +300,30 @@
 .card-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .metric {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .metric span {
-  font-size: 12px;
+  font-size: 11px;
   color: #888;
 }
 
 .metric strong {
-  font-size: 15px;
+  font-size: 14px;
 }
 
-/* ===== پیش‌بینی ===== */
 .prediction {
-  margin: 8px 0 12px 0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 14px;
+  margin: 6px 0 8px 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
   text-align: center;
 }
 
@@ -305,14 +346,14 @@
 }
 
 .card-confidence {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .confidence-bar {
-  height: 4px;
-  border-radius: 4px;
+  height: 3px;
+  border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .app.dark .confidence-bar {
@@ -326,31 +367,27 @@
 .confidence-fill {
   height: 100%;
   background: linear-gradient(90deg, #ffd700, #ff6b00);
-  border-radius: 4px;
+  border-radius: 3px;
   transition: width 0.5s;
 }
 
 .card-reasons {
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid #2d2d44;
 }
 
-.app.light .card-reasons {
-  border-top-color: #e8e8f0;
-}
-
 .reason {
-  font-size: 13px;
+  font-size: 12px;
   color: #aaa;
   padding: 2px 0;
 }
 
 /* ===== وضعیت بازار ===== */
 .market-status {
-  padding: 20px;
-  border-radius: 16px;
-  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
   border: 1px solid;
 }
 
@@ -366,19 +403,19 @@
 }
 
 .market-status h2 {
-  font-size: 20px;
-  margin-bottom: 16px;
+  font-size: 18px;
+  margin-bottom: 12px;
 }
 
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin-bottom: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .status-card {
-  padding: 12px;
+  padding: 10px;
   border-radius: 8px;
   text-align: center;
 }
@@ -393,36 +430,25 @@
 
 .status-label {
   display: block;
-  font-size: 13px;
+  font-size: 11px;
   color: #888;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .status-value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 }
 
-.status-value.bubble {
-  color: #ffd700;
-}
-
-.status-value.risk {
-  color: #ff1744;
-}
-
-.status-value.news {
-  color: #00c853;
-}
-
-.status-value.recommendation {
-  color: #ffd600;
-}
+.status-value.bubble { color: #ffd700; }
+.status-value.risk { color: #ff1744; }
+.status-value.news { color: #00c853; }
+.status-value.recommendation { color: #ffd600; }
 
 .status-note {
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   color: #aaa;
 }
 
@@ -435,12 +461,143 @@
   color: #555;
 }
 
+/* ===== ماشین حساب طلا ===== */
+.gold-calculator {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid;
+  margin-bottom: 16px;
+}
+
+.app.dark .gold-calculator {
+  background: #1a1a2e;
+  border-color: #2d2d44;
+}
+
+.app.light .gold-calculator {
+  background: #ffffff;
+  border-color: #e8e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.calc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.calc-header h2 {
+  font-size: 18px;
+}
+
+.calc-toggle {
+  background: #2d2d44;
+  border: none;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.calc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.calc-row label {
+  min-width: 100px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.calc-row input, .calc-row select {
+  flex: 1;
+  min-width: 80px;
+  padding: 6px 10px;
+  border: 1px solid #2d2d44;
+  border-radius: 6px;
+  background: #0f0f1a;
+  color: #fff;
+  font-size: 14px;
+}
+
+.app.light .calc-row input,
+.app.light .calc-row select {
+  background: #f5f5fa;
+  color: #1a1a2e;
+  border-color: #ccc;
+}
+
+.calc-row input:focus, .calc-row select:focus {
+  outline: none;
+  border-color: #ffd700;
+}
+
+.calc-btn {
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #ffd700, #ff6b00);
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  align-self: flex-start;
+}
+
+.calc-btn:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+.calc-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #2d2d44;
+}
+
+.calc-result-item {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  background: #0f0f1a;
+  border-radius: 6px;
+}
+
+.app.light .calc-result-item {
+  background: #f5f5fa;
+}
+
+.calc-result-item span {
+  font-size: 12px;
+  color: #888;
+}
+
+.calc-result-item strong {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
 /* ===== سرمایه‌گذاری ===== */
 .portfolio-section {
-  padding: 20px;
-  border-radius: 16px;
+  padding: 16px;
+  border-radius: 12px;
   border: 1px solid;
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .app.dark .portfolio-section {
@@ -462,34 +619,29 @@
 }
 
 .portfolio-header h2 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .portfolio-toggle-btn {
   background: #2d2d44;
   border: none;
   color: white;
-  padding: 6px 16px;
-  border-radius: 8px;
+  padding: 4px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-family: 'Vazirmatn', sans-serif;
-  transition: all 0.3s;
-}
-
-.portfolio-toggle-btn:hover {
-  background: #3d3d5a;
+  font-size: 13px;
 }
 
 .portfolio-subtitle {
   color: #888;
-  font-size: 14px;
-  margin-bottom: 16px;
+  font-size: 13px;
+  margin-bottom: 12px;
 }
 
 .portfolio-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
   align-items: flex-end;
 }
 
@@ -500,37 +652,45 @@
 
 .capital-input-group label {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   color: #aaa;
   margin-bottom: 4px;
 }
 
 .capital-input-row {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.capital-slider {
-  flex: 1;
-  min-width: 120px;
-  accent-color: #ffd700;
-}
-
-.capital-text-input {
-  width: 160px;
+.capital-select {
   padding: 6px 10px;
   border: 1px solid #2d2d44;
   border-radius: 6px;
-  font-size: 16px;
-  text-align: left;
-  direction: ltr;
-}
-
-.app.dark .capital-text-input {
   background: #0f0f1a;
   color: #fff;
-  border-color: #2d2d44;
+  font-size: 14px;
+  flex: 1;
+  min-width: 100px;
+}
+
+.app.light .capital-select {
+  background: #f5f5fa;
+  color: #1a1a2e;
+  border-color: #ccc;
+}
+
+.capital-text-input {
+  flex: 2;
+  min-width: 120px;
+  padding: 6px 10px;
+  border: 1px solid #2d2d44;
+  border-radius: 6px;
+  background: #0f0f1a;
+  color: #fff;
+  font-size: 14px;
+  text-align: left;
+  direction: ltr;
 }
 
 .app.light .capital-text-input {
@@ -544,38 +704,27 @@
   border-color: #ffd700;
 }
 
-.capital-hint {
-  display: block;
-  font-size: 12px;
-  color: #666;
-  margin-top: 4px;
-}
-
 .risk-selector {
   flex: 1;
-  min-width: 150px;
+  min-width: 120px;
 }
 
 .risk-selector label {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   color: #aaa;
   margin-bottom: 4px;
 }
 
 .risk-selector select {
   width: 100%;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid #2d2d44;
   border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.app.dark .risk-selector select {
   background: #0f0f1a;
   color: #fff;
-  border-color: #2d2d44;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .app.light .risk-selector select {
@@ -585,17 +734,16 @@
 }
 
 .portfolio-btn {
-  padding: 10px 28px;
+  padding: 8px 20px;
   background: linear-gradient(135deg, #ffd700, #ff6b00);
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   color: #000;
   font-weight: bold;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s;
   white-space: nowrap;
-  font-family: 'Vazirmatn', sans-serif;
 }
 
 .portfolio-btn:hover {
@@ -608,19 +756,18 @@
   cursor: not-allowed;
 }
 
-/* ===== نتایج سرمایه‌گذاری ===== */
 .portfolio-results {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 
 .portfolio-summary {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  font-size: 14px;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 13px;
   color: #aaa;
 }
 
@@ -633,9 +780,9 @@
 }
 
 .portfolio-card {
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
   border: 1px solid;
 }
 
@@ -649,23 +796,46 @@
   border-color: #e8e8f0;
 }
 
+.portfolio-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.scenario-icon {
+  font-size: 18px;
+}
+
+.portfolio-card-header h4 {
+  font-size: 15px;
+  margin: 0;
+}
+
+.sharpe-ratio {
+  margin-left: auto;
+  font-size: 12px;
+  color: #888;
+}
+
 .portfolio-allocations {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .allocation-item {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 16px;
-  font-size: 14px;
+  gap: 6px 12px;
+  font-size: 13px;
 }
 
 .allocation-symbol {
   font-weight: bold;
-  min-width: 80px;
+  min-width: 60px;
   color: #ffd700;
 }
 
@@ -679,9 +849,9 @@
 
 .allocation-bar {
   flex: 1;
-  min-width: 60px;
-  height: 4px;
-  border-radius: 4px;
+  min-width: 40px;
+  height: 3px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
@@ -696,8 +866,19 @@
 .allocation-fill {
   height: 100%;
   background: linear-gradient(90deg, #ffd700, #ff6b00);
-  border-radius: 4px;
+  border-radius: 3px;
   transition: width 0.5s ease;
+}
+
+.portfolio-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #2d2d44;
+  font-size: 13px;
+  color: #aaa;
 }
 
 /* ===== پنجره اطلاعات ===== */
@@ -712,14 +893,14 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 20px;
+  padding: 16px;
 }
 
 .info-modal-content {
-  max-width: 500px;
+  max-width: 450px;
   width: 100%;
-  padding: 28px;
-  border-radius: 16px;
+  padding: 24px;
+  border-radius: 14px;
   position: relative;
   max-height: 80vh;
   overflow-y: auto;
@@ -737,11 +918,11 @@
 
 .info-modal-close {
   position: absolute;
-  top: 12px;
-  right: 16px;
+  top: 10px;
+  right: 14px;
   background: transparent;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
   color: #888;
   transition: all 0.3s;
@@ -753,18 +934,18 @@
 }
 
 .info-modal-content h2 {
-  font-size: 20px;
-  margin-bottom: 16px;
+  font-size: 18px;
+  margin-bottom: 12px;
   color: #ffd700;
 }
 
 .info-factors, .info-recommendation, .info-stats {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .info-factors h4, .info-recommendation h4, .info-stats h4 {
-  font-size: 15px;
-  margin-bottom: 8px;
+  font-size: 14px;
+  margin-bottom: 6px;
   color: #aaa;
 }
 
@@ -774,27 +955,23 @@
 }
 
 .info-factors li {
-  padding: 4px 0;
-  font-size: 14px;
+  padding: 3px 0;
+  font-size: 13px;
   border-bottom: 1px solid #2d2d44;
 }
 
-.app.light .info-factors li {
-  border-bottom-color: #e8e8f0;
-}
-
 .info-recommendation p {
-  font-size: 14px;
+  font-size: 13px;
   color: #aaa;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .info-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  padding: 12px 16px;
-  border-radius: 8px;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 6px;
 }
 
 .app.dark .info-stats {
@@ -811,24 +988,24 @@
 }
 
 .info-stats span {
-  font-size: 12px;
+  font-size: 11px;
   color: #888;
 }
 
 .info-timestamp {
-  font-size: 12px;
+  font-size: 11px;
   color: #666;
   text-align: center;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 /* ===== فوتر ===== */
 .footer {
   text-align: center;
-  padding: 24px 0;
+  padding: 16px 0;
   color: #555;
-  font-size: 14px;
-  margin-top: 24px;
+  font-size: 13px;
+  margin-top: 16px;
   border-top: 1px solid #1a1a2e;
 }
 
@@ -859,9 +1036,13 @@
     grid-template-columns: 1fr 1fr;
   }
 
+  .calc-results {
+    grid-template-columns: 1fr;
+  }
+
   .portfolio-header {
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     align-items: stretch;
   }
 
@@ -872,10 +1053,9 @@
 
   .capital-input-row {
     flex-direction: column;
-    align-items: stretch;
   }
 
-  .capital-text-input {
+  .capital-select, .capital-text-input {
     width: 100%;
   }
 
@@ -885,8 +1065,8 @@
   }
 
   .info-modal-content {
-    margin: 16px;
-    padding: 20px;
+    margin: 12px;
+    padding: 16px;
   }
 
   .info-stats {
