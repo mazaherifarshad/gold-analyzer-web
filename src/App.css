@@ -432,7 +432,8 @@
 }
 
 .app.light .calc-row input,
-.app.light .calc-row select {
+.app.light .calc-row select,
+.app.light .calc-row select.light-select {
   background: rgba(0, 0, 0, 0.03);
   color: #1a1a2e;
   border-color: rgba(0, 0, 0, 0.08);
@@ -485,6 +486,37 @@
 
 .app.light .calc-result-item strong {
   color: #1a1a2e;
+}
+
+.calc-result-item small {
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
+  display: block;
+}
+
+.calc-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #888;
+}
+
+.calc-info strong {
+  color: #ffd700;
+  font-size: 14px;
+}
+
+.calc-hint {
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+  display: block;
 }
 
 /* ===== سرمایه‌گذاری ===== */
@@ -595,6 +627,12 @@
   color: #fff;
   font-size: 13px;
   cursor: pointer;
+}
+
+.app.light .preference-selector select.light-select {
+  background: rgba(0, 0, 0, 0.03);
+  color: #1a1a2e;
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .portfolio-btn {

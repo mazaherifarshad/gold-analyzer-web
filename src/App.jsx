@@ -29,7 +29,8 @@ function App() {
     karat: 750,
     commission: 0,
     officialPrice: 0,
-    finalPrice: 0,
+    finalSellerPrice: 0,
+    finalOfficialPrice: 0,
     difference: 0,
     isCheaper: false
   });
@@ -160,18 +161,27 @@ function App() {
     return () => clearInterval(updateInterval.current);
   }, []);
 
-  // ===== ماشین حساب =====
+  // ===== ماشین حساب طلا =====
   const calculateGold = () => {
-    const goldPrice = prices.gold || 0;
-    const officialPrice = goldPrice * goldCalc.weight * (goldCalc.karat / 1000);
-    const sellerPrice = goldCalc.sellerPrice > 0 ? goldCalc.sellerPrice : officialPrice;
-    const finalPrice = sellerPrice + (sellerPrice * goldCalc.commission / 100);
-    const difference = sellerPrice - officialPrice;
+    const baseGoldPrice = prices.gold || 0;
+    
+    // قیمت فروشنده (اگر کاربر وارد نکرده، از قیمت سایت استفاده کن)
+    const sellerPrice = goldCalc.sellerPrice > 0 ? goldCalc.sellerPrice : baseGoldPrice;
+    
+    // قیمت فروشنده با کارمزد
+    const finalSellerPrice = sellerPrice + (sellerPrice * goldCalc.commission / 100);
+    
+    // قیمت سایت با کارمزد
+    const finalOfficialPrice = baseGoldPrice + (baseGoldPrice * goldCalc.commission / 100);
+    
+    // اختلاف
+    const difference = finalSellerPrice - finalOfficialPrice;
     
     setGoldCalc(prev => ({
       ...prev,
-      finalPrice: finalPrice,
-      officialPrice: officialPrice,
+      officialPrice: baseGoldPrice,
+      finalSellerPrice: finalSellerPrice,
+      finalOfficialPrice: finalOfficialPrice,
       difference: difference,
       isCheaper: difference < 0
     }));
@@ -181,7 +191,7 @@ function App() {
     if (prices.gold) {
       calculateGold();
     }
-  }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
+  }, [prices.gold, goldCalc.sellerPrice, goldCalc.commission]);
 
   // ===== توابع کمکی =====
   const getRecommendationColor = (rec) => {
@@ -375,7 +385,7 @@ function App() {
             })}
           </div>
 
-          {/* ماشین حساب */}
+          {/* ماشین حساب طلا */}
           <div className="gold-calculator glass">
             <div className="calc-header">
               <h2>🧮 ماشین حساب طلا</h2>
@@ -386,44 +396,87 @@ function App() {
 
             {showGoldCalc && (
               <div className="calc-body">
-                <div className="calc-row">
-                  <label>وزن (گرم)</label>
-                  <input type="number" value={goldCalc.weight} onChange={(e) => setGoldCalc(prev => ({ ...prev, weight: Number(e.target.value) || 0 }))} min="0" step="0.01" />
+                <div className="calc-info">
+                  <span>💰 قیمت پایه سایت (هر گرم طلا با عیار ۷۵۰):</span>
+                  <strong>{formatMoney(prices.gold || 0)} ریال</strong>
                 </div>
+                
                 <div className="calc-row">
-                  <label>قیمت فروشنده (ریال)</label>
-                  <input type="number" value={goldCalc.sellerPrice} onChange={(e) => setGoldCalc(prev => ({ ...prev, sellerPrice: Number(e.target.value) || 0 }))} min="0" />
+                  <label>وزن طلا (گرم)</label>
+                  <input 
+                    type="number" 
+                    value={goldCalc.weight} 
+                    onChange={(e) => setGoldCalc(prev => ({ ...prev, weight: Number(e.target.value) || 0 }))} 
+                    min="0.1" 
+                    step="0.1" 
+                  />
                 </div>
+                
                 <div className="calc-row">
-                  <label>عیار</label>
-                  <select value={goldCalc.karat} onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))}>
+                  <label>عیار طلا</label>
+                  <select 
+                    value={goldCalc.karat} 
+                    onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))}
+                    className={darkMode ? '' : 'light-select'}
+                  >
                     <option value="740">۷۴۰</option>
-                    <option value="750">۷۵۰</option>
-                    <option value="916">۹۱۶</option>
-                    <option value="999">۹۹۹</option>
+                    <option value="750">۷۵۰ (۱۸ عیار)</option>
+                    <option value="916">۹۱۶ (۲۲ عیار)</option>
+                    <option value="999">۹۹۹ (۲۴ عیار)</option>
                   </select>
                 </div>
+                
+                <div className="calc-row">
+                  <label>قیمت فروشنده (ریال)</label>
+                  <input 
+                    type="number" 
+                    value={goldCalc.sellerPrice} 
+                    onChange={(e) => setGoldCalc(prev => ({ ...prev, sellerPrice: Number(e.target.value) || 0 }))} 
+                    min="0" 
+                    placeholder="مثلاً 185000000"
+                  />
+                  <span className="calc-hint">💰 قیمت هر گرم طلا با عیار انتخابی در سایت: {formatMoney((prices.gold || 0) * (goldCalc.karat / 750))} ریال</span>
+                </div>
+                
                 <div className="calc-row">
                   <label>کارمزد (%)</label>
-                  <input type="number" value={goldCalc.commission} onChange={(e) => setGoldCalc(prev => ({ ...prev, commission: Number(e.target.value) || 0 }))} min="0" max="10" step="0.1" />
+                  <input 
+                    type="number" 
+                    value={goldCalc.commission} 
+                    onChange={(e) => setGoldCalc(prev => ({ ...prev, commission: Number(e.target.value) || 0 }))} 
+                    min="0" 
+                    max="10" 
+                    step="0.1" 
+                    placeholder="۰"
+                  />
                 </div>
 
                 <button className="calc-btn" onClick={calculateGold}>🔍 محاسبه</button>
 
                 <div className="calc-results">
                   <div className="calc-result-item">
-                    <span>💰 قیمت رسمی (سایت)</span>
-                    <strong>{formatMoney(goldCalc.officialPrice)} ریال</strong>
+                    <span>💰 قیمت فروشنده با کارمزد</span>
+                    <strong>{formatMoney(goldCalc.finalSellerPrice)} ریال</strong>
+                    <small>قیمت فروشنده: {formatMoney(goldCalc.sellerPrice)} + کارمزد {goldCalc.commission}%</small>
                   </div>
+                  
                   <div className="calc-result-item">
-                    <span>💵 قیمت فروشنده با کارمزد</span>
-                    <strong>{formatMoney(goldCalc.finalPrice)} ریال</strong>
+                    <span>🏛️ قیمت سایت با کارمزد</span>
+                    <strong>{formatMoney(goldCalc.finalOfficialPrice)} ریال</strong>
+                    <small>قیمت سایت: {formatMoney(goldCalc.officialPrice)} + کارمزد {goldCalc.commission}%</small>
                   </div>
+                  
                   <div className="calc-result-item">
-                    <span>📊 اختلاف با سایت</span>
+                    <span>📊 اختلاف قیمت</span>
                     <strong style={{ color: goldCalc.isCheaper ? '#34c759' : '#ff3b30' }}>
-                      {goldCalc.isCheaper ? '✅ ارزان‌تر' : '❌ گران‌تر'} ({formatMoney(Math.abs(goldCalc.difference))} ریال)
+                      {goldCalc.isCheaper ? '✅ ارزان‌تر' : '❌ گران‌تر'} 
+                      ({formatMoney(Math.abs(goldCalc.difference))} ریال)
                     </strong>
+                    <small>
+                      {goldCalc.isCheaper 
+                        ? `فروشنده ${formatMoney(Math.abs(goldCalc.difference))} ریال ارزان‌تر از سایت` 
+                        : `فروشنده ${formatMoney(Math.abs(goldCalc.difference))} ریال گران‌تر از سایت`}
+                    </small>
                   </div>
                 </div>
               </div>
@@ -459,7 +512,11 @@ function App() {
                   </div>
                   <div className="preference-selector">
                     <label>اولویت سرمایه‌گذاری</label>
-                    <select value={userPreference} onChange={(e) => setUserPreference(e.target.value)}>
+                    <select 
+                      value={userPreference} 
+                      onChange={(e) => setUserPreference(e.target.value)}
+                      className={darkMode ? '' : 'light-select'}
+                    >
                       <option value="gold">🥇 طلا</option>
                       <option value="usd">💵 دلار</option>
                       <option value="coin">🪙 سکه</option>
