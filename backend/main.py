@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-زرین‌سنج API - تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران
-Zarinsanj API - Professional Gold Market Analyzer
+زرین‌سنج API - نسخه نهایی
+Zarinsanj API - Final Version
 """
 
 from fastapi import FastAPI, HTTPException
@@ -96,12 +96,10 @@ SessionLocal = sessionmaker(
     bind=engine
 )
 
-# ایجاد جداول در اولین اجرا
 Base.metadata.create_all(engine)
 
 @contextmanager
 def session_scope():
-    """مدیریت خودکار Session"""
     session = SessionLocal()
     try:
         yield session
@@ -114,9 +112,9 @@ def session_scope():
 
 # ============ FastAPI App ============
 app = FastAPI(
-    title="زرین‌سنج API",
+    title="Zarinsanj API",
     description="تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران",
-    version="1.0.0"
+    version="2.1.0"
 )
 
 # ============ CORS ============
@@ -128,7 +126,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ============ مدل‌های پاسخ API ============
+# ============ مدل‌های پاسخ ============
 class PriceResponse(BaseModel):
     symbol: str
     price: float
@@ -142,28 +140,22 @@ class AnalysisResponse(BaseModel):
     rsi: float
     momentum: str
     volatility: float
+    volatility_status: str
     final_score: float
     recommendation: str
     confidence: int
     reasons: List[str]
+    candle_count: int
     timestamp: str
 
-class PortfolioRequest(BaseModel):
-    capital: float
-    risk: str = 'moderate'
-
-class PortfolioResponse(BaseModel):
-    scenarios: List[Dict]
-    timestamp: str
-
-# ============ اطلاعات نسخه و سازنده ============
-APP_VERSION = "V1.0"
+# ============ اطلاعات نسخه ============
+APP_VERSION = "V2.1"
 DEVELOPER = "F.Mazaheri"
 COPYRIGHT = "© 2026 Zarinsanj. All rights reserved."
 
-# ============ تابع تحلیل ============
+# ============ تابع تحلیل هوشمند ============
 def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
-    """تحلیل یک نماد با استفاده از شمع‌ها"""
+    """تحلیل کامل با محاسبات دقیق و اندیکاتورهای پیشرفته"""
     import pandas as pd
     import numpy as np
     
@@ -173,8 +165,8 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
             MarketCandle.timeframe == timeframe
         ).order_by(MarketCandle.candle_time).all()
         
-        if len(candles) < 10:
-            return {'error': f'Not enough candles for {symbol} (need 10, have {len(candles)})'}
+        if len(candles) < 20:
+            return {'error': f'Not enough candles for {symbol} (need 20, have {len(candles)})'}
         
         data = []
         for c in candles:
@@ -191,120 +183,198 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
     df.set_index('time', inplace=True)
     df = df.sort_index()
     
-    # محاسبه اندیکاتورها
-    df['sma_5'] = df['close'].rolling(window=5).mean()
-    df['sma_10'] = df['close'].rolling(window=10).mean()
-    df['sma_20'] = df['close'].rolling(window=20).mean()
+    # ===== اندیکاتورهای پیشرفته =====
     
+    # 1. EMA
+    df['ema_9'] = df['close'].ewm(span=9, adjust=False).mean()
+    df['ema_21'] = df['close'].ewm(span=21, adjust=False).mean()
+    df['ema_50'] = df['close'].ewm(span=50, adjust=False).mean()
+    
+    # 2. MACD
+    ema_fast = df['close'].ewm(span=12, adjust=False).mean()
+    ema_slow = df['close'].ewm(span=26, adjust=False).mean()
+    df['macd'] = ema_fast - ema_slow
+    df['macd_signal'] = df['macd'].ewm(span=9, adjust=False).mean()
+    df['macd_histogram'] = df['macd'] - df['macd_signal']
+    
+    # 3. RSI
     delta = df['close'].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
     rs = gain / loss
     df['rsi'] = 100 - (100 / (1 + rs))
     
-    returns = df['close'].pct_change()
-    df['volatility'] = returns.rolling(window=10).std() * 100
+    # 4. باند بولینگر
+    df['bb_middle'] = df['close'].rolling(window=20).mean()
+    df['bb_std'] = df['close'].rolling(window=20).std()
+    df['bb_upper'] = df['bb_middle'] + (df['bb_std'] * 2)
+    df['bb_lower'] = df['bb_middle'] - (df['bb_std'] * 2)
     
+    # 5. ATR
+    high_low = df['high'] - df['low']
+    high_close = (df['high'] - df['close'].shift()).abs()
+    low_close = (df['low'] - df['close'].shift()).abs()
+    ranges = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+    df['atr'] = ranges.rolling(window=14).mean()
+    
+    # 6. Stochastic Oscillator
+    low_14 = df['low'].rolling(window=14).min()
+    high_14 = df['high'].rolling(window=14).max()
+    df['stoch_k'] = 100 * ((df['close'] - low_14) / (high_14 - low_14))
+    df['stoch_d'] = df['stoch_k'].rolling(window=3).mean()
+    
+    # ===== شاخص‌های ترکیبی =====
     current = df.iloc[-1]
     
-    # تحلیل روند
-    if current['close'] > current['sma_5'] > current['sma_10'] > current['sma_20']:
-        trend = 'STRONG UPTREND'
-        trend_score = 80
-    elif current['close'] > current['sma_5'] and current['close'] > current['sma_10']:
-        trend = 'UPTREND'
+    # 1. امتیاز روند (ترکیب EMA و MACD)
+    trend_score = 50
+    if current['close'] > current['ema_9'] > current['ema_21']:
+        trend_score = 75
+    elif current['close'] > current['ema_9']:
         trend_score = 65
-    elif current['close'] < current['sma_5'] < current['sma_10'] < current['sma_20']:
-        trend = 'STRONG DOWNTREND'
-        trend_score = 20
-    elif current['close'] < current['sma_5'] and current['close'] < current['sma_10']:
-        trend = 'DOWNTREND'
+    elif current['close'] < current['ema_9'] < current['ema_21']:
+        trend_score = 25
+    elif current['close'] < current['ema_9']:
         trend_score = 35
+    
+    # 2. امتیاز مومنتوم (RSI + Stochastic)
+    rsi = current['rsi']
+    stoch_k = current['stoch_k'] if not pd.isna(current['stoch_k']) else 50
+    
+    if not pd.isna(rsi) and not pd.isna(stoch_k):
+        if rsi > 70 and stoch_k > 80:
+            momentum_score = 70  # Overbought
+        elif rsi < 30 and stoch_k < 20:
+            momentum_score = 30  # Oversold
+        elif rsi > 60 and stoch_k > 60:
+            momentum_score = 65
+        elif rsi < 40 and stoch_k < 40:
+            momentum_score = 35
+        elif rsi > 50:
+            momentum_score = 60
+        else:
+            momentum_score = 40
+    else:
+        momentum_score = 50
+    
+    # 3. امتیاز نوسان (ATR)
+    atr = current['atr'] if not pd.isna(current['atr']) else 0
+    avg_atr = df['atr'].mean() if not pd.isna(df['atr'].mean()) else 1
+    
+    if atr > 0 and avg_atr > 0:
+        if atr > avg_atr * 1.5:
+            volatility_score = 70
+            volatility_status = 'HIGH'
+        elif atr < avg_atr * 0.5:
+            volatility_score = 30
+            volatility_status = 'LOW'
+        else:
+            volatility_score = 50
+            volatility_status = 'NORMAL'
+    else:
+        volatility_score = 50
+        volatility_status = 'NORMAL'
+    
+    # 4. امتیاز موقعیت در باند بولینگر
+    bb_position = 50
+    if current['bb_upper'] != current['bb_lower']:
+        bb_position = (current['close'] - current['bb_lower']) / (current['bb_upper'] - current['bb_lower']) * 100
+    bb_score = 50 + (bb_position - 50) * 0.3
+    
+    # 5. امتیاز MACD
+    macd_score = 50
+    if not pd.isna(current['macd']) and not pd.isna(current['macd_signal']):
+        if current['macd'] > current['macd_signal'] and current['macd_histogram'] > 0:
+            macd_score = 70
+        elif current['macd'] < current['macd_signal'] and current['macd_histogram'] < 0:
+            macd_score = 30
+        elif current['macd'] > current['macd_signal']:
+            macd_score = 60
+        else:
+            macd_score = 40
+    
+    # ===== امتیاز نهایی هوشمند =====
+    final_score = (
+        trend_score * 0.30 +
+        momentum_score * 0.25 +
+        volatility_score * 0.15 +
+        bb_score * 0.15 +
+        macd_score * 0.15
+    )
+    
+    # محدود کردن به بازه 0-100
+    final_score = max(0, min(100, final_score))
+    
+    # ===== تشخیص روند =====
+    if trend_score > 65 and macd_score > 60:
+        trend = 'STRONG UPTREND'
+    elif trend_score > 60:
+        trend = 'UPTREND'
+    elif trend_score < 35 and macd_score < 40:
+        trend = 'STRONG DOWNTREND'
+    elif trend_score < 40:
+        trend = 'DOWNTREND'
     else:
         trend = 'CONSOLIDATION'
-        trend_score = 50
     
-    # مومنتوم
-    rsi = current['rsi']
-    if pd.isna(rsi):
-        rsi = 50
-        momentum = 'NEUTRAL'
-        momentum_score = 50
-    elif rsi > 70:
-        momentum = 'OVERBOUGHT'
-        momentum_score = 30
-    elif rsi < 30:
-        momentum = 'OVERSOLD'
-        momentum_score = 70
-    elif rsi > 50:
+    # ===== مومنتوم =====
+    if momentum_score > 60:
         momentum = 'BULLISH'
-        momentum_score = 60
-    else:
+    elif momentum_score < 40:
         momentum = 'BEARISH'
-        momentum_score = 40
-    
-    # نوسان
-    vol = current['volatility']
-    if pd.isna(vol) or vol == 0:
-        vol_status = 'NORMAL'
-        vol_score = 50
     else:
-        avg_vol = df['volatility'].mean()
-        if pd.isna(avg_vol) or avg_vol == 0:
-            vol_status = 'NORMAL'
-            vol_score = 50
-        elif vol > avg_vol * 1.5:
-            vol_status = 'HIGH'
-            vol_score = 30
-        elif vol < avg_vol * 0.5:
-            vol_status = 'LOW'
-            vol_score = 70
-        else:
-            vol_status = 'NORMAL'
-            vol_score = 50
+        momentum = 'NEUTRAL'
     
-    # امتیاز نهایی
-    final_score = trend_score * 0.40 + momentum_score * 0.30 + vol_score * 0.30
-    
-    # توصیه
+    # ===== توصیه =====
     if final_score >= 75:
         recommendation = 'STRONG BUY'
-        confidence = 80
+        confidence = 85
     elif final_score >= 60:
         recommendation = 'BUY'
-        confidence = 65
+        confidence = 70
     elif final_score >= 45:
         recommendation = 'HOLD'
-        confidence = 50
+        confidence = 55
     elif final_score >= 30:
         recommendation = 'SELL'
-        confidence = 65
+        confidence = 70
     else:
         recommendation = 'STRONG SELL'
-        confidence = 80
+        confidence = 85
     
+    # ===== دلایل =====
     reasons = []
     if trend_score > 60:
-        reasons.append(f"Uptrend detected (score: {trend_score})")
+        reasons.append(f"روند صعودی (امتیاز: {trend_score:.0f})")
     elif trend_score < 40:
-        reasons.append(f"Downtrend detected (score: {trend_score})")
-    if rsi > 70:
-        reasons.append(f"Overbought conditions (RSI: {rsi:.1f})")
-    elif rsi < 30:
-        reasons.append(f"Oversold conditions (RSI: {rsi:.1f})")
-    if vol_status == 'HIGH':
-        reasons.append(f"High volatility - caution advised ({vol:.2f}%)")
+        reasons.append(f"روند نزولی (امتیاز: {trend_score:.0f})")
     
+    if rsi > 70:
+        reasons.append(f"اشباع خرید (RSI: {rsi:.1f})")
+    elif rsi < 30:
+        reasons.append(f"اشباع فروش (RSI: {rsi:.1f})")
+    
+    if volatility_status == 'HIGH':
+        reasons.append(f"نوسان بالا (ATR: {atr:.0f})")
+    elif volatility_status == 'LOW':
+        reasons.append(f"نوسان پایین (ATR: {atr:.0f})")
+    
+    if macd_score > 60:
+        reasons.append(f"سیگنال خرید MACD (هیستوگرام: {current['macd_histogram']:.2f})")
+    elif macd_score < 40:
+        reasons.append(f"سیگنال فروش MACD (هیستوگرام: {current['macd_histogram']:.2f})")
+    
+    # ===== بازگشت نتیجه =====
     return {
         'symbol': symbol,
-        'current_price': current['close'],
+        'current_price': float(current['close']),
         'trend': trend,
-        'trend_score': trend_score,
-        'rsi': rsi,
+        'trend_score': int(trend_score),
+        'rsi': float(rsi) if not pd.isna(rsi) else 50,
         'momentum': momentum,
-        'volatility': vol,
-        'volatility_status': vol_status,
-        'final_score': final_score,
+        'volatility': float(atr),
+        'volatility_status': volatility_status,
+        'final_score': float(final_score),
         'recommendation': recommendation,
         'confidence': confidence,
         'reasons': reasons,
@@ -312,9 +382,110 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
         'timestamp': datetime.now().isoformat()
     }
 
-# ============ توابع سرویس‌ها (برای دریافت داده) ============
+# ============ تابع مشاور سرمایه‌گذاری هوشمند ============
+def get_portfolio_recommendations(capital: float) -> List[Dict]:
+    """تولید پیشنهادات سرمایه‌گذاری با محاسبات دقیق"""
+    
+    symbols = ['gold', 'usd', 'coin']
+    analyses = {}
+    for symbol in symbols:
+        result = analyze_symbol(symbol)
+        if 'error' not in result:
+            analyses[symbol] = result
+    
+    if not analyses:
+        return []
+    
+    # ===== محاسبه بازده و ریسک =====
+    returns = {}
+    risks = {}
+    for symbol, analysis in analyses.items():
+        # بازده مورد انتظار
+        trend_factor = (analysis['trend_score'] - 50) / 50
+        rsi_factor = (analysis['rsi'] - 50) / 50
+        expected_return = trend_factor * 0.5 + rsi_factor * 0.3
+        returns[symbol] = max(0.1, min(0.9, expected_return + 0.5))
+        
+        # ریسک
+        volatility_risk = min(1, analysis['volatility'] / 100) if analysis['volatility'] > 0 else 0.3
+        trend_risk = abs(analysis['trend_score'] - 50) / 50
+        risks[symbol] = volatility_risk * 0.6 + trend_risk * 0.4
+    
+    # ===== نسبت شارپ =====
+    sharpe = {}
+    total_sharpe = 0
+    for symbol in returns:
+        if risks[symbol] > 0:
+            s = returns[symbol] / risks[symbol]
+        else:
+            s = returns[symbol] / 0.01
+        sharpe[symbol] = s
+        total_sharpe += s
+    
+    if total_sharpe == 0:
+        total_sharpe = 1
+    
+    # ===== تولید ۳ سناریو =====
+    scenarios = [
+        {'name': 'محافظه‌کارانه', 'multiplier': 0.7, 'color': '🟢'},
+        {'name': 'متعادل', 'multiplier': 1.0, 'color': '🟡'},
+        {'name': 'جسورانه', 'multiplier': 1.3, 'color': '🔴'}
+    ]
+    
+    recommendations = []
+    for scenario in scenarios:
+        allocations = {}
+        for symbol in sharpe:
+            raw_weight = (sharpe[symbol] / total_sharpe) * scenario['multiplier']
+            allocations[symbol] = min(raw_weight, 0.5)
+        
+        # نرمال‌سازی
+        total = sum(allocations.values())
+        if total > 0:
+            for symbol in allocations:
+                allocations[symbol] = allocations[symbol] / total
+        
+        # محاسبه مقادیر
+        amounts = {}
+        for symbol, weight in allocations.items():
+            amount = capital * weight
+            price = analyses.get(symbol, {}).get('current_price', 1)
+            quantity = amount / price if price > 0 else 0
+            unit = 'قطعه' if symbol == 'coin' else 'واحد'
+            
+            # گرد کردن سکه
+            if symbol == 'coin':
+                quantity = max(1, round(quantity))
+                amount = quantity * price
+            
+            amounts[symbol] = {
+                'amount_toman': amount,
+                'quantity': quantity,
+                'weight_percent': weight * 100,
+                'price': price,
+                'unit': unit
+            }
+        
+        # محاسبه بازده و ریسک کل سبد
+        total_return = 0
+        total_risk = 0
+        for symbol, weight in allocations.items():
+            total_return += weight * returns.get(symbol, 0)
+            total_risk += weight * risks.get(symbol, 0)
+        
+        recommendations.append({
+            'scenario': scenario['name'],
+            'color': scenario['color'],
+            'allocations': amounts,
+            'expected_return': total_return * 100,
+            'expected_risk': total_risk * 100,
+            'sharpe_ratio': total_return / (total_risk + 0.01) if total_risk > 0 else 0
+        })
+    
+    return recommendations
+
+# ============ توابع دریافت داده ============
 def fetch_and_store_all():
-    """دریافت داده از TGJU و ذخیره در دیتابیس"""
     subdomains = ["call2", "call3", "call4"]
     call = random.choice(subdomains)
     url = f"https://{call}.tgju.org/ajax.json?rev=test"
@@ -351,7 +522,6 @@ def fetch_and_store_all():
     return prices
 
 def build_candles_for_all_symbols():
-    """ساخت شمع از تیک‌ها - با جلوگیری از درج تکراری"""
     symbols = ['gold', 'usd', 'ounce', 'coin']
     
     with session_scope() as session:
@@ -363,11 +533,8 @@ def build_candles_for_all_symbols():
             if len(ticks) < 2:
                 continue
             
-            # ساخت شمع ۱ دقیقه
             for i in range(len(ticks) - 1):
                 candle_time = ticks[i].created_at.replace(second=0, microsecond=0)
-                
-                # بررسی وجود شمع تکراری
                 existing = session.query(MarketCandle).filter(
                     and_(
                         MarketCandle.symbol == symbol,
@@ -377,7 +544,6 @@ def build_candles_for_all_symbols():
                 ).first()
                 
                 if existing:
-                    # اگر شمع وجود دارد، آن را به‌روز می‌کنیم
                     existing.open = ticks[i].price
                     existing.high = max(ticks[i].price, ticks[i+1].price)
                     existing.low = min(ticks[i].price, ticks[i+1].price)
@@ -385,7 +551,6 @@ def build_candles_for_all_symbols():
                     existing.volume += 2
                     existing.tick_count += 2
                 else:
-                    # شمع جدید ایجاد می‌کنیم
                     candle = MarketCandle(
                         symbol=symbol,
                         timeframe='1m',
@@ -399,125 +564,12 @@ def build_candles_for_all_symbols():
                     )
                     session.add(candle)
 
-# ============ تابع مشاور سرمایه‌گذاری ============
-def get_portfolio_recommendations(capital: float, risk_tolerance: str = 'moderate') -> List[Dict]:
-    """تولید پیشنهادات سرمایه‌گذاری"""
-    
-    # دریافت تحلیل‌های فعلی
-    symbols = ['gold', 'usd', 'ounce', 'coin']
-    analyses = {}
-    for symbol in symbols:
-        result = analyze_symbol(symbol)
-        if 'error' not in result:
-            analyses[symbol] = result
-    
-    if not analyses:
-        return []
-    
-    # تعریف نام‌ها و قیمت‌ها
-    asset_info = {
-        'gold': {'name': 'طلا ۱۸ عیار', 'max_weight': 0.35},
-        'usd': {'name': 'دلار آمریکا', 'max_weight': 0.25},
-        'ounce': {'name': 'انس جهانی', 'max_weight': 0.15},
-        'coin': {'name': 'سکه بهار آزادی', 'max_weight': 0.25}
-    }
-    
-    # محاسبه بازده و ریسک هر دارایی
-    returns = {}
-    risks = {}
-    for symbol, analysis in analyses.items():
-        # بازده مورد انتظار بر اساس روند و RSI
-        trend_factor = (analysis['trend_score'] - 50) / 50
-        rsi_factor = (analysis['rsi'] - 50) / 50
-        expected_return = trend_factor * 0.6 + rsi_factor * 0.4
-        returns[symbol] = max(0, min(1, expected_return + 0.5))
-        
-        # ریسک بر اساس نوسان و موقعیت
-        volatility_risk = min(1, analysis['volatility'] / 5)
-        trend_risk = abs(analysis['trend_score'] - 50) / 50
-        risks[symbol] = volatility_risk * 0.6 + trend_risk * 0.4
-    
-    # تنظیم ضریب ریسک
-    risk_multipliers = {
-        'conservative': 0.3,
-        'moderate': 0.6,
-        'aggressive': 0.9
-    }
-    risk_factor = risk_multipliers.get(risk_tolerance, 0.6)
-    
-    # تولید ۳ سناریو
-    scenarios = [
-        {'name': 'محافظه‌کارانه', 'risk': 'conservative', 'color': '🟢'},
-        {'name': 'متعادل', 'risk': 'moderate', 'color': '🟡'},
-        {'name': 'جسورانه', 'risk': 'aggressive', 'color': '🔴'}
-    ]
-    
-    recommendations = []
-    for scenario in scenarios:
-        # محاسبه وزن‌ها
-        allocations = {}
-        total_score = 0
-        
-        for symbol in returns:
-            sharpe = returns[symbol] / (risks[symbol] + 0.01)
-            risk_mult = risk_multipliers.get(scenario['risk'], 0.6)
-            adjusted_sharpe = sharpe * (1 + (1 - risk_mult) * 0.5)
-            allocations[symbol] = adjusted_sharpe
-            total_score += adjusted_sharpe
-        
-        if total_score == 0:
-            total_score = 1
-        
-        # نرمال‌سازی و اعمال محدودیت‌ها
-        for symbol in allocations:
-            raw_weight = allocations[symbol] / total_score
-            max_weight = asset_info.get(symbol, {}).get('max_weight', 0.3)
-            allocations[symbol] = min(raw_weight, max_weight)
-        
-        # نرمال‌سازی مجدد
-        total = sum(allocations.values())
-        if total > 0:
-            for symbol in allocations:
-                allocations[symbol] = allocations[symbol] / total
-        
-        # محاسبه مقادیر به تومان
-        amounts = {}
-        for symbol, weight in allocations.items():
-            amount = capital * weight
-            price = analyses.get(symbol, {}).get('current_price', 1)
-            quantity = amount / price if price > 0 else 0
-            amounts[symbol] = {
-                'amount_toman': amount,
-                'quantity': quantity,
-                'weight_percent': weight * 100,
-                'price': price
-            }
-        
-        # محاسبه بازده و ریسک کل سبد
-        total_return = 0
-        total_risk = 0
-        for symbol, weight in allocations.items():
-            total_return += weight * returns.get(symbol, 0)
-            total_risk += weight * risks.get(symbol, 0)
-        
-        recommendations.append({
-            'scenario': scenario['name'],
-            'color': scenario['color'],
-            'allocations': amounts,
-            'expected_return': total_return * 100,
-            'expected_risk': total_risk * 100,
-            'sharpe_ratio': total_return / (total_risk + 0.01)
-        })
-    
-    return recommendations
-
 # ============ API Endpoints ============
 
 @app.get("/")
 async def root():
     return {
-        "name": "زرین‌سنج API",
-        "english_name": "Zarinsanj API",
+        "name": "Zarinsanj API",
         "version": APP_VERSION,
         "developer": DEVELOPER,
         "copyright": COPYRIGHT,
@@ -538,7 +590,6 @@ async def root():
 
 @app.get("/prices", response_model=List[PriceResponse])
 async def get_prices():
-    """دریافت قیمت‌های لحظه‌ای"""
     subdomains = ["call2", "call3", "call4"]
     call = random.choice(subdomains)
     url = f"https://{call}.tgju.org/ajax.json?rev=test"
@@ -576,7 +627,6 @@ async def get_prices():
 
 @app.get("/analysis", response_model=List[AnalysisResponse])
 async def get_all_analysis():
-    """دریافت تحلیل تمام نمادها"""
     symbols = ['gold', 'usd', 'ounce', 'coin']
     results = []
     
@@ -589,7 +639,6 @@ async def get_all_analysis():
 
 @app.get("/analysis/{symbol}", response_model=AnalysisResponse)
 async def get_symbol_analysis(symbol: str):
-    """دریافت تحلیل یک نماد خاص"""
     result = analyze_symbol(symbol)
     if 'error' in result:
         raise HTTPException(status_code=404, detail=result['error'])
@@ -597,7 +646,6 @@ async def get_symbol_analysis(symbol: str):
 
 @app.get("/candles/{symbol}")
 async def get_candles(symbol: str, timeframe: str = '1m', limit: int = 50):
-    """دریافت شمع‌های یک نماد"""
     with session_scope() as session:
         candles = session.query(MarketCandle).filter(
             MarketCandle.symbol == symbol,
@@ -618,7 +666,6 @@ async def get_candles(symbol: str, timeframe: str = '1m', limit: int = 50):
 
 @app.post("/update")
 async def update_data():
-    """به‌روزرسانی داده‌ها از TGJU با POST"""
     try:
         fetch_and_store_all()
         build_candles_for_all_symbols()
@@ -632,7 +679,6 @@ async def update_data():
 
 @app.get("/update-get")
 async def update_data_get():
-    """به‌روزرسانی داده‌ها از TGJU با GET (برای تست در مرورگر)"""
     try:
         fetch_and_store_all()
         build_candles_for_all_symbols()
@@ -649,16 +695,11 @@ async def update_data_get():
 
 @app.get("/fix-db")
 async def fix_database():
-    """تعمیر دیتابیس - اضافه کردن ستون‌های گم‌شده"""
-    import sqlite3
-    from pathlib import Path
-    
     try:
         db_path = Path(__file__).parent / 'database' / 'market.db'
         conn = sqlite3.connect(str(db_path))
         cursor = conn.cursor()
         
-        # بررسی و اضافه کردن ستون‌ها به market_history
         cursor.execute("PRAGMA table_info(market_history)")
         columns = [col[1] for col in cursor.fetchall()]
         
@@ -666,26 +707,21 @@ async def fix_database():
         if 'raw_data' not in columns:
             cursor.execute("ALTER TABLE market_history ADD COLUMN raw_data TEXT")
             added.append('raw_data')
-            print("✅ Added raw_data column to market_history")
         
         if 'source' not in columns:
             cursor.execute("ALTER TABLE market_history ADD COLUMN source TEXT DEFAULT 'tgju'")
             added.append('source')
-            print("✅ Added source column to market_history")
         
-        # بررسی و اضافه کردن ستون‌ها به market_candles
         cursor.execute("PRAGMA table_info(market_candles)")
         columns = [col[1] for col in cursor.fetchall()]
         
         if 'tick_count' not in columns:
             cursor.execute("ALTER TABLE market_candles ADD COLUMN tick_count INTEGER DEFAULT 0")
             added.append('tick_count (market_candles)')
-            print("✅ Added tick_count column to market_candles")
         
         if 'updated_at' not in columns:
             cursor.execute("ALTER TABLE market_candles ADD COLUMN updated_at DATETIME")
             added.append('updated_at (market_candles)')
-            print("✅ Added updated_at column to market_candles")
         
         conn.commit()
         conn.close()
@@ -696,7 +732,6 @@ async def fix_database():
             "columns_added": added,
             "timestamp": datetime.now().isoformat()
         }
-        
     except Exception as e:
         return {
             "status": "error",
@@ -705,19 +740,12 @@ async def fix_database():
 
 @app.get("/reset-db")
 async def reset_database():
-    """بازسازی کامل دیتابیس - هشدار: تمام داده‌ها حذف می‌شوند!"""
     global engine, SessionLocal
     
     try:
-        # 1. بستن تمام اتصالات موجود
-        # با ایجاد engine جدید، اتصالات قبلی بسته می‌شوند
-        
-        # 2. حذف فایل دیتابیس
         if DB_PATH.exists():
             os.remove(DB_PATH)
-            print(f"✅ Database file removed: {DB_PATH}")
         
-        # 3. ایجاد یک engine جدید و مستقل
         temp_engine = create_engine(
             f"sqlite:///{DB_PATH}",
             connect_args={'check_same_thread': False},
@@ -725,11 +753,8 @@ async def reset_database():
             echo=False
         )
         
-        # 4. ایجاد همه جداول با مدل‌های تعریف‌شده
         Base.metadata.create_all(temp_engine)
-        print("✅ Tables recreated successfully")
         
-        # 5. به‌روزرسانی engine و SessionLocal برای استفاده در کل برنامه
         engine = temp_engine
         SessionLocal = sessionmaker(
             autocommit=False,
@@ -742,7 +767,6 @@ async def reset_database():
             "message": "Database reset successfully. All tables recreated.",
             "timestamp": datetime.now().isoformat()
         }
-        
     except Exception as e:
         return {
             "status": "error",
@@ -751,7 +775,6 @@ async def reset_database():
 
 @app.get("/health")
 async def health_check():
-    """بررسی سلامت سیستم"""
     try:
         with session_scope() as session:
             count = session.query(MarketHistory).count()
@@ -769,14 +792,9 @@ async def health_check():
         }
 
 @app.get("/portfolio")
-async def get_portfolio(capital: float = 10000000, risk: str = 'moderate'):
-    """
-    دریافت پیشنهادات سرمایه‌گذاری
-    - capital: مبلغ سرمایه به تومان (پیش‌فرض: ۱۰,۰۰۰,۰۰۰)
-    - risk: سطح ریسک (conservative, moderate, aggressive)
-    """
+async def get_portfolio(capital: float = 10000000):
     try:
-        recommendations = get_portfolio_recommendations(capital, risk)
+        recommendations = get_portfolio_recommendations(capital)
         if not recommendations:
             return {
                 "status": "error",
@@ -786,7 +804,6 @@ async def get_portfolio(capital: float = 10000000, risk: str = 'moderate'):
         return {
             "status": "success",
             "capital": capital,
-            "risk_level": risk,
             "recommendations": recommendations,
             "timestamp": datetime.now().isoformat(),
             "version": APP_VERSION,
@@ -798,6 +815,5 @@ async def get_portfolio(capital: float = 10000000, risk: str = 'moderate'):
             "message": str(e)
         }
 
-# ============ اجرا ============
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
