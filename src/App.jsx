@@ -35,8 +35,9 @@ function App() {
   });
   const [showGoldCalc, setShowGoldCalc] = useState(false);
 
-  // ===== وضعیت نمایشگر ارزش خرید =====
-  const [buyMeter, setBuyMeter] = useState(50);
+  // ===== وضعیت نمایشگر ارزش خرید (کیلومتر) =====
+  const [buyMeterGold, setBuyMeterGold] = useState(50);
+  const [buyMeterUsd, setBuyMeterUsd] = useState(50);
 
   // ===== Refs =====
   const updateInterval = useRef(null);
@@ -55,10 +56,15 @@ function App() {
       setPrices(priceMap);
       setAnalysis(analysisRes.data);
       
-      // محاسبه نمایشگر ارزش خرید بر اساس تحلیل‌ها
-      if (analysisRes.data.length > 0) {
-        const avgScore = analysisRes.data.reduce((sum, item) => sum + (item.final_score || 50), 0) / analysisRes.data.length;
-        setBuyMeter(Math.min(100, Math.max(0, avgScore)));
+      // محاسبه کیلومتر برای طلا و دلار
+      const goldAnalysis = analysisRes.data.find(a => a.symbol === 'gold');
+      const usdAnalysis = analysisRes.data.find(a => a.symbol === 'usd');
+      
+      if (goldAnalysis) {
+        setBuyMeterGold(Math.min(100, Math.max(0, goldAnalysis.final_score || 50)));
+      }
+      if (usdAnalysis) {
+        setBuyMeterUsd(Math.min(100, Math.max(0, usdAnalysis.final_score || 50)));
       }
       
       setLastUpdate(new Date().toLocaleString('fa-IR'));
@@ -103,16 +109,16 @@ function App() {
   useEffect(() => {
     fetchData(true);
     updateInterval.current = setInterval(() => {
-      fetchData(false); // به‌روزرسانی نامحسوس در پس‌زمینه
+      fetchData(false);
     }, 60000);
     return () => clearInterval(updateInterval.current);
   }, []);
 
   // ===== توابع کمکی =====
   const getRecommendationColor = (rec) => {
-    if (rec?.includes('BUY')) return '#00c853';
-    if (rec?.includes('SELL')) return '#ff1744';
-    return '#ffd600';
+    if (rec?.includes('BUY')) return '#34c759';
+    if (rec?.includes('SELL')) return '#ff3b30';
+    return '#ffd60a';
   };
 
   const getSymbolName = (symbol) => {
@@ -192,7 +198,7 @@ function App() {
     }
   }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
 
-  // ===== اطلاعات تحلیل (برای پنجره کامنت) =====
+  // ===== اطلاعات تحلیل =====
   const getAnalysisInfo = (symbol) => {
     const info = {
       gold: {
@@ -236,17 +242,17 @@ function App() {
   return (
     <div className={`app ${darkMode ? 'dark' : 'light'}`}>
       {/* ===== HEADER ===== */}
-      <header className="header">
+      <header className="header glass">
         <div className="header-left">
-          <div className="header-logo-text">ز</div>
-          <h1>🏆 زرین‌سنج</h1>
+          <div className="header-logo-text">Z</div>
+          <h1>arinsanj</h1>
         </div>
         <div className="header-info">
-          <span className="update-time">🕐 {lastUpdate || 'در حال بارگذاری...'}</span>
-          <button onClick={updateData} className="update-btn-small" title="به‌روزرسانی دستی">
+          <span className="update-time">📅 {lastUpdate || 'در حال بارگذاری...'}</span>
+          <button onClick={updateData} className="update-btn-glass" title="به‌روزرسانی">
             🔄
           </button>
-          <button onClick={() => setDarkMode(!darkMode)} className="theme-btn">
+          <button onClick={() => setDarkMode(!darkMode)} className="theme-btn-glass">
             {darkMode ? '☀️' : '🌙'}
           </button>
         </div>
@@ -258,26 +264,45 @@ function App() {
         <div className="loading">⏳ در حال بارگذاری...</div>
       ) : (
         <>
-          {/* ===== نمایشگر ارزش خرید (کیلومتر) ===== */}
-          <div className="buy-meter">
-            <div className="meter-label">
-              <span>🟢 خرید</span>
-              <span>⚪ خنثی</span>
-              <span>🔴 فروش</span>
+          {/* ===== کیلومترهای خرید ===== */}
+          <div className="meters-container">
+            <div className="meter-card glass">
+              <div className="meter-header">
+                <span className="meter-icon">🥇</span>
+                <span className="meter-title">طلا</span>
+              </div>
+              <div className="meter-bar-wrapper">
+                <div className="meter-bar">
+                  <div className="meter-fill" style={{ width: `${buyMeterGold}%`, background: buyMeterGold > 60 ? '#34c759' : buyMeterGold < 40 ? '#ff3b30' : '#ffd60a' }} />
+                  <span className="meter-value">{Math.round(buyMeterGold)}%</span>
+                </div>
+              </div>
+              <div className="meter-status">
+                {buyMeterGold > 60 ? '🟢 تمایل به خرید' : buyMeterGold < 40 ? '🔴 تمایل به فروش' : '⚪ بازار متعادل'}
+              </div>
             </div>
-            <div className="meter-bar">
-              <div className="meter-fill" style={{ width: `${buyMeter}%`, background: buyMeter > 60 ? '#00c853' : buyMeter < 40 ? '#ff1744' : '#ffd600' }} />
-              <span className="meter-value">{Math.round(buyMeter)}%</span>
-            </div>
-            <div className="meter-status">
-              {buyMeter > 60 ? '🟢 تمایل به خرید' : buyMeter < 40 ? '🔴 تمایل به فروش' : '⚪ بازار متعادل'}
+
+            <div className="meter-card glass">
+              <div className="meter-header">
+                <span className="meter-icon">💵</span>
+                <span className="meter-title">دلار</span>
+              </div>
+              <div className="meter-bar-wrapper">
+                <div className="meter-bar">
+                  <div className="meter-fill" style={{ width: `${buyMeterUsd}%`, background: buyMeterUsd > 60 ? '#34c759' : buyMeterUsd < 40 ? '#ff3b30' : '#ffd60a' }} />
+                  <span className="meter-value">{Math.round(buyMeterUsd)}%</span>
+                </div>
+              </div>
+              <div className="meter-status">
+                {buyMeterUsd > 60 ? '🟢 تمایل به خرید' : buyMeterUsd < 40 ? '🔴 تمایل به فروش' : '⚪ بازار متعادل'}
+              </div>
             </div>
           </div>
 
           {/* ===== قیمت‌های لحظه‌ای ===== */}
           <div className="prices-grid">
             {Object.entries(prices).map(([symbol, price]) => (
-              <div key={symbol} className="price-card">
+              <div key={symbol} className="price-card glass">
                 <div className="price-symbol">{getSymbolName(symbol)}</div>
                 <div className="price-value">{formatNumber(price)}</div>
               </div>
@@ -289,14 +314,14 @@ function App() {
             {analysis.map((item) => {
               const info = getAnalysisInfo(item.symbol);
               return (
-                <div key={item.symbol} className="analysis-card">
+                <div key={item.symbol} className="analysis-card glass">
                   <div className="card-header">
                     <h3>{getSymbolName(item.symbol)}</h3>
                     <div className="card-header-actions">
                       <span className="recommendation" style={{ backgroundColor: getRecommendationColor(item.recommendation) }}>
                         {item.recommendation}
                       </span>
-                      <button className="info-btn" onClick={() => setShowInfo(item.symbol)} title="مشاهده جزئیات تحلیل">ⓘ</button>
+                      <button className="info-btn" onClick={() => setShowInfo(item.symbol)}>ⓘ</button>
                     </div>
                   </div>
                   <div className="card-metrics">
@@ -325,68 +350,36 @@ function App() {
             })}
           </div>
 
-          {/* ===== وضعیت کلی بازار ===== */}
-          <div className="market-status">
-            <h2>📊 وضعیت کلی بازار</h2>
-            <div className="status-grid">
-              <div className="status-card">
-                <span className="status-label">حباب بازار</span>
-                <span className="status-value bubble">
-                  {buyMeter > 60 ? '🟡 متوسط' : buyMeter < 40 ? '🔴 بالا' : '🟢 پایین'}
-                </span>
-              </div>
-              <div className="status-card">
-                <span className="status-label">ریسک کلی</span>
-                <span className="status-value risk">
-                  {buyMeter > 70 ? '🟢 پایین' : buyMeter < 30 ? '🔴 بالا' : '🟡 متوسط'}
-                </span>
-              </div>
-              <div className="status-card">
-                <span className="status-label">اخبار اقتصادی</span>
-                <span className="status-value news">🔵 مثبت</span>
-              </div>
-              <div className="status-card">
-                <span className="status-label">پیشنهاد کلی</span>
-                <span className="status-value recommendation">
-                  {buyMeter > 60 ? '🟢 خرید' : buyMeter < 40 ? '🔴 فروش' : '🟡 صبر کنید'}
-                </span>
-              </div>
-            </div>
-            <div className="status-note">
-              <p>⚠️ وضعیت بازار نشان‌دهنده نوسان بالا و ریسک زیاد است. بهتر است در شرایط فعلی از معاملات پرریسک خودداری کنید.</p>
-            </div>
-          </div>
-
-          {/* ===== ماشین حساب پیشرفته طلا ===== */}
-          <div className="gold-calculator">
+          {/* ===== ماشین حساب طلا ===== */}
+          <div className="gold-calculator glass">
             <div className="calc-header">
               <h2>🧮 ماشین حساب طلا</h2>
               <button className="calc-toggle" onClick={() => setShowGoldCalc(!showGoldCalc)}>
-                {showGoldCalc ? '🔽 بستن' : '🔼 باز کردن'}
+                {showGoldCalc ? '🔽' : '🔼'}
               </button>
             </div>
 
             {showGoldCalc && (
               <div className="calc-body">
                 <div className="calc-row">
-                  <label>وزن طلا (گرم):</label>
+                  <label>وزن (گرم)</label>
                   <input type="number" value={goldCalc.weight} onChange={(e) => setGoldCalc(prev => ({ ...prev, weight: Number(e.target.value) || 0 }))} min="0" step="0.01" />
                 </div>
                 <div className="calc-row">
-                  <label>قیمت فروشنده (تومان):</label>
+                  <label>قیمت فروشنده</label>
                   <input type="number" value={goldCalc.sellerPrice} onChange={(e) => setGoldCalc(prev => ({ ...prev, sellerPrice: Number(e.target.value) || 0 }))} min="0" />
                 </div>
                 <div className="calc-row">
-                  <label>عیار طلا:</label>
+                  <label>عیار</label>
                   <select value={goldCalc.karat} onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))}>
                     <option value="740">۷۴۰</option>
                     <option value="750">۷۵۰</option>
-                    <option value="916">۹۱۶ (۲۲ عیار)</option>
-                    <option value="999">۹۹۹ (۲۴ عیار)</option>
+                    <option value="916">۹۱۶</option>
+                    <option value="999">۹۹۹</option>
                   </select>
                 </div>
                 <div className="calc-row">
-                  <label>درصد کارمزد:</label>
+                  <label>کارمزد</label>
                   <input type="number" value={goldCalc.commission} onChange={(e) => setGoldCalc(prev => ({ ...prev, commission: Number(e.target.value) || 0 }))} min="0" max="10" step="0.1" />
                   <span>%</span>
                 </div>
@@ -395,26 +388,17 @@ function App() {
 
                 <div className="calc-results">
                   <div className="calc-result-item">
-                    <span>💰 قیمت رسمی (سایت):</span>
+                    <span>💰 قیمت رسمی</span>
                     <strong>{formatNumber(goldCalc.officialPrice)} تومان</strong>
                   </div>
                   <div className="calc-result-item">
-                    <span>💵 قیمت فروشنده:</span>
+                    <span>💵 قیمت فروشنده</span>
                     <strong>{formatNumber(goldCalc.result)} تومان</strong>
                   </div>
                   <div className="calc-result-item">
-                    <span>📊 اختلاف قیمت:</span>
-                    <strong style={{ color: goldCalc.isCheaper ? '#00c853' : '#ff1744' }}>
-                      {goldCalc.isCheaper ? '✅ ارزان‌تر' : '❌ گران‌تر'} ({formatNumber(Math.abs(goldCalc.difference))} تومان)
-                    </strong>
-                  </div>
-                  <div className="calc-result-item">
-                    <span>💡 نظر:</span>
-                    <strong>
-                      {goldCalc.difference < -10000 ? '🟢 فروشنده خیلی خوب' :
-                       goldCalc.difference < 0 ? '🟡 فروشنده کمی ارزان‌تر' :
-                       goldCalc.difference < 10000 ? '🟡 نزدیک به قیمت سایت' :
-                       '🔴 فروشنده گران‌تر از سایت'}
+                    <span>📊 اختلاف</span>
+                    <strong style={{ color: goldCalc.isCheaper ? '#34c759' : '#ff3b30' }}>
+                      {goldCalc.isCheaper ? '✅ ارزان‌تر' : '❌ گران‌تر'} ({formatNumber(Math.abs(goldCalc.difference))})
                     </strong>
                   </div>
                 </div>
@@ -423,22 +407,20 @@ function App() {
           </div>
 
           {/* ===== مشاور سرمایه‌گذاری ===== */}
-          <div className="portfolio-section">
+          <div className="portfolio-section glass">
             <div className="portfolio-header">
               <h2>💼 مشاور سرمایه‌گذاری</h2>
               <button className="portfolio-toggle-btn" onClick={() => setShowPortfolio(!showPortfolio)}>
-                {showPortfolio ? '🔽 بستن' : '🔼 باز کردن'}
+                {showPortfolio ? '🔽' : '🔼'}
               </button>
             </div>
-            <p className="portfolio-subtitle">
-              با وارد کردن مبلغ سرمایه، بهترین پیشنهاد خرید را بر اساس تحلیل‌های لحظه‌ای دریافت کنید.
-            </p>
+            <p className="portfolio-subtitle">با وارد کردن مبلغ سرمایه، بهترین پیشنهاد خرید را دریافت کنید.</p>
 
             {showPortfolio && (
               <>
                 <div className="portfolio-controls">
                   <div className="capital-input-group">
-                    <label>مبلغ سرمایه (تومان):</label>
+                    <label>مبلغ سرمایه (تومان)</label>
                     <div className="capital-input-row">
                       <select value={capital} onChange={handleCapitalSelect} className="capital-select">
                         <option value="10000000">۱۰,۰۰۰,۰۰۰</option>
@@ -452,7 +434,7 @@ function App() {
                     </div>
                   </div>
                   <div className="risk-selector">
-                    <label>سطح ریسک‌پذیری:</label>
+                    <label>سطح ریسک</label>
                     <select value={riskLevel} onChange={(e) => setRiskLevel(e.target.value)}>
                       <option value="conservative">🟢 محافظه‌کارانه</option>
                       <option value="moderate">🟡 متعادل</option>
@@ -473,7 +455,6 @@ function App() {
                     </div>
                     {portfolio.recommendations.map((rec, idx) => {
                       const roundedAllocations = {};
-                      // حذف انس و اضافه کردن انواع سکه
                       const allowedAssets = ['gold', 'usd', 'coin'];
                       Object.entries(rec.allocations).forEach(([symbol, data]) => {
                         if (allowedAssets.includes(symbol)) {
@@ -493,11 +474,11 @@ function App() {
                       });
                       const updatedRec = { ...rec, allocations: roundedAllocations };
                       return (
-                        <div key={idx} className="portfolio-card">
+                        <div key={idx} className="portfolio-card glass">
                           <div className="portfolio-card-header">
                             <span className="scenario-icon">{rec.color}</span>
                             <h4>سناریوی {rec.scenario}</h4>
-                            <span className="sharpe-ratio">نسبت شارپ: {rec.sharpe_ratio.toFixed(2)}</span>
+                            <span className="sharpe-ratio">شارپ: {rec.sharpe_ratio.toFixed(2)}</span>
                           </div>
                           <div className="portfolio-allocations">
                             {Object.entries(updatedRec.allocations).map(([symbol, data]) => (
@@ -511,7 +492,7 @@ function App() {
                             ))}
                           </div>
                           <div className="portfolio-metrics">
-                            <span>📈 بازده مورد انتظار: {rec.expected_return.toFixed(1)}%</span>
+                            <span>📈 بازده: {rec.expected_return.toFixed(1)}%</span>
                             <span>📉 ریسک: {rec.expected_risk.toFixed(1)}%</span>
                           </div>
                         </div>
@@ -529,7 +510,7 @@ function App() {
       {/* ===== پنجره اطلاعات ===== */}
       {showInfo && (
         <div className="info-modal" onClick={() => setShowInfo(null)}>
-          <div className="info-modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="info-modal-content glass">
             <button className="info-modal-close" onClick={() => setShowInfo(null)}>✕</button>
             {(() => {
               const info = getAnalysisInfo(showInfo);
@@ -539,24 +520,23 @@ function App() {
                 <>
                   <h2>{info.title}</h2>
                   <div className="info-factors">
-                    <h4>🔍 عوامل مؤثر در تحلیل:</h4>
+                    <h4>🔍 عوامل مؤثر</h4>
                     <ul>
                       {info.factors.map((factor, idx) => <li key={idx}>{factor}</li>)}
                     </ul>
                   </div>
                   <div className="info-recommendation">
-                    <h4>💡 توصیه تحلیل:</h4>
+                    <h4>💡 توصیه</h4>
                     <p>{info.recommendation}</p>
                   </div>
                   {item && (
                     <div className="info-stats">
-                      <div><span>قیمت فعلی:</span> <strong>{formatNumber(item.current_price)}</strong></div>
-                      <div><span>امتیاز تحلیل:</span> <strong>{item.final_score?.toFixed(0)}/100</strong></div>
-                      <div><span>توصیه:</span> <strong>{item.recommendation}</strong></div>
-                      <div><span>اطمینان:</span> <strong>{item.confidence}%</strong></div>
+                      <div><span>قیمت فعلی</span> <strong>{formatNumber(item.current_price)}</strong></div>
+                      <div><span>امتیاز</span> <strong>{item.final_score?.toFixed(0)}/100</strong></div>
+                      <div><span>توصیه</span> <strong>{item.recommendation}</strong></div>
+                      <div><span>اطمینان</span> <strong>{item.confidence}%</strong></div>
                     </div>
                   )}
-                  <p className="info-timestamp">آخرین به‌روزرسانی: {lastUpdate}</p>
                 </>
               );
             })()}
@@ -566,9 +546,8 @@ function App() {
 
       {/* ===== FOOTER ===== */}
       <footer className="footer">
-        <p>📊 زرین‌سنج - تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران</p>
-        <p>منبع داده: TGJU | نسخه V1.1 | توسعه‌دهنده: F.Mazaheri</p>
-        <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>© 2026 Zarinsanj. All rights reserved.</p>
+        <p>Zarinsanj © 2026 | توسعه‌دهنده: F.Mazaheri</p>
+        <p style={{ fontSize: '12px', color: '#666' }}>منبع داده: TGJU | نسخه V1.2</p>
       </footer>
     </div>
   );
