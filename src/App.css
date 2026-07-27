@@ -8,7 +8,6 @@
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* ===== حالت شب/روز ===== */
 .app {
   min-height: 100vh;
   transition: all 0.3s ease;
@@ -20,7 +19,7 @@
   background: #f0f0f5;
 }
 
-/* ===== اثر شیشه‌ای (Glassmorphism) ===== */
+/* ===== Glassmorphism ===== */
 .glass {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
@@ -50,14 +49,14 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
 }
 
-.header-logo-text {
-  font-size: 28px;
-  font-weight: 700;
-  color: #ffd700;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+.header-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
 }
 
 .header h1 {
@@ -119,11 +118,7 @@
   color: #fff;
 }
 
-.theme-btn-glass:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* ===== کیلومترهای خرید ===== */
+/* ===== کیلومترها ===== */
 .meters-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -149,7 +144,7 @@
 }
 
 .meter-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #fff;
 }
@@ -188,9 +183,10 @@
 }
 
 .meter-status {
-  font-size: 11px;
+  font-size: 12px;
   color: #888;
   margin-top: 4px;
+  font-weight: 500;
 }
 
 /* ===== قیمت‌ها ===== */
@@ -247,12 +243,6 @@
   color: #1a1a2e;
 }
 
-.card-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 .recommendation {
   padding: 2px 10px;
   border-radius: 12px;
@@ -279,6 +269,30 @@
 .info-btn:hover {
   background: rgba(255, 215, 0, 0.2);
   color: #ffd700;
+}
+
+/* ===== اخبار لحظه‌ای ===== */
+.news-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 8px;
+  margin: 6px 0 8px 0;
+  background: rgba(255, 215, 0, 0.05);
+  border-radius: 6px;
+  border-right: 2px solid #ffd700;
+  font-size: 12px;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+.news-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.news-text {
+  color: #aaa;
 }
 
 .card-metrics {
@@ -356,7 +370,7 @@
   padding: 2px 0;
 }
 
-/* ===== ماشین حساب طلا ===== */
+/* ===== ماشین حساب ===== */
 .gold-calculator {
   padding: 14px 16px;
   margin-bottom: 16px;
@@ -423,11 +437,6 @@
   background: rgba(0, 0, 0, 0.03);
   color: #1a1a2e;
   border-color: rgba(0, 0, 0, 0.08);
-}
-
-.calc-row input:focus, .calc-row select:focus {
-  outline: none;
-  border-color: #ffd700;
 }
 
 .calc-btn {
@@ -553,12 +562,6 @@
   min-width: 80px;
 }
 
-.app.light .capital-select {
-  background: rgba(0, 0, 0, 0.03);
-  color: #1a1a2e;
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
 .capital-text-input {
   flex: 2;
   min-width: 100px;
@@ -572,30 +575,24 @@
   direction: ltr;
 }
 
-.app.light .capital-text-input {
-  background: rgba(0, 0, 0, 0.03);
-  color: #1a1a2e;
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
 .capital-text-input:focus {
   outline: none;
   border-color: #ffd700;
 }
 
-.risk-selector {
+.preference-selector {
   flex: 1;
   min-width: 100px;
 }
 
-.risk-selector label {
+.preference-selector label {
   display: block;
   font-size: 12px;
   color: #888;
   margin-bottom: 4px;
 }
 
-.risk-selector select {
+.preference-selector select {
   width: 100%;
   padding: 6px 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -604,12 +601,6 @@
   color: #fff;
   font-size: 13px;
   cursor: pointer;
-}
-
-.app.light .risk-selector select {
-  background: rgba(0, 0, 0, 0.03);
-  color: #1a1a2e;
-  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .portfolio-btn {
@@ -649,6 +640,51 @@
   margin-bottom: 10px;
   font-size: 12px;
   color: #888;
+}
+
+.portfolio-risks {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  background: rgba(255, 215, 0, 0.05);
+  border-radius: 8px;
+  border-right: 2px solid #ffd700;
+}
+
+.portfolio-risks h4 {
+  font-size: 13px;
+  color: #ffd700;
+  margin-bottom: 4px;
+}
+
+.portfolio-risks ul {
+  list-style: none;
+  padding: 0;
+}
+
+.portfolio-risks li {
+  font-size: 12px;
+  color: #ccc;
+  padding: 2px 0;
+}
+
+.portfolio-advice {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  background: rgba(52, 199, 89, 0.05);
+  border-radius: 8px;
+  border-right: 2px solid #34c759;
+}
+
+.portfolio-advice h4 {
+  font-size: 13px;
+  color: #34c759;
+  margin-bottom: 4px;
+}
+
+.portfolio-advice p {
+  font-size: 12px;
+  color: #ccc;
+  line-height: 1.5;
 }
 
 .portfolio-card {
@@ -734,7 +770,7 @@
   color: #888;
 }
 
-/* ===== پنجره اطلاعات ===== */
+/* ===== اطلاعات ===== */
 .info-modal {
   position: fixed;
   top: 0;
@@ -781,11 +817,11 @@
   color: #ffd700;
 }
 
-.info-factors, .info-recommendation, .info-stats {
+.info-factors, .info-news, .info-recommendation, .info-stats {
   margin-bottom: 12px;
 }
 
-.info-factors h4, .info-recommendation h4, .info-stats h4 {
+.info-factors h4, .info-news h4, .info-recommendation h4, .info-stats h4 {
   font-size: 13px;
   margin-bottom: 6px;
   color: #888;
@@ -801,6 +837,16 @@
   font-size: 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   color: #ccc;
+}
+
+.info-news p {
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.5;
+  padding: 6px 8px;
+  background: rgba(255, 215, 0, 0.05);
+  border-radius: 6px;
+  border-right: 2px solid #ffd700;
 }
 
 .info-recommendation p {

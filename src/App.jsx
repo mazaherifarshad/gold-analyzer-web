@@ -17,7 +17,7 @@ function App() {
   // ===== وضعیت بخش سرمایه‌گذاری =====
   const [capital, setCapital] = useState(50000000);
   const [capitalInput, setCapitalInput] = useState('50,000,000');
-  const [riskLevel, setRiskLevel] = useState('moderate');
+  const [userPreference, setUserPreference] = useState('gold'); // gold, usd, coin
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
   const [showPortfolio, setShowPortfolio] = useState(false);
@@ -28,16 +28,20 @@ function App() {
     sellerPrice: 0,
     karat: 740,
     commission: 2,
-    result: 0,
+    finalPrice: 0,
     officialPrice: 0,
     difference: 0,
     isCheaper: false,
+    commissionAmount: 0
   });
   const [showGoldCalc, setShowGoldCalc] = useState(false);
 
   // ===== وضعیت نمایشگر ارزش خرید (کیلومتر) =====
   const [buyMeterGold, setBuyMeterGold] = useState(50);
   const [buyMeterUsd, setBuyMeterUsd] = useState(50);
+
+  // ===== اخبار لحظه‌ای =====
+  const [news, setNews] = useState([]);
 
   // ===== Refs =====
   const updateInterval = useRef(null);
@@ -66,6 +70,10 @@ function App() {
       if (usdAnalysis) {
         setBuyMeterUsd(Math.min(100, Math.max(0, usdAnalysis.final_score || 50)));
       }
+
+      // تولید اخبار لحظه‌ای
+      const newsItems = generateNews(analysisRes.data, priceMap);
+      setNews(newsItems);
       
       setLastUpdate(new Date().toLocaleString('fa-IR'));
       setError(null);
@@ -77,13 +85,59 @@ function App() {
     }
   };
 
+  // ===== تولید اخبار لحظه‌ای =====
+  const generateNews = (analysisData, priceData) => {
+    const items = [];
+    const gold = analysisData.find(a => a.symbol === 'gold');
+    const usd = analysisData.find(a => a.symbol === 'usd');
+    const coin = analysisData.find(a => a.symbol === 'coin');
+
+    if (gold) {
+      const goldPrice = priceData.gold || 0;
+      const rsi = gold.rsi || 50;
+      let newsText = '';
+      if (rsi > 70) newsText = `طلا با RSI ${rsi.toFixed(1)} در منطقه اشباع خرید قرار دارد. احتمال اصلاح قیمت وجود دارد.`;
+      else if (rsi < 30) newsText = `طلا با RSI ${rsi.toFixed(1)} در منطقه اشباع فروش قرار دارد. احتمال بازگشت قیمت وجود دارد.`;
+      else if (gold.trend?.includes('UP')) newsText = `طلا در روند صعودی قرار دارد و قیمت آن ${goldPrice.toLocaleString('fa-IR')} تومان است.`;
+      else if (gold.trend?.includes('DOWN')) newsText = `طلا در روند نزولی قرار دارد و قیمت آن ${goldPrice.toLocaleString('fa-IR')} تومان است.`;
+      else newsText = `طلا در حالت نوسانی قرار دارد و قیمت آن ${goldPrice.toLocaleString('fa-IR')} تومان است.`;
+      items.push({ symbol: 'gold', text: newsText });
+    }
+
+    if (usd) {
+      const usdPrice = priceData.usd || 0;
+      const rsi = usd.rsi || 50;
+      let newsText = '';
+      if (rsi > 70) newsText = `دلار با RSI ${rsi.toFixed(1)} در منطقه اشباع خرید قرار دارد.`;
+      else if (rsi < 30) newsText = `دلار با RSI ${rsi.toFixed(1)} در منطقه اشباع فروش قرار دارد.`;
+      else if (usd.trend?.includes('UP')) newsText = `دلار در روند صعودی قرار دارد و قیمت آن ${usdPrice.toLocaleString('fa-IR')} تومان است.`;
+      else if (usd.trend?.includes('DOWN')) newsText = `دلار در روند نزولی قرار دارد و قیمت آن ${usdPrice.toLocaleString('fa-IR')} تومان است.`;
+      else newsText = `دلار در حالت نوسانی قرار دارد و قیمت آن ${usdPrice.toLocaleString('fa-IR')} تومان است.`;
+      items.push({ symbol: 'usd', text: newsText });
+    }
+
+    if (coin) {
+      const coinPrice = priceData.coin || 0;
+      const rsi = coin.rsi || 50;
+      let newsText = '';
+      if (rsi > 70) newsText = `سکه با RSI ${rsi.toFixed(1)} در منطقه اشباع خرید قرار دارد.`;
+      else if (rsi < 30) newsText = `سکه با RSI ${rsi.toFixed(1)} در منطقه اشباع فروش قرار دارد.`;
+      else if (coin.trend?.includes('UP')) newsText = `سکه در روند صعودی قرار دارد و قیمت آن ${coinPrice.toLocaleString('fa-IR')} تومان است.`;
+      else if (coin.trend?.includes('DOWN')) newsText = `سکه در روند نزولی قرار دارد و قیمت آن ${coinPrice.toLocaleString('fa-IR')} تومان است.`;
+      else newsText = `سکه در حالت نوسانی قرار دارد و قیمت آن ${coinPrice.toLocaleString('fa-IR')} تومان است.`;
+      items.push({ symbol: 'coin', text: newsText });
+    }
+
+    return items;
+  };
+
   // ===== دریافت پیشنهادات سرمایه‌گذاری =====
   const fetchPortfolio = async () => {
     setPortfolioLoading(true);
     setError(null);
     try {
       const response = await axios.get(`${API_URL}/portfolio`, {
-        params: { capital, risk: riskLevel }
+        params: { capital, risk: 'moderate' }
       });
       setPortfolio(response.data);
       setShowPortfolio(true);
@@ -113,6 +167,33 @@ function App() {
     }, 60000);
     return () => clearInterval(updateInterval.current);
   }, []);
+
+  // ===== ماشین حساب طلا =====
+  const calculateGold = () => {
+    const goldPrice = prices.gold || 0;
+    // قیمت رسمی بر اساس عیار و وزن
+    const officialPrice = goldPrice * goldCalc.weight * (goldCalc.karat / 1000);
+    // قیمت فروشنده + کارمزد
+    const sellerPrice = goldCalc.sellerPrice || officialPrice;
+    const commissionAmount = sellerPrice * (goldCalc.commission / 100);
+    const finalPrice = sellerPrice + commissionAmount;
+    const difference = sellerPrice - officialPrice;
+    
+    setGoldCalc(prev => ({
+      ...prev,
+      finalPrice: finalPrice,
+      officialPrice: officialPrice,
+      commissionAmount: commissionAmount,
+      difference: difference,
+      isCheaper: difference < 0
+    }));
+  };
+
+  useEffect(() => {
+    if (prices.gold) {
+      calculateGold();
+    }
+  }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
 
   // ===== توابع کمکی =====
   const getRecommendationColor = (rec) => {
@@ -174,30 +255,6 @@ function App() {
     }
   };
 
-  // ===== ماشین حساب طلا =====
-  const calculateGold = () => {
-    const goldPrice = prices.gold || 0;
-    const officialPrice = goldPrice * goldCalc.weight * (goldCalc.karat / 1000);
-    const sellerPrice = goldCalc.sellerPrice || officialPrice;
-    const commissionAmount = sellerPrice * (goldCalc.commission / 100);
-    const finalPrice = sellerPrice + commissionAmount;
-    const difference = sellerPrice - officialPrice;
-    
-    setGoldCalc(prev => ({
-      ...prev,
-      result: finalPrice,
-      officialPrice: officialPrice,
-      difference: difference,
-      isCheaper: difference < 0
-    }));
-  };
-
-  useEffect(() => {
-    if (prices.gold) {
-      calculateGold();
-    }
-  }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
-
   // ===== اطلاعات تحلیل =====
   const getAnalysisInfo = (symbol) => {
     const info = {
@@ -244,8 +301,8 @@ function App() {
       {/* ===== HEADER ===== */}
       <header className="header glass">
         <div className="header-left">
-          <div className="header-logo-text">Z</div>
-          <h1>arinsanj</h1>
+          <img src="/logo.png" alt="Zarinsanj" className="header-logo" />
+          <h1>Zarinsanj</h1>
         </div>
         <div className="header-info">
           <span className="update-time">📅 {lastUpdate || 'در حال بارگذاری...'}</span>
@@ -269,7 +326,7 @@ function App() {
             <div className="meter-card glass">
               <div className="meter-header">
                 <span className="meter-icon">🥇</span>
-                <span className="meter-title">طلا</span>
+                <span className="meter-title">میل به خرید طلا</span>
               </div>
               <div className="meter-bar-wrapper">
                 <div className="meter-bar">
@@ -278,14 +335,16 @@ function App() {
                 </div>
               </div>
               <div className="meter-status">
-                {buyMeterGold > 60 ? '🟢 تمایل به خرید' : buyMeterGold < 40 ? '🔴 تمایل به فروش' : '⚪ بازار متعادل'}
+                {buyMeterGold > 60 ? `🟢 ${Math.round(buyMeterGold)}% میل به خرید` : 
+                 buyMeterGold < 40 ? `🔴 ${Math.round(buyMeterGold)}% میل به فروش` : 
+                 `⚪ ${Math.round(buyMeterGold)}% بازار متعادل`}
               </div>
             </div>
 
             <div className="meter-card glass">
               <div className="meter-header">
                 <span className="meter-icon">💵</span>
-                <span className="meter-title">دلار</span>
+                <span className="meter-title">میل به خرید دلار</span>
               </div>
               <div className="meter-bar-wrapper">
                 <div className="meter-bar">
@@ -294,7 +353,9 @@ function App() {
                 </div>
               </div>
               <div className="meter-status">
-                {buyMeterUsd > 60 ? '🟢 تمایل به خرید' : buyMeterUsd < 40 ? '🔴 تمایل به فروش' : '⚪ بازار متعادل'}
+                {buyMeterUsd > 60 ? `🟢 ${Math.round(buyMeterUsd)}% میل به خرید` : 
+                 buyMeterUsd < 40 ? `🔴 ${Math.round(buyMeterUsd)}% میل به فروش` : 
+                 `⚪ ${Math.round(buyMeterUsd)}% بازار متعادل`}
               </div>
             </div>
           </div>
@@ -309,10 +370,11 @@ function App() {
             ))}
           </div>
 
-          {/* ===== تحلیل‌های تکنیکال ===== */}
+          {/* ===== تحلیل‌های تکنیکال با اخبار لحظه‌ای ===== */}
           <div className="analysis-grid">
             {analysis.map((item) => {
               const info = getAnalysisInfo(item.symbol);
+              const newsItem = news.find(n => n.symbol === item.symbol);
               return (
                 <div key={item.symbol} className="analysis-card glass">
                   <div className="card-header">
@@ -330,6 +392,12 @@ function App() {
                     <div className="metric"><span>RSI</span><strong>{item.rsi?.toFixed(1)}</strong></div>
                     <div className="metric"><span>امتیاز</span><strong>{item.final_score?.toFixed(0)}/100</strong></div>
                   </div>
+                  {newsItem && (
+                    <div className="news-item">
+                      <span className="news-icon">📰</span>
+                      <span className="news-text">{newsItem.text}</span>
+                    </div>
+                  )}
                   <div className="prediction">
                     <span>🔮 پیش‌بینی: </span>
                     <span className={item.trend?.includes('UP') ? 'bullish' : 'bearish'}>
@@ -366,7 +434,7 @@ function App() {
                   <input type="number" value={goldCalc.weight} onChange={(e) => setGoldCalc(prev => ({ ...prev, weight: Number(e.target.value) || 0 }))} min="0" step="0.01" />
                 </div>
                 <div className="calc-row">
-                  <label>قیمت فروشنده</label>
+                  <label>قیمت فروشنده (تومان)</label>
                   <input type="number" value={goldCalc.sellerPrice} onChange={(e) => setGoldCalc(prev => ({ ...prev, sellerPrice: Number(e.target.value) || 0 }))} min="0" />
                 </div>
                 <div className="calc-row">
@@ -379,26 +447,29 @@ function App() {
                   </select>
                 </div>
                 <div className="calc-row">
-                  <label>کارمزد</label>
+                  <label>کارمزد (%)</label>
                   <input type="number" value={goldCalc.commission} onChange={(e) => setGoldCalc(prev => ({ ...prev, commission: Number(e.target.value) || 0 }))} min="0" max="10" step="0.1" />
-                  <span>%</span>
                 </div>
 
                 <button className="calc-btn" onClick={calculateGold}>🔍 محاسبه</button>
 
                 <div className="calc-results">
                   <div className="calc-result-item">
-                    <span>💰 قیمت رسمی</span>
+                    <span>💰 قیمت رسمی (سایت)</span>
                     <strong>{formatNumber(goldCalc.officialPrice)} تومان</strong>
                   </div>
                   <div className="calc-result-item">
-                    <span>💵 قیمت فروشنده</span>
-                    <strong>{formatNumber(goldCalc.result)} تومان</strong>
+                    <span>💵 قیمت فروشنده با کارمزد</span>
+                    <strong>{formatNumber(goldCalc.finalPrice)} تومان</strong>
                   </div>
                   <div className="calc-result-item">
-                    <span>📊 اختلاف</span>
+                    <span>📊 کارمزد پرداختی</span>
+                    <strong>{formatNumber(goldCalc.commissionAmount)} تومان</strong>
+                  </div>
+                  <div className="calc-result-item">
+                    <span>📈 اختلاف با سایت</span>
                     <strong style={{ color: goldCalc.isCheaper ? '#34c759' : '#ff3b30' }}>
-                      {goldCalc.isCheaper ? '✅ ارزان‌تر' : '❌ گران‌تر'} ({formatNumber(Math.abs(goldCalc.difference))})
+                      {goldCalc.isCheaper ? '✅ ارزان‌تر' : '❌ گران‌تر'} ({formatNumber(Math.abs(goldCalc.difference))} تومان)
                     </strong>
                   </div>
                 </div>
@@ -406,7 +477,7 @@ function App() {
             )}
           </div>
 
-          {/* ===== مشاور سرمایه‌گذاری ===== */}
+          {/* ===== مشاور سرمایه‌گذاری (نسخه جدید) ===== */}
           <div className="portfolio-section glass">
             <div className="portfolio-header">
               <h2>💼 مشاور سرمایه‌گذاری</h2>
@@ -414,7 +485,7 @@ function App() {
                 {showPortfolio ? '🔽' : '🔼'}
               </button>
             </div>
-            <p className="portfolio-subtitle">با وارد کردن مبلغ سرمایه، بهترین پیشنهاد خرید را دریافت کنید.</p>
+            <p className="portfolio-subtitle">نظر خود را در مورد اولویت سرمایه‌گذاری بگویید تا بهترین پیشنهاد را دریافت کنید.</p>
 
             {showPortfolio && (
               <>
@@ -433,12 +504,12 @@ function App() {
                       <input type="text" value={capitalInput} onChange={handleCapitalInput} onBlur={handleCapitalBlur} className="capital-text-input" dir="ltr" placeholder="مقدار دلخواه" />
                     </div>
                   </div>
-                  <div className="risk-selector">
-                    <label>سطح ریسک</label>
-                    <select value={riskLevel} onChange={(e) => setRiskLevel(e.target.value)}>
-                      <option value="conservative">🟢 محافظه‌کارانه</option>
-                      <option value="moderate">🟡 متعادل</option>
-                      <option value="aggressive">🔴 جسورانه</option>
+                  <div className="preference-selector">
+                    <label>اولویت سرمایه‌گذاری</label>
+                    <select value={userPreference} onChange={(e) => setUserPreference(e.target.value)}>
+                      <option value="gold">🥇 طلا</option>
+                      <option value="usd">💵 دلار</option>
+                      <option value="coin">🪙 سکه</option>
                     </select>
                   </div>
                   <button onClick={fetchPortfolio} className="portfolio-btn" disabled={portfolioLoading}>
@@ -450,9 +521,25 @@ function App() {
                   <div className="portfolio-results">
                     <div className="portfolio-summary">
                       <span>💰 سرمایه: {formatNumber(portfolio.capital)} تومان</span>
-                      <span>📊 سطح ریسک: {getRiskLabel(portfolio.risk_level)}</span>
+                      <span>📊 اولویت: {userPreference === 'gold' ? 'طلا' : userPreference === 'usd' ? 'دلار' : 'سکه'}</span>
                       <span>📅 {new Date(portfolio.timestamp).toLocaleString('fa-IR')}</span>
                     </div>
+
+                    {/* نمایش ریسک‌ها و پیشنهادات */}
+                    <div className="portfolio-risks">
+                      <h4>⚠️ ریسک‌های موجود:</h4>
+                      <ul>
+                        <li>🔴 نوسان بالای بازار در شرایط فعلی</li>
+                        <li>🟡 تأثیر اخبار سیاسی بر قیمت‌ها</li>
+                        <li>🟢 فرصت خرید در قیمت‌های مناسب</li>
+                      </ul>
+                    </div>
+
+                    <div className="portfolio-advice">
+                      <h4>💡 پیشنهاد جایگزین:</h4>
+                      <p>با توجه به شرایط بازار، پیشنهاد می‌شود به جای تمرکز بر یک دارایی، سبدی متشکل از {userPreference === 'gold' ? 'طلا و دلار' : userPreference === 'usd' ? 'دلار و طلا' : 'سکه و طلا'} تشکیل دهید تا ریسک شما کاهش یابد.</p>
+                    </div>
+
                     {portfolio.recommendations.map((rec, idx) => {
                       const roundedAllocations = {};
                       const allowedAssets = ['gold', 'usd', 'coin'];
@@ -516,17 +603,24 @@ function App() {
               const info = getAnalysisInfo(showInfo);
               if (!info) return <p>اطلاعاتی موجود نیست.</p>;
               const item = analysis.find(a => a.symbol === showInfo);
+              const newsItem = news.find(n => n.symbol === showInfo);
               return (
                 <>
                   <h2>{info.title}</h2>
                   <div className="info-factors">
-                    <h4>🔍 عوامل مؤثر</h4>
+                    <h4>🔍 عوامل مؤثر در تحلیل امروز:</h4>
                     <ul>
                       {info.factors.map((factor, idx) => <li key={idx}>{factor}</li>)}
                     </ul>
                   </div>
+                  {newsItem && (
+                    <div className="info-news">
+                      <h4>📰 اخبار لحظه‌ای:</h4>
+                      <p>{newsItem.text}</p>
+                    </div>
+                  )}
                   <div className="info-recommendation">
-                    <h4>💡 توصیه</h4>
+                    <h4>💡 تحلیل نهایی:</h4>
                     <p>{info.recommendation}</p>
                   </div>
                   {item && (
@@ -547,7 +641,7 @@ function App() {
       {/* ===== FOOTER ===== */}
       <footer className="footer">
         <p>Zarinsanj © 2026 | توسعه‌دهنده: F.Mazaheri</p>
-        <p style={{ fontSize: '12px', color: '#666' }}>منبع داده: TGJU | نسخه V1.2</p>
+        <p style={{ fontSize: '12px', color: '#666' }}>منبع داده: TGJU | نسخه V1.3</p>
       </footer>
     </div>
   );
