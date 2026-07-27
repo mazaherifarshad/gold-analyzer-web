@@ -11,20 +11,18 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
+  const [showInfo, setShowInfo] = useState(null);
 
+  // ===== وضعیت بخش سرمایه‌گذاری (ارزش‌افزوده) =====
   const [capital, setCapital] = useState(50000000);
   const [capitalInput, setCapitalInput] = useState('50,000,000');
   const [riskLevel, setRiskLevel] = useState('moderate');
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
+  const [showPortfolio, setShowPortfolio] = useState(false);
 
-  // ===== حالت شب/روز =====
-  const [darkMode, setDarkMode] = useState(true);
-
-  // ===== پنجره اطلاعات =====
-  const [showInfo, setShowInfo] = useState(null);
-
-  // ===== دریافت داده‌ها =====
+  // ===== دریافت داده‌های اصلی =====
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -47,7 +45,7 @@ function App() {
     }
   };
 
-  // ===== دریافت پیشنهادات سرمایه‌گذاری =====
+  // ===== دریافت پیشنهادات سرمایه‌گذاری (فقط وقتی کاربر درخواست دهد) =====
   const fetchPortfolio = async () => {
     setPortfolioLoading(true);
     setError(null);
@@ -56,6 +54,7 @@ function App() {
         params: { capital, risk: riskLevel }
       });
       setPortfolio(response.data);
+      setShowPortfolio(true);
     } catch (err) {
       setError('خطا در دریافت پیشنهادات سرمایه‌گذاری.');
       console.error(err);
@@ -135,52 +134,52 @@ function App() {
     }
   };
 
-  // ===== اطلاعات تحلیل =====
+  // ===== اطلاعات تحلیل (برای پنجره کامنت) =====
   const getAnalysisInfo = (symbol) => {
     const info = {
       gold: {
         title: 'تحلیل طلا ۱۸ عیار',
         factors: [
-          'قیمت جهانی طلا (انس)',
-          'نرخ ارز (دلار/تومان)',
-          'نرخ تورم در ایران',
-          'تنش‌های سیاسی و اقتصادی',
-          'تقاضای داخلی برای طلا'
+          'قیمت جهانی طلا (انس) تأثیر مستقیم بر قیمت داخلی دارد.',
+          'نرخ ارز (دلار/تومان) یکی از مهم‌ترین عوامل تعیین‌کننده است.',
+          'نرخ تورم در ایران باعث افزایش تقاضا برای طلا به‌عنوان دارایی امن می‌شود.',
+          'تنش‌های سیاسی و اقتصادی منطقه بر قیمت طلا تأثیرگذار است.',
+          'تقاضای داخلی برای طلا در ایام خاص (مثل عروسی‌ها) افزایش می‌یابد.'
         ],
-        news: 'طلا به عنوان یک دارایی امن در زمان‌های بحران اقتصادی شناخته می‌شود.'
+        recommendation: 'طلا در بلندمدت یک دارایی امن محسوب می‌شود، اما در کوتاه‌مدت نوسان دارد.'
       },
       usd: {
         title: 'تحلیل دلار آمریکا',
         factors: [
-          'نرخ ارز در بازار آزاد',
-          'سیاست‌های پولی بانک مرکزی',
-          'صادرات و واردات کشور',
-          'تحریم‌های بین‌المللی',
-          'نرخ تورم و رشد اقتصادی'
+          'نرخ ارز در بازار آزاد تحت تأثیر عرضه و تقاضا قرار دارد.',
+          'سیاست‌های پولی بانک مرکزی بر نرخ دلار تأثیر می‌گذارد.',
+          'صادرات و واردات کشور تعیین‌کننده اصلی نرخ ارز است.',
+          'تحریم‌های بین‌المللی باعث افزایش نرخ دلار می‌شود.',
+          'نرخ تورم و رشد اقتصادی بر ارزش پول ملی تأثیر دارد.'
         ],
-        news: 'نرخ دلار تحت تأثیر عوامل داخلی و خارجی زیادی قرار دارد.'
+        recommendation: 'دلار تحت تأثیر عوامل سیاسی و اقتصادی زیادی قرار دارد و نوسان بالایی دارد.'
       },
       ounce: {
         title: 'تحلیل انس جهانی طلا',
         factors: [
-          'قیمت دلار آمریکا (DXY)',
-          'نرخ بهره فدرال رزرو',
-          'تنش‌های ژئوپلیتیکی',
-          'تقاضای فیزیکی برای طلا',
-          'سرمایه‌گذاری در صندوق‌های طلا'
+          'قیمت دلار آمریکا (DXY) رابطه معکوس با قیمت انس دارد.',
+          'نرخ بهره فدرال رزرو بر جذابیت طلا تأثیر می‌گذارد.',
+          'تنش‌های ژئوپلیتیکی باعث افزایش قیمت انس می‌شود.',
+          'تقاضای فیزیکی برای طلا از سوی کشورهای بزرگ مصرف‌کننده.',
+          'سرمایه‌گذاری در صندوق‌های طلا (ETF) بر قیمت تأثیر دارد.'
         ],
-        news: 'انس جهانی طلا به عنوان قیمت مرجع طلا در جهان شناخته می‌شود.'
+        recommendation: 'انس جهانی به‌عنوان قیمت مرجع طلا در جهان شناخته می‌شود و تحت تأثیر عوامل بین‌المللی است.'
       },
       coin: {
         title: 'تحلیل سکه بهار آزادی',
         factors: [
-          'قیمت طلای ۱۸ عیار',
-          'نرخ ارز (دلار/تومان)',
-          'نرخ بهره بانکی',
-          'تقاضای فصلی (مناسبت‌ها)',
-          'وضعیت اقتصادی کشور'
+          'قیمت طلای ۱۸ عیار پایه اصلی قیمت سکه است.',
+          'نرخ ارز (دلار/تومان) تأثیر مستقیم بر قیمت سکه دارد.',
+          'نرخ بهره بانکی بر جذابیت سرمایه‌گذاری در سکه تأثیر می‌گذارد.',
+          'تقاضای فصلی (مخصوصاً در ایام خاص مثل عید) افزایش می‌یابد.',
+          'وضعیت اقتصادی کشور و تورم بر قیمت سکه تأثیر دارد.'
         ],
-        news: 'سکه بهار آزادی یکی از محبوب‌ترین ابزارهای سرمایه‌گذاری در ایران است.'
+        recommendation: 'سکه بهار آزادی یکی از محبوب‌ترین ابزارهای سرمایه‌گذاری در ایران است.'
       }
     };
     return info[symbol] || null;
@@ -189,6 +188,7 @@ function App() {
   // ============================================================
   return (
     <div className={`app ${darkMode ? 'dark' : 'light'}`}>
+      {/* ===== HEADER ===== */}
       <header className="header">
         <div className="header-left">
           <img src="/logo.png" alt="Logo" className="header-logo" />
@@ -211,7 +211,9 @@ function App() {
         <div className="loading">⏳ در حال بارگذاری...</div>
       ) : (
         <>
-          {/* قیمت‌ها */}
+          {/* ============================================================
+              بخش ۱: قیمت‌های لحظه‌ای
+              ============================================================ */}
           <div className="prices-grid">
             {Object.entries(prices).map(([symbol, price]) => (
               <div key={symbol} className="price-card">
@@ -221,7 +223,10 @@ function App() {
             ))}
           </div>
 
-          {/* تحلیل‌ها */}
+          {/* ============================================================
+              بخش ۲: تحلیل‌های تکنیکال (قسمت اصلی)
+              هر تحلیل دارای دکمه ℹ برای مشاهده کامنت توضیحی است
+              ============================================================ */}
           <div className="analysis-grid">
             {analysis.map((item) => {
               const info = getAnalysisInfo(item.symbol);
@@ -233,7 +238,7 @@ function App() {
                       <span className="recommendation" style={{ backgroundColor: getRecommendationColor(item.recommendation) }}>
                         {item.recommendation}
                       </span>
-                      <button className="info-btn" onClick={() => setShowInfo(item.symbol)}>ⓘ</button>
+                      <button className="info-btn" onClick={() => setShowInfo(item.symbol)} title="مشاهده جزئیات تحلیل">ⓘ</button>
                     </div>
                   </div>
                   <div className="card-metrics">
@@ -242,7 +247,6 @@ function App() {
                     <div className="metric"><span>RSI</span><strong>{item.rsi?.toFixed(1)}</strong></div>
                     <div className="metric"><span>امتیاز</span><strong>{item.final_score?.toFixed(0)}/100</strong></div>
                   </div>
-                  {/* پیش‌بینی روند */}
                   <div className="prediction">
                     <span>🔮 پیش‌بینی: </span>
                     <span className={item.trend.includes('UP') ? 'bullish' : 'bearish'}>
@@ -263,88 +267,137 @@ function App() {
             })}
           </div>
 
-          {/* ===== بخش سرمایه‌گذاری (جدا از تحلیل‌ها) ===== */}
+          {/* ============================================================
+              بخش ۳: وضعیت بازار (حباب، ریسک، اخبار) - پیشنهاد کلی
+              ============================================================ */}
+          <div className="market-status">
+            <h2>📊 وضعیت کلی بازار</h2>
+            <div className="status-grid">
+              <div className="status-card">
+                <span className="status-label">حباب بازار</span>
+                <span className="status-value bubble">🟡 متوسط</span>
+              </div>
+              <div className="status-card">
+                <span className="status-label">ریسک کلی</span>
+                <span className="status-value risk">🔴 بالا</span>
+              </div>
+              <div className="status-card">
+                <span className="status-label">اخبار اقتصادی</span>
+                <span className="status-value news">🔵 مثبت</span>
+              </div>
+              <div className="status-card">
+                <span className="status-label">پیشنهاد کلی</span>
+                <span className="status-value recommendation">🟡 صبر کنید</span>
+              </div>
+            </div>
+            <div className="status-note">
+              <p>⚠️ وضعیت بازار نشان‌دهنده نوسان بالا و ریسک زیاد است. بهتر است در شرایط فعلی از معاملات پرریسک خودداری کنید.</p>
+            </div>
+          </div>
+
+          {/* ============================================================
+              بخش ۴: مشاور سرمایه‌گذاری (قابلیت ارزش‌افزوده)
+              فقط زمانی نمایش داده می‌شود که کاربر درخواست دهد
+              ============================================================ */}
           <div className="portfolio-section">
-            <h2>💼 مشاور سرمایه‌گذاری</h2>
-            <p className="portfolio-subtitle">با وارد کردن مبلغ سرمایه و سطح ریسک، بهترین پیشنهادات خرید را دریافت کنید.</p>
-            <div className="portfolio-controls">
-              <div className="capital-input-group">
-                <label>مبلغ سرمایه (تومان):</label>
-                <div className="capital-input-row">
-                  <input type="range" min="1000000" max="1000000000" step="1000000" value={capital} onChange={handleSliderChange} className="capital-slider" />
-                  <input type="text" value={capitalInput} onChange={handleInputChange} onBlur={handleInputBlur} className="capital-text-input" dir="ltr" />
-                </div>
-                <span className="capital-hint">حداقل: ۱,۰۰۰,۰۰۰ | حداکثر: ۱,۰۰۰,۰۰۰,۰۰۰</span>
-              </div>
-              <div className="risk-selector">
-                <label>سطح ریسک‌پذیری:</label>
-                <select value={riskLevel} onChange={(e) => setRiskLevel(e.target.value)}>
-                  <option value="conservative">🟢 محافظه‌کارانه</option>
-                  <option value="moderate">🟡 متعادل</option>
-                  <option value="aggressive">🔴 جسورانه</option>
-                </select>
-              </div>
-              <button onClick={fetchPortfolio} className="portfolio-btn" disabled={portfolioLoading}>
-                {portfolioLoading ? '⏳ در حال تحلیل...' : '🔍 دریافت پیشنهادات'}
+            <div className="portfolio-header">
+              <h2>💼 مشاور سرمایه‌گذاری</h2>
+              <button 
+                className="portfolio-toggle-btn"
+                onClick={() => setShowPortfolio(!showPortfolio)}
+              >
+                {showPortfolio ? '🔽 بستن' : '🔼 باز کردن'}
               </button>
             </div>
+            <p className="portfolio-subtitle">
+              با وارد کردن مبلغ سرمایه، بهترین پیشنهاد خرید را بر اساس تحلیل‌های لحظه‌ای دریافت کنید.
+            </p>
 
-            {portfolio?.status === 'success' && (
-              <div className="portfolio-results">
-                <div className="portfolio-summary">
-                  <span>💰 سرمایه: {formatNumber(portfolio.capital)} تومان</span>
-                  <span>📊 سطح ریسک: {getRiskLabel(portfolio.risk_level)}</span>
-                  <span>📅 {new Date(portfolio.timestamp).toLocaleString('fa-IR')}</span>
-                </div>
-                {portfolio.recommendations.map((rec, idx) => {
-                  const roundedAllocations = {};
-                  Object.entries(rec.allocations).forEach(([symbol, data]) => {
-                    if (symbol === 'coin') {
-                      roundedAllocations[symbol] = {
-                        ...data,
-                        quantity: Math.round(data.quantity),
-                        amount_toman: Math.round(data.quantity) * data.price
-                      };
-                    } else {
-                      roundedAllocations[symbol] = data;
-                    }
-                  });
-                  const updatedRec = { ...rec, allocations: roundedAllocations };
-                  return (
-                    <div key={idx} className="portfolio-card">
-                      <div className="portfolio-card-header">
-                        <span className="scenario-icon">{rec.color}</span>
-                        <h4>سناریوی {rec.scenario}</h4>
-                        <span className="sharpe-ratio">نسبت شارپ: {rec.sharpe_ratio.toFixed(2)}</span>
-                      </div>
-                      <div className="portfolio-allocations">
-                        {Object.entries(updatedRec.allocations).map(([symbol, data]) => (
-                          <div key={symbol} className="allocation-item">
-                            <span className="allocation-symbol">{getSymbolName(symbol)}</span>
-                            <span className="allocation-amount">{formatNumber(data.amount_toman)} تومان</span>
-                            <span className="allocation-percent">({data.weight_percent.toFixed(1)}%)</span>
-                            <span className="allocation-quantity">
-                              {symbol === 'coin' ? `≈ ${Math.round(data.quantity)} قطعه` : `≈ ${data.quantity.toFixed(2)} واحد`}
-                            </span>
-                            <div className="allocation-bar"><div className="allocation-fill" style={{ width: `${data.weight_percent}%` }} /></div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="portfolio-metrics">
-                        <span>📈 بازده مورد انتظار: {rec.expected_return.toFixed(1)}%</span>
-                        <span>📉 ریسک: {rec.expected_risk.toFixed(1)}%</span>
-                      </div>
+            {showPortfolio && (
+              <>
+                <div className="portfolio-controls">
+                  <div className="capital-input-group">
+                    <label>مبلغ سرمایه (تومان):</label>
+                    <div className="capital-input-row">
+                      <input type="range" min="1000000" max="1000000000" step="1000000" value={capital} onChange={handleSliderChange} className="capital-slider" />
+                      <input type="text" value={capitalInput} onChange={handleInputChange} onBlur={handleInputBlur} className="capital-text-input" dir="ltr" />
                     </div>
-                  );
-                })}
-              </div>
+                    <span className="capital-hint">حداقل: ۱,۰۰۰,۰۰۰ | حداکثر: ۱,۰۰۰,۰۰۰,۰۰۰</span>
+                  </div>
+                  <div className="risk-selector">
+                    <label>سطح ریسک‌پذیری:</label>
+                    <select value={riskLevel} onChange={(e) => setRiskLevel(e.target.value)}>
+                      <option value="conservative">🟢 محافظه‌کارانه</option>
+                      <option value="moderate">🟡 متعادل</option>
+                      <option value="aggressive">🔴 جسورانه</option>
+                    </select>
+                  </div>
+                  <button onClick={fetchPortfolio} className="portfolio-btn" disabled={portfolioLoading}>
+                    {portfolioLoading ? '⏳ در حال تحلیل...' : '🔍 دریافت پیشنهادات'}
+                  </button>
+                </div>
+
+                {portfolio?.status === 'success' && (
+                  <div className="portfolio-results">
+                    <div className="portfolio-summary">
+                      <span>💰 سرمایه: {formatNumber(portfolio.capital)} تومان</span>
+                      <span>📊 سطح ریسک: {getRiskLabel(portfolio.risk_level)}</span>
+                      <span>📅 {new Date(portfolio.timestamp).toLocaleString('fa-IR')}</span>
+                    </div>
+                    {portfolio.recommendations.map((rec, idx) => {
+                      const roundedAllocations = {};
+                      Object.entries(rec.allocations).forEach(([symbol, data]) => {
+                        if (symbol === 'coin') {
+                          roundedAllocations[symbol] = {
+                            ...data,
+                            quantity: Math.round(data.quantity),
+                            amount_toman: Math.round(data.quantity) * data.price
+                          };
+                        } else {
+                          roundedAllocations[symbol] = data;
+                        }
+                      });
+                      const updatedRec = { ...rec, allocations: roundedAllocations };
+                      return (
+                        <div key={idx} className="portfolio-card">
+                          <div className="portfolio-card-header">
+                            <span className="scenario-icon">{rec.color}</span>
+                            <h4>سناریوی {rec.scenario}</h4>
+                            <span className="sharpe-ratio">نسبت شارپ: {rec.sharpe_ratio.toFixed(2)}</span>
+                          </div>
+                          <div className="portfolio-allocations">
+                            {Object.entries(updatedRec.allocations).map(([symbol, data]) => (
+                              <div key={symbol} className="allocation-item">
+                                <span className="allocation-symbol">{getSymbolName(symbol)}</span>
+                                <span className="allocation-amount">{formatNumber(data.amount_toman)} تومان</span>
+                                <span className="allocation-percent">({data.weight_percent.toFixed(1)}%)</span>
+                                <span className="allocation-quantity">
+                                  {symbol === 'coin' ? `≈ ${Math.round(data.quantity)} قطعه` : `≈ ${data.quantity.toFixed(2)} واحد`}
+                                </span>
+                                <div className="allocation-bar"><div className="allocation-fill" style={{ width: `${data.weight_percent}%` }} /></div>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="portfolio-metrics">
+                            <span>📈 بازده مورد انتظار: {rec.expected_return.toFixed(1)}%</span>
+                            <span>📉 ریسک: {rec.expected_risk.toFixed(1)}%</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {portfolio?.status === 'error' && <div className="portfolio-error">{portfolio.message}</div>}
+              </>
             )}
-            {portfolio?.status === 'error' && <div className="portfolio-error">{portfolio.message}</div>}
           </div>
         </>
       )}
 
-      {/* ===== پنجره اطلاعات ===== */}
+      {/* ============================================================
+          پنجره اطلاعات (کامنت) برای هر تحلیل
+          با کلیک روی دکمه ℹ باز می‌شود
+          ============================================================ */}
       {showInfo && (
         <div className="info-modal" onClick={() => setShowInfo(null)}>
           <div className="info-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -357,14 +410,14 @@ function App() {
                 <>
                   <h2>{info.title}</h2>
                   <div className="info-factors">
-                    <h4>🔍 عوامل مؤثر:</h4>
+                    <h4>🔍 عوامل مؤثر در تحلیل:</h4>
                     <ul>
                       {info.factors.map((factor, idx) => <li key={idx}>{factor}</li>)}
                     </ul>
                   </div>
-                  <div className="info-news">
-                    <h4>📰 اخبار و رویدادها:</h4>
-                    <p>{info.news}</p>
+                  <div className="info-recommendation">
+                    <h4>💡 توصیه تحلیل:</h4>
+                    <p>{info.recommendation}</p>
                   </div>
                   {item && (
                     <div className="info-stats">
@@ -382,6 +435,7 @@ function App() {
         </div>
       )}
 
+      {/* ===== FOOTER ===== */}
       <footer className="footer">
         <p>📊 تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران</p>
         <p>منبع داده: TGJU | نسخه V1.0 | توسعه‌دهنده: F.Mazaheri</p>
