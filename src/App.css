@@ -1,38 +1,44 @@
-/* ===== فونت وزیرمتن ===== */
 @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .app {
   min-height: 100vh;
   transition: all 0.3s ease;
   padding: 16px;
-  background: #0f0f1a;
 }
 
+/* ===== حالت شب ===== */
+.app.dark {
+  background: #0a0a14;
+  color: #f0f0f0;
+}
+
+/* ===== حالت روز ===== */
 .app.light {
-  background: #f0f0f5;
+  background: #f5f5fa;
+  color: #1a1a2e;
 }
 
 /* ===== Glassmorphism ===== */
 .glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
 }
 
 .app.light .glass {
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
 }
 
 /* ===== HEADER ===== */
@@ -49,24 +55,36 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .header-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
-.header h1 {
+.header-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-titles h1 {
   font-size: 22px;
   font-weight: 600;
   color: #fff;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
 }
 
-.app.light .header h1 {
+.header-titles .header-subtitle {
+  font-size: 12px;
+  color: #888;
+  font-weight: 400;
+}
+
+.app.light .header-titles h1 {
   color: #1a1a2e;
 }
 
@@ -99,7 +117,7 @@
 
 .update-btn-glass:hover {
   transform: rotate(180deg);
-  background: rgba(255, 215, 0, 0.2);
+  background: rgba(255, 215, 0, 0.15);
   border-color: #ffd700;
 }
 
@@ -116,6 +134,10 @@
   align-items: center;
   justify-content: center;
   color: #fff;
+}
+
+.theme-btn-glass:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* ===== کیلومترها ===== */
@@ -160,15 +182,20 @@
 .meter-bar {
   position: relative;
   height: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   overflow: hidden;
+}
+
+.app.light .meter-bar {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .meter-fill {
   height: 100%;
   border-radius: 4px;
   transition: width 0.8s ease;
+  background: #ffd700;
 }
 
 .meter-value {
@@ -177,14 +204,14 @@
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 8px;
-  font-weight: 600;
+  font-weight: 700;
   color: #fff;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 .meter-status {
   font-size: 12px;
-  color: #888;
+  color: #aaa;
   margin-top: 4px;
   font-weight: 500;
 }
@@ -208,7 +235,7 @@
 }
 
 .price-value {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   margin-top: 2px;
   color: #ffd700;
@@ -267,18 +294,17 @@
 }
 
 .info-btn:hover {
-  background: rgba(255, 215, 0, 0.2);
+  background: rgba(255, 215, 0, 0.15);
   color: #ffd700;
 }
 
-/* ===== اخبار لحظه‌ای ===== */
 .news-item {
   display: flex;
   align-items: flex-start;
   gap: 6px;
   padding: 6px 8px;
   margin: 6px 0 8px 0;
-  background: rgba(255, 215, 0, 0.05);
+  background: rgba(255, 215, 0, 0.06);
   border-radius: 6px;
   border-right: 2px solid #ffd700;
   font-size: 12px;
@@ -289,10 +315,6 @@
 .news-icon {
   font-size: 14px;
   flex-shrink: 0;
-}
-
-.news-text {
-  color: #aaa;
 }
 
 .card-metrics {
@@ -322,18 +344,6 @@
   color: #1a1a2e;
 }
 
-.prediction {
-  margin: 6px 0 8px 0;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.prediction .bullish { color: #34c759; font-weight: 600; }
-.prediction .bearish { color: #ff3b30; font-weight: 600; }
-
 .card-confidence {
   margin-top: 8px;
 }
@@ -356,18 +366,6 @@
 .card-confidence span {
   font-size: 11px;
   color: #888;
-}
-
-.card-reasons {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.reason {
-  font-size: 11px;
-  color: #888;
-  padding: 2px 0;
 }
 
 /* ===== ماشین حساب ===== */
@@ -421,7 +419,8 @@
   color: #888;
 }
 
-.calc-row input, .calc-row select {
+.calc-row input,
+.calc-row select {
   flex: 1;
   min-width: 60px;
   padding: 6px 10px;
@@ -575,11 +574,6 @@
   direction: ltr;
 }
 
-.capital-text-input:focus {
-  outline: none;
-  border-color: #ffd700;
-}
-
 .preference-selector {
   flex: 1;
   min-width: 100px;
@@ -645,7 +639,7 @@
 .portfolio-risks {
   padding: 10px 12px;
   margin-bottom: 10px;
-  background: rgba(255, 215, 0, 0.05);
+  background: rgba(255, 215, 0, 0.06);
   border-radius: 8px;
   border-right: 2px solid #ffd700;
 }
@@ -670,7 +664,7 @@
 .portfolio-advice {
   padding: 10px 12px;
   margin-bottom: 10px;
-  background: rgba(52, 199, 89, 0.05);
+  background: rgba(52, 199, 89, 0.06);
   border-radius: 8px;
   border-right: 2px solid #34c759;
 }
@@ -707,12 +701,6 @@
 
 .app.light .portfolio-card-header h4 {
   color: #1a1a2e;
-}
-
-.sharpe-ratio {
-  margin-left: auto;
-  font-size: 11px;
-  color: #888;
 }
 
 .portfolio-allocations {
@@ -770,14 +758,14 @@
   color: #888;
 }
 
-/* ===== اطلاعات ===== */
+/* ===== پنجره اطلاعات ===== */
 .info-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -817,11 +805,15 @@
   color: #ffd700;
 }
 
-.info-factors, .info-news, .info-recommendation, .info-stats {
+.info-factors,
+.info-news,
+.info-stats {
   margin-bottom: 12px;
 }
 
-.info-factors h4, .info-news h4, .info-recommendation h4, .info-stats h4 {
+.info-factors h4,
+.info-news h4,
+.info-stats h4 {
   font-size: 13px;
   margin-bottom: 6px;
   color: #888;
@@ -844,15 +836,9 @@
   color: #aaa;
   line-height: 1.5;
   padding: 6px 8px;
-  background: rgba(255, 215, 0, 0.05);
+  background: rgba(255, 215, 0, 0.06);
   border-radius: 6px;
   border-right: 2px solid #ffd700;
-}
-
-.info-recommendation p {
-  font-size: 13px;
-  color: #aaa;
-  line-height: 1.5;
 }
 
 .info-stats {
@@ -900,7 +886,7 @@
     text-align: center;
   }
   
-  .header h1 {
+  .header-titles h1 {
     font-size: 18px;
   }
 
@@ -929,7 +915,8 @@
     flex-direction: column;
   }
 
-  .capital-select, .capital-text-input {
+  .capital-select,
+  .capital-text-input {
     width: 100%;
   }
 
