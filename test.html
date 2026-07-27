@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+fetch('https://gold-analyzer-web.onrender.com/prices')
+  .then(res => res.json())
+  .then(data => document.write(JSON.stringify(data, null, 2)))
+  .catch(err => document.write('❌ Error: ' + err.message));
+</script>
+</body>
+</html>
