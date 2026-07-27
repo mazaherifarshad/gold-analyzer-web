@@ -191,8 +191,8 @@ function App() {
       {/* ===== HEADER ===== */}
       <header className="header">
         <div className="header-left">
-          <img src="/logo.png" alt="Logo" className="header-logo" />
-          <h1>🏆 تحلیل‌گر بازار طلا</h1>
+          <div className="header-logo-text">ز</div>
+          <h1>🏆 زرین‌سنج</h1>
         </div>
         <div className="header-info">
           <button onClick={() => setDarkMode(!darkMode)} className="theme-btn">
@@ -211,9 +211,7 @@ function App() {
         <div className="loading">⏳ در حال بارگذاری...</div>
       ) : (
         <>
-          {/* ============================================================
-              بخش ۱: قیمت‌های لحظه‌ای
-              ============================================================ */}
+          {/* ===== قیمت‌های لحظه‌ای ===== */}
           <div className="prices-grid">
             {Object.entries(prices).map(([symbol, price]) => (
               <div key={symbol} className="price-card">
@@ -223,10 +221,7 @@ function App() {
             ))}
           </div>
 
-          {/* ============================================================
-              بخش ۲: تحلیل‌های تکنیکال (قسمت اصلی)
-              هر تحلیل دارای دکمه ℹ برای مشاهده کامنت توضیحی است
-              ============================================================ */}
+          {/* ===== تحلیل‌های تکنیکال ===== */}
           <div className="analysis-grid">
             {analysis.map((item) => {
               const info = getAnalysisInfo(item.symbol);
@@ -249,8 +244,8 @@ function App() {
                   </div>
                   <div className="prediction">
                     <span>🔮 پیش‌بینی: </span>
-                    <span className={item.trend.includes('UP') ? 'bullish' : 'bearish'}>
-                      {item.trend.includes('UP') ? '🟢 صعودی' : item.trend.includes('DOWN') ? '🔴 نزولی' : '⚪ خنثی'}
+                    <span className={item.trend?.includes('UP') ? 'bullish' : 'bearish'}>
+                      {item.trend?.includes('UP') ? '🟢 صعودی' : item.trend?.includes('DOWN') ? '🔴 نزولی' : '⚪ خنثی'}
                     </span>
                   </div>
                   <div className="card-confidence">
@@ -267,9 +262,7 @@ function App() {
             })}
           </div>
 
-          {/* ============================================================
-              بخش ۳: وضعیت بازار (حباب، ریسک، اخبار) - پیشنهاد کلی
-              ============================================================ */}
+          {/* ===== وضعیت کلی بازار ===== */}
           <div className="market-status">
             <h2>📊 وضعیت کلی بازار</h2>
             <div className="status-grid">
@@ -295,10 +288,7 @@ function App() {
             </div>
           </div>
 
-          {/* ============================================================
-              بخش ۴: مشاور سرمایه‌گذاری (قابلیت ارزش‌افزوده)
-              فقط زمانی نمایش داده می‌شود که کاربر درخواست دهد
-              ============================================================ */}
+          {/* ===== مشاور سرمایه‌گذاری (ارزش‌افزوده) ===== */}
           <div className="portfolio-section">
             <div className="portfolio-header">
               <h2>💼 مشاور سرمایه‌گذاری</h2>
@@ -394,10 +384,7 @@ function App() {
         </>
       )}
 
-      {/* ============================================================
-          پنجره اطلاعات (کامنت) برای هر تحلیل
-          با کلیک روی دکمه ℹ باز می‌شود
-          ============================================================ */}
+      {/* ===== پنجره اطلاعات (کامنت) ===== */}
       {showInfo && (
         <div className="info-modal" onClick={() => setShowInfo(null)}>
           <div className="info-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -437,9 +424,9 @@ function App() {
 
       {/* ===== FOOTER ===== */}
       <footer className="footer">
-        <p>📊 تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران</p>
+        <p>📊 زرین‌سنج - تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران</p>
         <p>منبع داده: TGJU | نسخه V1.0 | توسعه‌دهنده: F.Mazaheri</p>
-        <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>© 2026 Gold Market Analyzer. All rights reserved.</p>
+        <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>© 2026 Zarinsanj. All rights reserved.</p>
       </footer>
     </div>
   );

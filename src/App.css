@@ -53,11 +53,18 @@
   gap: 12px;
 }
 
-.header-logo {
+.header-logo-text {
   width: 48px;
   height: 48px;
+  background: linear-gradient(135deg, #ffd700, #ff6b00);
   border-radius: 12px;
-  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #0f0f1a;
+  font-family: 'Vazirmatn', sans-serif;
 }
 
 .header h1 {
@@ -110,6 +117,11 @@
 .app.light .update-btn {
   background: #e0e0e8;
   color: #1a1a2e;
+}
+
+.update-btn:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
 }
 
 /* ===== قیمت‌ها ===== */
@@ -243,6 +255,28 @@
   color: #ffd700;
 }
 
+.card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric span {
+  font-size: 12px;
+  color: #888;
+}
+
+.metric strong {
+  font-size: 15px;
+}
+
 /* ===== پیش‌بینی ===== */
 .prediction {
   margin: 8px 0 12px 0;
@@ -268,6 +302,48 @@
 .prediction .bearish {
   color: #ff1744;
   font-weight: bold;
+}
+
+.card-confidence {
+  margin-top: 12px;
+}
+
+.confidence-bar {
+  height: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.app.dark .confidence-bar {
+  background: #2d2d44;
+}
+
+.app.light .confidence-bar {
+  background: #e8e8f0;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700, #ff6b00);
+  border-radius: 4px;
+  transition: width 0.5s;
+}
+
+.card-reasons {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #2d2d44;
+}
+
+.app.light .card-reasons {
+  border-top-color: #e8e8f0;
+}
+
+.reason {
+  font-size: 13px;
+  color: #aaa;
+  padding: 2px 0;
 }
 
 /* ===== وضعیت بازار ===== */
@@ -359,7 +435,7 @@
   color: #555;
 }
 
-/* ===== سرمایه‌گذاری (ارزش‌افزوده) ===== */
+/* ===== سرمایه‌گذاری ===== */
 .portfolio-section {
   padding: 20px;
   border-radius: 16px;
@@ -468,6 +544,13 @@
   border-color: #ffd700;
 }
 
+.capital-hint {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
 .risk-selector {
   flex: 1;
   min-width: 150px;
@@ -525,6 +608,7 @@
   cursor: not-allowed;
 }
 
+/* ===== نتایج سرمایه‌گذاری ===== */
 .portfolio-results {
   margin-top: 16px;
 }
@@ -616,7 +700,7 @@
   transition: width 0.5s ease;
 }
 
-/* ===== پنجره اطلاعات (کامنت) ===== */
+/* ===== پنجره اطلاعات ===== */
 .info-modal {
   position: fixed;
   top: 0;

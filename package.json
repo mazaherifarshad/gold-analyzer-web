@@ -1,6 +1,8 @@
 {
-  "name": "gold-analyzer-web",
+  "name": "zarinsanj",
   "version": "1.0.0",
+  "description": "زرین‌سنج - تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران",
+  "author": "F.Mazaheri",
   "type": "module",
   "scripts": {
     "dev": "vite",

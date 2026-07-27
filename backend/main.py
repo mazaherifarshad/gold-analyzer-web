@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-FastAPI Server - Gold Market Analyzer API
-نسخه نهایی با مدیریت دیتابیس، اندپوینت تعمیر و مشاور سرمایه‌گذاری
+زرین‌سنج API - تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران
+Zarinsanj API - Professional Gold Market Analyzer
 """
 
 from fastapi import FastAPI, HTTPException
@@ -114,8 +114,8 @@ def session_scope():
 
 # ============ FastAPI App ============
 app = FastAPI(
-    title="Gold Market Analyzer API",
-    description="Professional AI-based Gold Market Analysis for Iranian Market",
+    title="زرین‌سنج API",
+    description="تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران",
     version="1.0.0"
 )
 
@@ -159,7 +159,7 @@ class PortfolioResponse(BaseModel):
 # ============ اطلاعات نسخه و سازنده ============
 APP_VERSION = "V1.0"
 DEVELOPER = "F.Mazaheri"
-COPYRIGHT = "© 2026 Gold Market Analyzer. All rights reserved."
+COPYRIGHT = "© 2026 Zarinsanj. All rights reserved."
 
 # ============ تابع تحلیل ============
 def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
@@ -516,7 +516,8 @@ def get_portfolio_recommendations(capital: float, risk_tolerance: str = 'moderat
 @app.get("/")
 async def root():
     return {
-        "name": "Gold Market Analyzer API",
+        "name": "زرین‌سنج API",
+        "english_name": "Zarinsanj API",
         "version": APP_VERSION,
         "developer": DEVELOPER,
         "copyright": COPYRIGHT,
