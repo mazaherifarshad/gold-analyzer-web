@@ -116,7 +116,6 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
         df.set_index('time', inplace=True)
         df = df.sort_index()
     
-    # RSI
     delta = df['close'].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
@@ -124,7 +123,6 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
     rsi = 100 - (100 / (1 + rs))
     current_rsi = rsi.iloc[-1] if not pd.isna(rsi.iloc[-1]) else 50
     
-    # روند
     ema_9 = df['close'].ewm(span=9, adjust=False).mean()
     ema_21 = df['close'].ewm(span=21, adjust=False).mean()
     current_price = df['close'].iloc[-1]
@@ -226,21 +224,49 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
                 allocations[symbol] = allocations[symbol] / total
         
         amounts = {}
-        for symbol, weight in allocations.items():
-            amount = capital * weight
-            price = analyses.get(symbol, {}).get('current_price', 1)
-            quantity = amount / price if price > 0 else 0
-            unit = 'قطعه' if symbol == 'coin' else 'واحد'
-            if symbol == 'coin':
-                quantity = max(1, round(quantity))
-                amount = quantity * price
-            amounts[symbol] = {
-                'amount_toman': amount,
-                'quantity': quantity,
-                'weight_percent': weight * 100,
-                'price': price,
-                'unit': unit
+        remaining = capital
+        total_allocated = 0
+        
+        for symbol in ['gold', 'usd']:
+            if symbol in allocations:
+                weight = allocations[symbol]
+                amount = capital * weight
+                price = analyses.get(symbol, {}).get('current_price', 1)
+                quantity = amount / price if price > 0 else 0
+                amounts[symbol] = {
+                    'amount_toman': amount,
+                    'quantity': quantity,
+                    'weight_percent': weight * 100,
+                    'price': price,
+                    'unit': 'واحد'
+                }
+                total_allocated += amount
+        
+        remaining = capital - total_allocated
+        if 'coin' in allocations and remaining > 0:
+            price = analyses.get('coin', {}).get('current_price', 1)
+            coin_quantity = remaining / price
+            coin_types = [
+                {'name': 'سکه بهار آزادی', 'weight': 1, 'price': price},
+                {'name': 'نیم سکه', 'weight': 0.5, 'price': price * 0.5},
+                {'name': 'ربع سکه', 'weight': 0.25, 'price': price * 0.25},
+                {'name': 'سکه گرمی', 'weight': 0.1, 'price': price * 0.1}
+            ]
+            best_coin = min(coin_types, key=lambda x: abs(remaining - (coin_quantity * x['price'])))
+            coin_amount = best_coin['price'] * round(coin_quantity)
+            amounts['coin'] = {
+                'amount_toman': coin_amount,
+                'quantity': round(coin_quantity),
+                'weight_percent': (coin_amount / capital) * 100,
+                'price': best_coin['price'],
+                'unit': best_coin['name']
             }
+            total_allocated += coin_amount
+        
+        if total_allocated < capital and 'gold' in amounts:
+            diff = capital - total_allocated
+            amounts['gold']['amount_toman'] += diff
+            amounts['gold']['weight_percent'] = (amounts['gold']['amount_toman'] / capital) * 100
         
         total_return = sum(weight * returns.get(symbol, 0) for symbol, weight in allocations.items())
         total_risk = sum(weight * risks.get(symbol, 0) for symbol, weight in allocations.items())
@@ -267,7 +293,6 @@ def fetch_and_store_all():
     response.raise_for_status()
     current = response.json()["current"]
     
-    # قیمت‌ها به ریال هستند (هیچ ضربی انجام نمی‌شود)
     prices = {
         "gold": float(current["geram18"]["p"].replace(",", "")),
         "usd": float(current["price_dollar_rl"]["p"].replace(",", "")),

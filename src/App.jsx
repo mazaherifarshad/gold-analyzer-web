@@ -13,14 +13,12 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [showInfo, setShowInfo] = useState(null);
 
-  // سرمایه‌گذاری (بدون اولویت)
   const [capital, setCapital] = useState(0);
   const [capitalDisplay, setCapitalDisplay] = useState('');
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
   const [showPortfolio, setShowPortfolio] = useState(false);
 
-  // ماشین حساب
   const [goldCalc, setGoldCalc] = useState({
     weight: 0,
     sellerPrice: 0,
@@ -40,7 +38,6 @@ function App() {
 
   const updateInterval = useRef(null);
 
-  // ===== دریافت داده =====
   const fetchData = async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
@@ -135,11 +132,12 @@ function App() {
 
   useEffect(() => {
     fetchData(true);
-    updateInterval.current = setInterval(() => fetchData(false), 60000);
+    updateInterval.current = setInterval(() => {
+      fetchData(false);
+    }, 30000);
     return () => clearInterval(updateInterval.current);
   }, []);
 
-  // ===== ماشین حساب خودکار =====
   useEffect(() => {
     if (prices.gold) calculateGold();
   }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
@@ -167,7 +165,6 @@ function App() {
     return '#ffd60a';
   };
 
-  // ===== کیبورد =====
   const [showCapitalKeyboard, setShowCapitalKeyboard] = useState(false);
   const [activeCalcInput, setActiveCalcInput] = useState(null);
   const [calcInputDisplay, setCalcInputDisplay] = useState('');
@@ -199,16 +196,15 @@ function App() {
     if (field === 'weight') currentVal = goldCalc.weight.toString();
     else if (field === 'sellerPrice') currentVal = goldCalc.sellerPrice.toString();
     else if (field === 'commission') currentVal = goldCalc.commission.toString();
-    
-    // اگر مقدار فعلی 0 است، خالی بگذار تا کاربر از صفر شروع کند
     if (currentVal === '0') currentVal = '';
     setCalcInputDisplay(currentVal);
     setShowCalcKeyboard(true);
   };
 
   const handleCalcKeyClick = (num) => {
-    if (num === '.') {
-      // اگر قبلاً اعشار وجود نداشت، اضافه کن
+    if (num === 'C') {
+      setCalcInputDisplay('');
+    } else if (num === '.') {
       if (!calcInputDisplay.includes('.')) {
         setCalcInputDisplay(prev => prev + '.');
       }
@@ -319,7 +315,7 @@ function App() {
                 <div className="calc-row"><label>وزن (گرم)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('weight')}><span>{goldCalc.weight || '۰'}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
                 <div className="calc-row"><label>عیار</label><select value={goldCalc.karat} onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))} className={darkMode ? '' : 'light-select'}><option value="740">۷۴۰</option><option value="750">۷۵۰ (۱۸ عیار)</option><option value="916">۹۱۶ (۲۲ عیار)</option><option value="999">۹۹۹ (۲۴ عیار)</option></select></div>
                 <div className="calc-row"><label>قیمت فروشنده (ریال)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('sellerPrice')}><span>{goldCalc.sellerPrice ? formatMoney(goldCalc.sellerPrice) : '۰'}</span><span className="calc-input-hint">👆 کلیک</span></div><span className="calc-hint">💰 قیمت هر گرم طلا با عیار انتخابی در سایت: {formatMoney((prices.gold || 0) * (goldCalc.karat / 750))} ریال</span></div>
-                <div className="calc-row"><label>کارمزد (%)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('commission')}><span>{goldCalc.commission}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
+                <div className="calc-row"><label>کارمزد (%)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('commission')}><span>{goldCalc.commission}</span><span className="calc-input-hint">👆 کلیк</span></div></div>
                 <div className="calc-results">
                   <div className="calc-result-item"><span>💰 قیمت فروشنده با کارمزد</span><strong>{formatMoney(goldCalc.finalSellerPrice)} ریال</strong><small>قیمت فروشنده: {formatMoney(goldCalc.sellerPrice)} + کارمزد {goldCalc.commission}%</small></div>
                   <div className="calc-result-item"><span>🏛️ قیمت سایت با کارمزد</span><strong>{formatMoney(goldCalc.finalOfficialPrice)} ریال</strong><small>قیمت سایت: {formatMoney(goldCalc.officialPrice)} + کارمزد {goldCalc.commission}%</small></div>
@@ -387,18 +383,36 @@ function App() {
                       <p>با توجه به شرایط بازار، پیشنهاد می‌شود سبدی متشکل از طلا، دلار و سکه تشکیل دهید تا ریسک شما کاهش یابد.</p>
                     </div>
                     {portfolio.recommendations.map((rec, idx) => {
+                      let totalAmount = 0;
                       const roundedAllocations = {};
                       const allowedAssets = ['gold', 'usd', 'coin'];
+                      
                       Object.entries(rec.allocations).forEach(([symbol, data]) => {
                         if (allowedAssets.includes(symbol)) {
+                          let amount = data.amount_toman;
+                          let quantity = data.quantity;
+                          let unit = data.unit || 'واحد';
+                          if (symbol === 'coin') {
+                            unit = data.unit || 'سکه بهار آزادی';
+                            quantity = Math.round(quantity);
+                            amount = quantity * data.price;
+                          }
                           roundedAllocations[symbol] = {
                             ...data,
-                            amount_toman: data.amount_toman,
-                            quantity: symbol === 'coin' ? Math.round(data.quantity) : data.quantity,
-                            unit: symbol === 'coin' ? 'قطعه' : 'واحد'
+                            amount_toman: amount,
+                            quantity: quantity,
+                            unit: unit
                           };
+                          totalAmount += amount;
                         }
                       });
+                      
+                      if (totalAmount !== portfolio.capital && roundedAllocations['gold']) {
+                        const diff = portfolio.capital - totalAmount;
+                        roundedAllocations['gold'].amount_toman += diff;
+                        roundedAllocations['gold'].weight_percent = (roundedAllocations['gold'].amount_toman / portfolio.capital) * 100;
+                      }
+                      
                       const updatedRec = { ...rec, allocations: roundedAllocations };
                       return (
                         <div key={idx} className="portfolio-card glass">
@@ -452,8 +466,9 @@ function App() {
               <button onClick={() => handleCalcKeyClick('1')}>1</button>
               <button onClick={() => handleCalcKeyClick('2')}>2</button>
               <button onClick={() => handleCalcKeyClick('3')}>3</button>
-              <button onClick={() => handleCalcKeyClick('.')} className="key-decimal">.</button>
+              <button onClick={() => handleCalcKeyClick('C')} className="key-clear">C</button>
               <button onClick={() => handleCalcKeyClick('0')}>0</button>
+              <button onClick={() => handleCalcKeyClick('.')} className="key-decimal">.</button>
               <button onClick={() => handleCalcKeyClick('⌫')} className="key-delete">⌫</button>
               <button onClick={() => handleCalcKeyClick('✓')} className="key-confirm">✓</button>
             </div>
