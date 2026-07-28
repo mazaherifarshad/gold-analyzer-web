@@ -13,15 +13,16 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [showInfo, setShowInfo] = useState(null);
 
-  // سرمایه‌گذاری با کیبورد مجازی
+  // ===== سرمایه‌گذاری با کیبورد حرفه‌ای =====
   const [capital, setCapital] = useState(0);
   const [capitalDisplay, setCapitalDisplay] = useState('');
   const [userPreference, setUserPreference] = useState('gold');
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
   const [showPortfolio, setShowPortfolio] = useState(false);
+  const [showCapitalKeyboard, setShowCapitalKeyboard] = useState(false);
 
-  // ماشین حساب (محاسبه خودکار)
+  // ===== ماشین حساب با کیبورد شناور =====
   const [goldCalc, setGoldCalc] = useState({
     weight: 1,
     sellerPrice: 0,
@@ -34,13 +35,18 @@ function App() {
     isCheaper: false
   });
   const [showGoldCalc, setShowGoldCalc] = useState(false);
+  
+  // وضعیت برای کیبورد شناور ماشین حساب
+  const [activeCalcInput, setActiveCalcInput] = useState(null); // 'weight', 'sellerPrice', 'commission'
+  const [calcInputDisplay, setCalcInputDisplay] = useState('');
+  const [showCalcKeyboard, setShowCalcKeyboard] = useState(false);
 
   const [buyMeterGold, setBuyMeterGold] = useState(50);
   const [buyMeterUsd, setBuyMeterUsd] = useState(50);
   const [news, setNews] = useState([]);
   const updateInterval = useRef(null);
 
-  // دریافت داده
+  // ===== دریافت داده =====
   const fetchData = async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
@@ -49,7 +55,6 @@ function App() {
         axios.get(`${API_URL}/analysis`)
       ]);
       
-      // قیمت‌ها را بدون هیچ ضربی مستقیماً ذخیره می‌کنیم
       const priceMap = {};
       pricesRes.data.forEach(p => {
         priceMap[p.symbol] = p.price;
@@ -144,7 +149,7 @@ function App() {
     return () => clearInterval(updateInterval.current);
   }, []);
 
-  // ماشین حساب خودکار
+  // ===== ماشین حساب خودکار =====
   useEffect(() => {
     if (prices.gold) calculateGold();
   }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
@@ -164,19 +169,60 @@ function App() {
     }));
   };
 
-  // کیبورد مجازی
-  const handleNumberClick = (num) => {
-    if (num === '000') {
+  // ===== کیبورد حرفه‌ای برای سرمایه =====
+  const handleCapitalKeyClick = (num) => {
+    if (num === '00') {
+      setCapital(prev => prev * 100);
+      setCapitalDisplay(prev => prev + '00');
+    } else if (num === '000') {
       setCapital(prev => prev * 1000);
       setCapitalDisplay(prev => prev + '000');
     } else if (num === '⌫') {
       const newDisplay = capitalDisplay.slice(0, -1);
       setCapitalDisplay(newDisplay);
       setCapital(Number(newDisplay.replace(/,/g, '')) || 0);
+    } else if (num === '✓') {
+      setShowCapitalKeyboard(false);
     } else {
       const newDisplay = capitalDisplay + num;
       setCapitalDisplay(newDisplay);
       setCapital(Number(newDisplay.replace(/,/g, '')) || 0);
+    }
+  };
+
+  // ===== کیبورد شناور برای ماشین حساب =====
+  const openCalcKeyboard = (field) => {
+    setActiveCalcInput(field);
+    // مقدار فعلی را به عنوان پیش‌فرض نمایش بده
+    let currentVal = '';
+    if (field === 'weight') currentVal = goldCalc.weight.toString();
+    else if (field === 'sellerPrice') currentVal = goldCalc.sellerPrice.toString();
+    else if (field === 'commission') currentVal = goldCalc.commission.toString();
+    setCalcInputDisplay(currentVal);
+    setShowCalcKeyboard(true);
+  };
+
+  const handleCalcKeyClick = (num) => {
+    if (num === '00') {
+      setCalcInputDisplay(prev => prev + '00');
+    } else if (num === '000') {
+      setCalcInputDisplay(prev => prev + '000');
+    } else if (num === '⌫') {
+      setCalcInputDisplay(prev => prev.slice(0, -1));
+    } else if (num === '✓') {
+      // اعمال مقدار به فیلد مربوطه
+      const val = Number(calcInputDisplay.replace(/,/g, '')) || 0;
+      if (activeCalcInput === 'weight') {
+        setGoldCalc(prev => ({ ...prev, weight: val || 0 }));
+      } else if (activeCalcInput === 'sellerPrice') {
+        setGoldCalc(prev => ({ ...prev, sellerPrice: val || 0 }));
+      } else if (activeCalcInput === 'commission') {
+        setGoldCalc(prev => ({ ...prev, commission: val || 0 }));
+      }
+      setShowCalcKeyboard(false);
+      setActiveCalcInput(null);
+    } else {
+      setCalcInputDisplay(prev => prev + num);
     }
   };
 
@@ -257,7 +303,7 @@ function App() {
             </div>
           </div>
 
-          {/* قیمت‌ها - بدون ضرب */}
+          {/* قیمت‌ها */}
           <div className="prices-grid">
             {Object.entries(prices).map(([symbol, price]) => (
               <div key={symbol} className="price-card glass">
@@ -305,7 +351,7 @@ function App() {
             })}
           </div>
 
-          {/* ماشین حساب (محاسبه خودکار) */}
+          {/* ===== ماشین حساب با کیبورد شناور ===== */}
           <div className="gold-calculator glass">
             <div className="calc-header">
               <h2>🧮 ماشین حساب طلا</h2>
@@ -323,13 +369,10 @@ function App() {
                 
                 <div className="calc-row">
                   <label>وزن (گرم)</label>
-                  <input 
-                    type="number" 
-                    value={goldCalc.weight} 
-                    onChange={(e) => setGoldCalc(prev => ({ ...prev, weight: Number(e.target.value) || 0 }))} 
-                    min="0.1" 
-                    step="0.1" 
-                  />
+                  <div className="calc-input-wrapper" onClick={() => openCalcKeyboard('weight')}>
+                    <span>{goldCalc.weight}</span>
+                    <span className="calc-input-hint">👆 کلیک برای ورود</span>
+                  </div>
                 </div>
                 
                 <div className="calc-row">
@@ -348,27 +391,19 @@ function App() {
                 
                 <div className="calc-row">
                   <label>قیمت فروشنده (ریال)</label>
-                  <input 
-                    type="number" 
-                    value={goldCalc.sellerPrice} 
-                    onChange={(e) => setGoldCalc(prev => ({ ...prev, sellerPrice: Number(e.target.value) || 0 }))} 
-                    min="0" 
-                    placeholder="مثلاً 185000000"
-                  />
+                  <div className="calc-input-wrapper" onClick={() => openCalcKeyboard('sellerPrice')}>
+                    <span>{goldCalc.sellerPrice ? formatMoney(goldCalc.sellerPrice) : '۰'}</span>
+                    <span className="calc-input-hint">👆 کلیک برای ورود</span>
+                  </div>
                   <span className="calc-hint">💰 قیمت هر گرم طلا با عیار انتخابی در سایت: {formatMoney((prices.gold || 0) * (goldCalc.karat / 750))} ریال</span>
                 </div>
                 
                 <div className="calc-row">
                   <label>کارمزد (%)</label>
-                  <input 
-                    type="number" 
-                    value={goldCalc.commission} 
-                    onChange={(e) => setGoldCalc(prev => ({ ...prev, commission: Number(e.target.value) || 0 }))} 
-                    min="0" 
-                    max="10" 
-                    step="0.1" 
-                    placeholder="۰"
-                  />
+                  <div className="calc-input-wrapper" onClick={() => openCalcKeyboard('commission')}>
+                    <span>{goldCalc.commission}</span>
+                    <span className="calc-input-hint">👆 کلیک برای ورود</span>
+                  </div>
                 </div>
 
                 <div className="calc-results">
@@ -401,7 +436,7 @@ function App() {
             )}
           </div>
 
-          {/* سرمایه‌گذاری با کیبورد مجازی */}
+          {/* ===== سرمایه‌گذاری با کیبورد حرفه‌ای ===== */}
           <div className="portfolio-section glass">
             <div className="portfolio-header">
               <h2>💼 مشاور سرمایه‌گذاری</h2>
@@ -416,30 +451,42 @@ function App() {
                 <div className="portfolio-controls">
                   <div className="capital-input-group">
                     <label>مبلغ سرمایه (ریال)</label>
-                    <div className="capital-display">
+                    <div className="capital-display" onClick={() => setShowCapitalKeyboard(true)}>
                       <span>{capitalDisplay || '۰'}</span>
+                      <span className="capital-hint">👆 کلیک برای ورود</span>
                     </div>
-                    <div className="virtual-keyboard">
-                      <div className="keyboard-row">
-                        <button onClick={() => handleNumberClick('1')}>1</button>
-                        <button onClick={() => handleNumberClick('2')}>2</button>
-                        <button onClick={() => handleNumberClick('3')}>3</button>
-                        <button onClick={() => handleNumberClick('000')} className="key-zero">000</button>
+                    
+                    {/* کیبورد حرفه‌ای سرمایه */}
+                    {showCapitalKeyboard && (
+                      <div className="modal-overlay" onClick={() => setShowCapitalKeyboard(false)}>
+                        <div className="keyboard-modal glass" onClick={(e) => e.stopPropagation()}>
+                          <div className="keyboard-display">
+                            <span>{capitalDisplay || '۰'}</span>
+                          </div>
+                          <div className="keyboard-grid">
+                            <button onClick={() => handleCapitalKeyClick('1')}>1</button>
+                            <button onClick={() => handleCapitalKeyClick('2')}>2</button>
+                            <button onClick={() => handleCapitalKeyClick('3')}>3</button>
+                            <button onClick={() => handleCapitalKeyClick('00')} className="key-double-zero">۰۰</button>
+                            
+                            <button onClick={() => handleCapitalKeyClick('4')}>4</button>
+                            <button onClick={() => handleCapitalKeyClick('5')}>5</button>
+                            <button onClick={() => handleCapitalKeyClick('6')}>6</button>
+                            <button onClick={() => handleCapitalKeyClick('000')} className="key-triple-zero">۰۰۰</button>
+                            
+                            <button onClick={() => handleCapitalKeyClick('7')}>7</button>
+                            <button onClick={() => handleCapitalKeyClick('8')}>8</button>
+                            <button onClick={() => handleCapitalKeyClick('9')}>9</button>
+                            <button onClick={() => handleCapitalKeyClick('0')}>0</button>
+                            
+                            <button onClick={() => handleCapitalKeyClick('⌫')} className="key-delete">⌫</button>
+                            <button onClick={() => handleCapitalKeyClick('✓')} className="key-confirm">✓</button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="keyboard-row">
-                        <button onClick={() => handleNumberClick('4')}>4</button>
-                        <button onClick={() => handleNumberClick('5')}>5</button>
-                        <button onClick={() => handleNumberClick('6')}>6</button>
-                        <button onClick={() => handleNumberClick('⌫')} className="key-delete">⌫</button>
-                      </div>
-                      <div className="keyboard-row">
-                        <button onClick={() => handleNumberClick('7')}>7</button>
-                        <button onClick={() => handleNumberClick('8')}>8</button>
-                        <button onClick={() => handleNumberClick('9')}>9</button>
-                        <button onClick={() => handleNumberClick('0')}>0</button>
-                      </div>
-                    </div>
+                    )}
                   </div>
+                  
                   <div className="preference-selector">
                     <label>اولویت سرمایه‌گذاری</label>
                     <select 
@@ -528,7 +575,42 @@ function App() {
         </>
       )}
 
-      {/* پنجره اطلاعات */}
+      {/* ===== کیبورد شناور ماشین حساب ===== */}
+      {showCalcKeyboard && (
+        <div className="modal-overlay" onClick={() => setShowCalcKeyboard(false)}>
+          <div className="keyboard-modal glass" onClick={(e) => e.stopPropagation()}>
+            <div className="keyboard-display">
+              <span>{calcInputDisplay || '۰'}</span>
+              <span className="keyboard-field-label">
+                {activeCalcInput === 'weight' ? 'وزن (گرم)' : 
+                 activeCalcInput === 'sellerPrice' ? 'قیمت فروشنده' : 
+                 activeCalcInput === 'commission' ? 'کارمزد (%)' : ''}
+              </span>
+            </div>
+            <div className="keyboard-grid">
+              <button onClick={() => handleCalcKeyClick('1')}>1</button>
+              <button onClick={() => handleCalcKeyClick('2')}>2</button>
+              <button onClick={() => handleCalcKeyClick('3')}>3</button>
+              <button onClick={() => handleCalcKeyClick('00')} className="key-double-zero">۰۰</button>
+              
+              <button onClick={() => handleCalcKeyClick('4')}>4</button>
+              <button onClick={() => handleCalcKeyClick('5')}>5</button>
+              <button onClick={() => handleCalcKeyClick('6')}>6</button>
+              <button onClick={() => handleCalcKeyClick('000')} className="key-triple-zero">۰۰۰</button>
+              
+              <button onClick={() => handleCalcKeyClick('7')}>7</button>
+              <button onClick={() => handleCalcKeyClick('8')}>8</button>
+              <button onClick={() => handleCalcKeyClick('9')}>9</button>
+              <button onClick={() => handleCalcKeyClick('0')}>0</button>
+              
+              <button onClick={() => handleCalcKeyClick('⌫')} className="key-delete">⌫</button>
+              <button onClick={() => handleCalcKeyClick('✓')} className="key-confirm">✓</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== پنجره اطلاعات ===== */}
       {showInfo && (
         <div className="info-modal" onClick={() => setShowInfo(null)}>
           <div className="info-modal-content glass">
