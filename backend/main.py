@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-زرین‌سنج API - نسخه نهایی و واقعی
-Zarinsanj API - Final Real Version
+Zarinsanj API - نسخه نهایی و صحیح
 """
 
 from fastapi import FastAPI, HTTPException
@@ -17,7 +16,6 @@ import requests
 from pathlib import Path
 from contextlib import contextmanager
 
-# ============ تنظیمات دیتابیس ============
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Index, UniqueConstraint, Text, and_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
@@ -25,7 +23,7 @@ from sqlalchemy.pool import StaticPool
 
 Base = declarative_base()
 
-# ============ مدل‌های دیتابیس ============
+# ===== مدل‌های دیتابیس =====
 class MarketHistory(Base):
     __tablename__ = 'market_history'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -34,7 +32,6 @@ class MarketHistory(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
     source = Column(String(50), default='tgju')
     raw_data = Column(Text, nullable=True)
-    __table_args__ = (Index('idx_history_symbol_time', 'symbol', 'created_at'),)
 
 class MarketCandle(Base):
     __tablename__ = 'market_candles'
@@ -55,24 +52,13 @@ class MarketCandle(Base):
         Index('idx_candle_symbol_timeframe_time', 'symbol', 'timeframe', 'candle_time'),
     )
 
-# ============ اتصال به دیتابیس ============
+# ===== اتصال به دیتابیس =====
 DB_PATH = Path(__file__).parent / 'database' / 'market.db'
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 DATABASE_URL = f"sqlite:///{DB_PATH}"
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={'check_same_thread': False},
-    poolclass=StaticPool,
-    echo=False
-)
-
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
-
+engine = create_engine(DATABASE_URL, connect_args={'check_same_thread': False}, poolclass=StaticPool, echo=False)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base.metadata.create_all(engine)
 
 @contextmanager
@@ -87,23 +73,11 @@ def session_scope():
     finally:
         session.close()
 
-# ============ FastAPI App ============
-app = FastAPI(
-    title="Zarinsanj API",
-    description="تحلیل‌گر حرفه‌ای بازار طلا و ارز ایران",
-    version="3.0.0"
-)
+# ===== FastAPI =====
+app = FastAPI(title="Zarinsanj API", version="3.1.0")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
-# ============ CORS ============
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# ============ مدل‌های پاسخ ============
+# ===== مدل‌های پاسخ =====
 class PriceResponse(BaseModel):
     symbol: str
     price: float
@@ -116,16 +90,14 @@ class AnalysisResponse(BaseModel):
     trend_score: int
     rsi: float
     momentum: str
-    volatility: float
     final_score: float
     recommendation: str
     confidence: int
     reasons: List[str]
     timestamp: str
 
-# ============ تابع تحلیل واقعی ============
+# ===== تابع تحلیل =====
 def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
-    """تحلیل دقیق با محاسبات درست"""
     import pandas as pd
     import numpy as np
     
@@ -136,24 +108,20 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
         ).order_by(MarketCandle.candle_time).all()
         
         if len(candles) < 20:
-            return {'error': f'Not enough candles for {symbol} (need 20, have {len(candles)})'}
+            return {'error': f'Not enough candles for {symbol}'}
         
-        data = []
-        for c in candles:
-            data.append({
-                'time': c.candle_time,
-                'open': c.open,
-                'high': c.high,
-                'low': c.low,
-                'close': c.close,
-                'volume': c.volume
-            })
+        df = pd.DataFrame([{
+            'time': c.candle_time,
+            'open': c.open,
+            'high': c.high,
+            'low': c.low,
+            'close': c.close,
+            'volume': c.volume
+        } for c in candles])
+        df.set_index('time', inplace=True)
+        df = df.sort_index()
     
-    df = pd.DataFrame(data)
-    df.set_index('time', inplace=True)
-    df = df.sort_index()
-    
-    # محاسبه دقیق RSI
+    # RSI
     delta = df['close'].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
@@ -161,7 +129,7 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
     rsi = 100 - (100 / (1 + rs))
     current_rsi = rsi.iloc[-1] if not pd.isna(rsi.iloc[-1]) else 50
     
-    # محاسبه روند با EMA
+    # روند با EMA
     ema_9 = df['close'].ewm(span=9, adjust=False).mean()
     ema_21 = df['close'].ewm(span=21, adjust=False).mean()
     current_price = df['close'].iloc[-1]
@@ -182,7 +150,7 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
         trend = 'CONSOLIDATION'
         trend_score = 50
     
-    # محاسبه امتیاز نهایی
+    # امتیاز نهایی
     final_score = (trend_score * 0.6) + (current_rsi * 0.4)
     
     # توصیه
@@ -207,7 +175,6 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
         reasons.append(f"روند صعودی (امتیاز: {trend_score})")
     elif trend_score < 40:
         reasons.append(f"روند نزولی (امتیاز: {trend_score})")
-    
     if current_rsi > 70:
         reasons.append(f"اشباع خرید (RSI: {current_rsi:.1f})")
     elif current_rsi < 30:
@@ -220,7 +187,6 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
         'trend_score': trend_score,
         'rsi': float(current_rsi),
         'momentum': 'BULLISH' if current_rsi > 50 else 'BEARISH' if current_rsi < 50 else 'NEUTRAL',
-        'volatility': 0.5,
         'final_score': float(final_score),
         'recommendation': recommendation,
         'confidence': confidence,
@@ -228,10 +194,8 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
         'timestamp': datetime.now().isoformat()
     }
 
-# ============ تابع مشاور سرمایه‌گذاری ============
+# ===== تابع پیشنهاد سرمایه‌گذاری =====
 def get_portfolio_recommendations(capital: float) -> List[Dict]:
-    """تولید پیشنهادات سرمایه‌گذاری با محاسبات واقعی"""
-    
     symbols = ['gold', 'usd', 'coin']
     analyses = {}
     for symbol in symbols:
@@ -246,12 +210,9 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
     returns = {}
     risks = {}
     for symbol, analysis in analyses.items():
-        # بازده: ترکیب روند و RSI
         trend_factor = (analysis['trend_score'] - 50) / 50
         rsi_factor = (analysis['rsi'] - 50) / 50
         returns[symbol] = max(0.1, min(0.9, 0.5 + trend_factor * 0.3 + rsi_factor * 0.2))
-        
-        # ریسک: بر اساس نوسان و فاصله از RSI 50
         risks[symbol] = 0.3 + abs(analysis['rsi'] - 50) / 100
     
     # نسبت شارپ
@@ -265,7 +226,6 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
     if total_sharpe == 0:
         total_sharpe = 1
     
-    # ۳ سناریو
     scenarios = [
         {'name': 'محافظه‌کارانه', 'multiplier': 0.7, 'color': '🟢'},
         {'name': 'متعادل', 'multiplier': 1.0, 'color': '🟡'},
@@ -290,11 +250,9 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
             price = analyses.get(symbol, {}).get('current_price', 1)
             quantity = amount / price if price > 0 else 0
             unit = 'قطعه' if symbol == 'coin' else 'واحد'
-            
             if symbol == 'coin':
                 quantity = max(1, round(quantity))
                 amount = quantity * price
-            
             amounts[symbol] = {
                 'amount_toman': amount,
                 'quantity': quantity,
@@ -303,11 +261,8 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
                 'unit': unit
             }
         
-        total_return = 0
-        total_risk = 0
-        for symbol, weight in allocations.items():
-            total_return += weight * returns.get(symbol, 0)
-            total_risk += weight * risks.get(symbol, 0)
+        total_return = sum(weight * returns.get(symbol, 0) for symbol, weight in allocations.items())
+        total_risk = sum(weight * risks.get(symbol, 0) for symbol, weight in allocations.items())
         
         recommendations.append({
             'scenario': scenario['name'],
@@ -320,23 +275,16 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
     
     return recommendations
 
-# ============ توابع دریافت داده ============
+# ===== توابع دریافت داده =====
 def fetch_and_store_all():
     subdomains = ["call2", "call3", "call4"]
     call = random.choice(subdomains)
     url = f"https://{call}.tgju.org/ajax.json?rev=test"
-    
-    headers = {
-        "accept": "*/*",
-        "origin": "https://www.tgju.org",
-        "referer": "https://www.tgju.org",
-        "user-agent": "Mozilla/5.0"
-    }
+    headers = {"accept": "*/*", "origin": "https://www.tgju.org", "referer": "https://www.tgju.org", "user-agent": "Mozilla/5.0"}
     
     response = requests.get(url, headers=headers, timeout=10)
     response.raise_for_status()
-    data = response.json()
-    current = data["current"]
+    current = response.json()["current"]
     
     prices = {
         "gold": float(current["geram18"]["p"].replace(",", "")),
@@ -347,38 +295,21 @@ def fetch_and_store_all():
     
     with session_scope() as session:
         for symbol, price in prices.items():
-            tick = MarketHistory(
-                symbol=symbol,
-                price=price,
-                created_at=datetime.now(),
-                source='tgju'
-            )
-            session.add(tick)
-    
+            session.add(MarketHistory(symbol=symbol, price=price, created_at=datetime.now(), source='tgju'))
     return prices
 
 def build_candles_for_all_symbols():
     symbols = ['gold', 'usd', 'ounce', 'coin']
-    
     with session_scope() as session:
         for symbol in symbols:
-            ticks = session.query(MarketHistory).filter(
-                MarketHistory.symbol == symbol
-            ).order_by(MarketHistory.created_at).all()
-            
+            ticks = session.query(MarketHistory).filter(MarketHistory.symbol == symbol).order_by(MarketHistory.created_at).all()
             if len(ticks) < 2:
                 continue
-            
             for i in range(len(ticks) - 1):
                 candle_time = ticks[i].created_at.replace(second=0, microsecond=0)
                 existing = session.query(MarketCandle).filter(
-                    and_(
-                        MarketCandle.symbol == symbol,
-                        MarketCandle.timeframe == '1m',
-                        MarketCandle.candle_time == candle_time
-                    )
+                    and_(MarketCandle.symbol == symbol, MarketCandle.timeframe == '1m', MarketCandle.candle_time == candle_time)
                 ).first()
-                
                 if existing:
                     existing.open = ticks[i].price
                     existing.high = max(ticks[i].price, ticks[i+1].price)
@@ -387,77 +318,44 @@ def build_candles_for_all_symbols():
                     existing.volume += 2
                     existing.tick_count += 2
                 else:
-                    candle = MarketCandle(
-                        symbol=symbol,
-                        timeframe='1m',
-                        candle_time=candle_time,
-                        open=ticks[i].price,
-                        high=max(ticks[i].price, ticks[i+1].price),
-                        low=min(ticks[i].price, ticks[i+1].price),
-                        close=ticks[i+1].price,
-                        volume=2,
-                        tick_count=2
-                    )
-                    session.add(candle)
+                    session.add(MarketCandle(
+                        symbol=symbol, timeframe='1m', candle_time=candle_time,
+                        open=ticks[i].price, high=max(ticks[i].price, ticks[i+1].price),
+                        low=min(ticks[i].price, ticks[i+1].price), close=ticks[i+1].price,
+                        volume=2, tick_count=2
+                    ))
 
-# ============ API Endpoints ============
+# ===== API =====
 @app.get("/")
 async def root():
-    return {
-        "name": "Zarinsanj API",
-        "version": "3.0.0",
-        "developer": "F.Mazaheri",
-        "status": "online",
-        "endpoints": ["/prices", "/analysis", "/analysis/{symbol}", "/portfolio", "/health"]
-    }
+    return {"name": "Zarinsanj API", "version": "3.1.0", "developer": "F.Mazaheri", "status": "online"}
 
 @app.get("/prices", response_model=List[PriceResponse])
 async def get_prices():
-    subdomains = ["call2", "call3", "call4"]
-    call = random.choice(subdomains)
-    url = f"https://{call}.tgju.org/ajax.json?rev=test"
-    
-    headers = {
-        "accept": "*/*",
-        "origin": "https://www.tgju.org",
-        "referer": "https://www.tgju.org",
-        "user-agent": "Mozilla/5.0"
-    }
-    
     try:
-        response = requests.get(url, headers=headers, timeout=10)
+        subdomains = ["call2", "call3", "call4"]
+        call = random.choice(subdomains)
+        url = f"https://{call}.tgju.org/ajax.json?rev=test"
+        response = requests.get(url, headers={"accept": "*/*", "origin": "https://www.tgju.org", "referer": "https://www.tgju.org", "user-agent": "Mozilla/5.0"}, timeout=10)
         response.raise_for_status()
-        data = response.json()
-        current = data["current"]
-        
+        current = response.json()["current"]
         prices = {
             "gold": float(current["geram18"]["p"].replace(",", "")),
             "usd": float(current["price_dollar_rl"]["p"].replace(",", "")),
             "ounce": float(current["ons"]["p"].replace(",", "")),
             "coin": float(current["sekee"]["p"].replace(",", ""))
         }
-        
-        return [
-            PriceResponse(
-                symbol=symbol,
-                price=price * 10,
-                timestamp=datetime.now().isoformat()
-            )
-            for symbol, price in prices.items()
-        ]
+        return [PriceResponse(symbol=s, price=p, timestamp=datetime.now().isoformat()) for s, p in prices.items()]
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Unable to fetch prices: {str(e)}")
 
 @app.get("/analysis", response_model=List[AnalysisResponse])
 async def get_all_analysis():
-    symbols = ['gold', 'usd', 'ounce', 'coin']
     results = []
-    
-    for symbol in symbols:
+    for symbol in ['gold', 'usd', 'ounce', 'coin']:
         result = analyze_symbol(symbol)
         if 'error' not in result:
             results.append(AnalysisResponse(**result))
-    
     return results
 
 @app.get("/analysis/{symbol}", response_model=AnalysisResponse)
@@ -472,94 +370,57 @@ async def get_portfolio(capital: float = 10000000):
     try:
         recommendations = get_portfolio_recommendations(capital)
         if not recommendations:
-            return {
-                "status": "error",
-                "message": "Unable to generate recommendations. Not enough data."
-            }
-        
-        return {
-            "status": "success",
-            "capital": capital,
-            "recommendations": recommendations,
-            "timestamp": datetime.now().isoformat()
-        }
+            return {"status": "error", "message": "Unable to generate recommendations."}
+        return {"status": "success", "capital": capital, "recommendations": recommendations, "timestamp": datetime.now().isoformat()}
     except Exception as e:
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+        return {"status": "error", "message": str(e)}
+
+@app.get("/fix-db")
+async def fix_database():
+    try:
+        db_path = Path(__file__).parent / 'database' / 'market.db'
+        conn = sqlite3.connect(str(db_path))
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(market_history)")
+        columns = [col[1] for col in cursor.fetchall()]
+        added = []
+        if 'raw_data' not in columns:
+            cursor.execute("ALTER TABLE market_history ADD COLUMN raw_data TEXT")
+            added.append('raw_data')
+        if 'source' not in columns:
+            cursor.execute("ALTER TABLE market_history ADD COLUMN source TEXT DEFAULT 'tgju'")
+            added.append('source')
+        cursor.execute("PRAGMA table_info(market_candles)")
+        columns = [col[1] for col in cursor.fetchall()]
+        if 'tick_count' not in columns:
+            cursor.execute("ALTER TABLE market_candles ADD COLUMN tick_count INTEGER DEFAULT 0")
+            added.append('tick_count')
+        if 'updated_at' not in columns:
+            cursor.execute("ALTER TABLE market_candles ADD COLUMN updated_at DATETIME")
+            added.append('updated_at')
+        conn.commit()
+        conn.close()
+        return {"status": "success", "message": "Database fixed", "columns_added": added}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 @app.get("/health")
 async def health_check():
     try:
         with session_scope() as session:
             count = session.query(MarketHistory).count()
-        return {
-            "status": "healthy",
-            "database": "connected",
-            "records": count,
-            "timestamp": datetime.now().isoformat()
-        }
+        return {"status": "healthy", "database": "connected", "records": count}
     except Exception as e:
-        return {
-            "status": "unhealthy",
-            "error": str(e),
-            "timestamp": datetime.now().isoformat()
-        }
+        return {"status": "unhealthy", "error": str(e)}
+
+@app.post("/update")
+async def update_data():
+    try:
+        fetch_and_store_all()
+        build_candles_for_all_symbols()
+        return {"status": "success", "message": "Data updated successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-@app.get("/fix-db")
-async def fix_database():
-    """تعمیر دیتابیس - اضافه کردن ستون‌های گم‌شده"""
-    import sqlite3
-    from pathlib import Path
-    
-    try:
-        db_path = Path(__file__).parent / 'database' / 'market.db'
-        conn = sqlite3.connect(str(db_path))
-        cursor = conn.cursor()
-        
-        # بررسی و اضافه کردن ستون‌ها به market_history
-        cursor.execute("PRAGMA table_info(market_history)")
-        columns = [col[1] for col in cursor.fetchall()]
-        
-        added = []
-        if 'raw_data' not in columns:
-            cursor.execute("ALTER TABLE market_history ADD COLUMN raw_data TEXT")
-            added.append('raw_data')
-            print("✅ Added raw_data column to market_history")
-        
-        if 'source' not in columns:
-            cursor.execute("ALTER TABLE market_history ADD COLUMN source TEXT DEFAULT 'tgju'")
-            added.append('source')
-            print("✅ Added source column to market_history")
-        
-        # بررسی و اضافه کردن ستون‌ها به market_candles
-        cursor.execute("PRAGMA table_info(market_candles)")
-        columns = [col[1] for col in cursor.fetchall()]
-        
-        if 'tick_count' not in columns:
-            cursor.execute("ALTER TABLE market_candles ADD COLUMN tick_count INTEGER DEFAULT 0")
-            added.append('tick_count (market_candles)')
-            print("✅ Added tick_count column to market_candles")
-        
-        if 'updated_at' not in columns:
-            cursor.execute("ALTER TABLE market_candles ADD COLUMN updated_at DATETIME")
-            added.append('updated_at (market_candles)')
-            print("✅ Added updated_at column to market_candles")
-        
-        conn.commit()
-        conn.close()
-        
-        return {
-            "status": "success",
-            "message": "Database fixed successfully",
-            "columns_added": added,
-            "timestamp": datetime.now().isoformat()
-        }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": str(e)
-        }
