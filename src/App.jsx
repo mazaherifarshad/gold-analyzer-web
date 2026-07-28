@@ -14,15 +14,15 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [showInfo, setShowInfo] = useState(null);
 
-  // ===== سرمایه‌گذاری =====
-  const [capital, setCapital] = useState(50000000);
-  const [capitalInput, setCapitalInput] = useState('50,000,000');
+  // ===== سرمایه‌گذاری (با صفحه کلید مجازی) =====
+  const [capital, setCapital] = useState(0);
+  const [capitalDisplay, setCapitalDisplay] = useState('');
   const [userPreference, setUserPreference] = useState('gold');
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
   const [showPortfolio, setShowPortfolio] = useState(false);
 
-  // ===== ماشین حساب =====
+  // ===== ماشین حساب (محاسبه خودکار) =====
   const [goldCalc, setGoldCalc] = useState({
     weight: 1,
     sellerPrice: 0,
@@ -56,7 +56,7 @@ function App() {
       
       const priceMap = {};
       pricesRes.data.forEach(p => {
-        priceMap[p.symbol] = p.price * 10;
+        priceMap[p.symbol] = p.price; // بدون ضرب!
       });
       setPrices(priceMap);
       setAnalysis(analysisRes.data);
@@ -127,6 +127,10 @@ function App() {
 
   // ===== دریافت پیشنهادات =====
   const fetchPortfolio = async () => {
+    if (capital === 0) {
+      setError('لطفاً مبلغ سرمایه را وارد کنید.');
+      return;
+    }
     setPortfolioLoading(true);
     setError(null);
     try {
@@ -161,20 +165,18 @@ function App() {
     return () => clearInterval(updateInterval.current);
   }, []);
 
-  // ===== ماشین حساب طلا =====
+  // ===== ماشین حساب (محاسبه خودکار) =====
+  useEffect(() => {
+    if (prices.gold) {
+      calculateGold();
+    }
+  }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
+
   const calculateGold = () => {
     const baseGoldPrice = prices.gold || 0;
-    
-    // قیمت فروشنده (اگر کاربر وارد نکرده، از قیمت سایت استفاده کن)
     const sellerPrice = goldCalc.sellerPrice > 0 ? goldCalc.sellerPrice : baseGoldPrice;
-    
-    // قیمت فروشنده با کارمزد
     const finalSellerPrice = sellerPrice + (sellerPrice * goldCalc.commission / 100);
-    
-    // قیمت سایت با کارمزد
     const finalOfficialPrice = baseGoldPrice + (baseGoldPrice * goldCalc.commission / 100);
-    
-    // اختلاف
     const difference = finalSellerPrice - finalOfficialPrice;
     
     setGoldCalc(prev => ({
@@ -187,11 +189,21 @@ function App() {
     }));
   };
 
-  useEffect(() => {
-    if (prices.gold) {
-      calculateGold();
+  // ===== صفحه کلید مجازی (با دکمه ۰۰۰) =====
+  const handleNumberClick = (num) => {
+    if (num === '000') {
+      setCapital(prev => prev * 1000);
+      setCapitalDisplay(prev => prev + '000');
+    } else if (num === '⌫') {
+      const newDisplay = capitalDisplay.slice(0, -1);
+      setCapitalDisplay(newDisplay);
+      setCapital(Number(newDisplay.replace(/,/g, '')) || 0);
+    } else {
+      const newDisplay = capitalDisplay + num;
+      setCapitalDisplay(newDisplay);
+      setCapital(Number(newDisplay.replace(/,/g, '')) || 0);
     }
-  }, [prices.gold, goldCalc.sellerPrice, goldCalc.commission]);
+  };
 
   // ===== توابع کمکی =====
   const getRecommendationColor = (rec) => {
@@ -212,32 +224,6 @@ function App() {
 
   const formatMoney = (num) => {
     return num.toLocaleString('fa-IR');
-  };
-
-  const parseNumber = (str) => Number(str.replace(/,/g, ''));
-
-  const handleCapitalSelect = (e) => {
-    const val = Number(e.target.value);
-    setCapital(val);
-    setCapitalInput(formatMoney(val));
-  };
-
-  const handleCapitalInput = (e) => {
-    const raw = e.target.value.replace(/,/g, '');
-    const num = Number(raw);
-    if (!isNaN(num) && num >= 0) {
-      setCapital(num);
-      setCapitalInput(formatMoney(num));
-    } else {
-      setCapitalInput(e.target.value);
-    }
-  };
-
-  const handleCapitalBlur = () => {
-    if (isNaN(capital) || capital < 1000000) {
-      setCapital(1000000);
-      setCapitalInput('1,000,000');
-    }
   };
 
   const getAnalysisInfo = (symbol) => {
@@ -338,7 +324,7 @@ function App() {
             </div>
           </div>
 
-          {/* قیمت‌ها */}
+          {/* قیمت‌ها (درست) */}
           <div className="prices-grid">
             {Object.entries(prices).map(([symbol, price]) => (
               <div key={symbol} className="price-card glass">
@@ -365,7 +351,7 @@ function App() {
                     </div>
                   </div>
                   <div className="card-metrics">
-                    <div className="metric"><span>قیمت</span><strong>{formatMoney(item.current_price * 10)} ریال</strong></div>
+                    <div className="metric"><span>قیمت</span><strong>{formatMoney(item.current_price)} ریال</strong></div>
                     <div className="metric"><span>روند</span><strong>{item.trend}</strong></div>
                     <div className="metric"><span>RSI</span><strong>{item.rsi?.toFixed(1)}</strong></div>
                     <div className="metric"><span>امتیاز</span><strong>{item.final_score?.toFixed(0)}/100</strong></div>
@@ -385,7 +371,7 @@ function App() {
             })}
           </div>
 
-          {/* ماشین حساب طلا */}
+          {/* ماشین حساب (محاسبه خودکار) */}
           <div className="gold-calculator glass">
             <div className="calc-header">
               <h2>🧮 ماشین حساب طلا</h2>
@@ -402,21 +388,25 @@ function App() {
                 </div>
                 
                 <div className="calc-row">
-                  <label>وزن طلا (گرم)</label>
+                  <label>وزن (گرم)</label>
                   <input 
                     type="number" 
                     value={goldCalc.weight} 
-                    onChange={(e) => setGoldCalc(prev => ({ ...prev, weight: Number(e.target.value) || 0 }))} 
+                    onChange={(e) => {
+                      setGoldCalc(prev => ({ ...prev, weight: Number(e.target.value) || 0 }));
+                    }} 
                     min="0.1" 
                     step="0.1" 
                   />
                 </div>
                 
                 <div className="calc-row">
-                  <label>عیار طلا</label>
+                  <label>عیار</label>
                   <select 
                     value={goldCalc.karat} 
-                    onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))}
+                    onChange={(e) => {
+                      setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }));
+                    }}
                     className={darkMode ? '' : 'light-select'}
                   >
                     <option value="740">۷۴۰</option>
@@ -431,7 +421,9 @@ function App() {
                   <input 
                     type="number" 
                     value={goldCalc.sellerPrice} 
-                    onChange={(e) => setGoldCalc(prev => ({ ...prev, sellerPrice: Number(e.target.value) || 0 }))} 
+                    onChange={(e) => {
+                      setGoldCalc(prev => ({ ...prev, sellerPrice: Number(e.target.value) || 0 }));
+                    }} 
                     min="0" 
                     placeholder="مثلاً 185000000"
                   />
@@ -443,15 +435,15 @@ function App() {
                   <input 
                     type="number" 
                     value={goldCalc.commission} 
-                    onChange={(e) => setGoldCalc(prev => ({ ...prev, commission: Number(e.target.value) || 0 }))} 
+                    onChange={(e) => {
+                      setGoldCalc(prev => ({ ...prev, commission: Number(e.target.value) || 0 }));
+                    }} 
                     min="0" 
                     max="10" 
                     step="0.1" 
                     placeholder="۰"
                   />
                 </div>
-
-                <button className="calc-btn" onClick={calculateGold}>🔍 محاسبه</button>
 
                 <div className="calc-results">
                   <div className="calc-result-item">
@@ -483,7 +475,7 @@ function App() {
             )}
           </div>
 
-          {/* سرمایه‌گذاری */}
+          {/* سرمایه‌گذاری با صفحه کلید مجازی */}
           <div className="portfolio-section glass">
             <div className="portfolio-header">
               <h2>💼 مشاور سرمایه‌گذاری</h2>
@@ -491,23 +483,35 @@ function App() {
                 {showPortfolio ? '🔽' : '🔼'}
               </button>
             </div>
-            <p className="portfolio-subtitle">مبلغ سرمایه را وارد کنید تا بهترین پیشنهاد را دریافت کنید.</p>
+            <p className="portfolio-subtitle">مبلغ سرمایه را با صفحه کلید مجازی وارد کنید.</p>
 
             {showPortfolio && (
               <>
                 <div className="portfolio-controls">
                   <div className="capital-input-group">
                     <label>مبلغ سرمایه (ریال)</label>
-                    <div className="capital-input-row">
-                      <select value={capital} onChange={handleCapitalSelect} className="capital-select">
-                        <option value="10000000">۱۰,۰۰۰,۰۰۰</option>
-                        <option value="50000000">۵۰,۰۰۰,۰۰۰</option>
-                        <option value="100000000">۱۰۰,۰۰۰,۰۰۰</option>
-                        <option value="500000000">۵۰۰,۰۰۰,۰۰۰</option>
-                        <option value="1000000000">۱,۰۰۰,۰۰۰,۰۰۰</option>
-                        <option value="custom">سفارشی</option>
-                      </select>
-                      <input type="text" value={capitalInput} onChange={handleCapitalInput} onBlur={handleCapitalBlur} className="capital-text-input" dir="ltr" placeholder="مقدار دلخواه" />
+                    <div className="capital-display">
+                      <span>{capitalDisplay || '۰'}</span>
+                    </div>
+                    <div className="virtual-keyboard">
+                      <div className="keyboard-row">
+                        <button onClick={() => handleNumberClick('1')}>1</button>
+                        <button onClick={() => handleNumberClick('2')}>2</button>
+                        <button onClick={() => handleNumberClick('3')}>3</button>
+                        <button onClick={() => handleNumberClick('000')} className="key-zero">000</button>
+                      </div>
+                      <div className="keyboard-row">
+                        <button onClick={() => handleNumberClick('4')}>4</button>
+                        <button onClick={() => handleNumberClick('5')}>5</button>
+                        <button onClick={() => handleNumberClick('6')}>6</button>
+                        <button onClick={() => handleNumberClick('⌫')} className="key-delete">⌫</button>
+                      </div>
+                      <div className="keyboard-row">
+                        <button onClick={() => handleNumberClick('7')}>7</button>
+                        <button onClick={() => handleNumberClick('8')}>8</button>
+                        <button onClick={() => handleNumberClick('9')}>9</button>
+                        <button onClick={() => handleNumberClick('0')}>0</button>
+                      </div>
                     </div>
                   </div>
                   <div className="preference-selector">
@@ -556,7 +560,7 @@ function App() {
                         if (allowedAssets.includes(symbol)) {
                           roundedAllocations[symbol] = {
                             ...data,
-                            amount_toman: data.amount_toman * 10,
+                            amount_toman: data.amount_toman,
                             quantity: symbol === 'coin' ? Math.round(data.quantity) : data.quantity,
                             unit: symbol === 'coin' ? 'قطعه' : 'واحد'
                           };
@@ -623,7 +627,7 @@ function App() {
                   )}
                   {item && (
                     <div className="info-stats">
-                      <div><span>قیمت فعلی</span> <strong>{formatMoney(item.current_price * 10)} ریال</strong></div>
+                      <div><span>قیمت فعلی</span> <strong>{formatMoney(item.current_price)} ریال</strong></div>
                       <div><span>امتیاز</span> <strong>{item.final_score?.toFixed(0)}/100</strong></div>
                       <div><span>توصیه</span> <strong>{item.recommendation}</strong></div>
                       <div><span>اطمینان</span> <strong>{item.confidence}%</strong></div>
@@ -638,7 +642,7 @@ function App() {
 
       <footer className="footer">
         <p>Zarinsanj © 2026 | توسعه‌دهنده: F.Mazaheri</p>
-        <p style={{ fontSize: '12px', color: '#666' }}>منبع داده: TGJU | نسخه V2.1</p>
+        <p style={{ fontSize: '12px', color: '#666' }}>منبع داده: TGJU | نسخه V3.1</p>
       </footer>
     </div>
   );
