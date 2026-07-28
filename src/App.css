@@ -1,41 +1,1018 @@
-/* ===== کیبورد حرفه‌ای ===== */
-.modal-overlay {
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.app {
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  padding: 16px;
+}
+
+/* ===== حالت شب ===== */
+.app.dark {
+  background: #0a0a14;
+  color: #f0f0f0;
+}
+
+/* ===== حالت روز ===== */
+.app.light {
+  background: #f5f5fa;
+  color: #1a1a2e;
+}
+
+/* ===== Glassmorphism ===== */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.app.light .glass {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-titles h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+}
+
+.header-titles .header-subtitle {
+  font-size: 11px;
+  color: #888;
+  font-weight: 400;
+}
+
+.app.light .header-titles h1 {
+  color: #1a1a2e;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.update-time {
+  color: #888;
+  font-size: 11px;
+}
+
+.update-btn-glass {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.update-btn-glass:hover {
+  transform: rotate(180deg);
+  background: rgba(255, 215, 0, 0.15);
+  border-color: #ffd700;
+}
+
+.theme-btn-glass {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.theme-btn-glass:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ===== کیلومترها ===== */
+.meters-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.meter-card {
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.meter-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.meter-icon {
+  font-size: 18px;
+}
+
+.meter-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.app.light .meter-title {
+  color: #1a1a2e;
+}
+
+.meter-bar-wrapper {
+  padding: 0 2px;
+}
+
+.meter-bar {
+  position: relative;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.app.light .meter-bar {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.meter-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease;
+  background: #ffd700;
+}
+
+.meter-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 7px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.meter-status {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+/* ===== قیمت‌ها ===== */
+.prices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.price-card {
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.price-symbol {
+  font-size: 11px;
+  color: #888;
+}
+
+.price-value {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 2px;
+  color: #ffd700;
+}
+
+/* ===== تحلیل‌ها ===== */
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.analysis-card {
+  padding: 12px 14px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.card-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.app.light .card-header h3 {
+  color: #1a1a2e;
+}
+
+.recommendation {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #000;
+}
+
+.info-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+}
+
+.info-btn:hover {
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+}
+
+.news-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 8px;
+  margin: 4px 0 6px 0;
+  background: rgba(255, 215, 0, 0.06);
+  border-radius: 6px;
+  border-right: 2px solid #ffd700;
+  font-size: 11px;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+.news-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.metric span {
+  font-size: 10px;
+  color: #888;
+}
+
+.metric strong {
+  font-size: 12px;
+  color: #fff;
+}
+
+.app.light .metric strong {
+  color: #1a1a2e;
+}
+
+.card-confidence {
+  margin-top: 6px;
+}
+
+.confidence-bar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700, #ff6b00);
+  border-radius: 3px;
+  transition: width 0.5s;
+}
+
+.card-confidence span {
+  font-size: 10px;
+  color: #888;
+}
+
+/* ===== ماشین حساب ===== */
+.gold-calculator {
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.calc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calc-header h2 {
+  font-size: 15px;
+  color: #fff;
+}
+
+.app.light .calc-header h2 {
+  color: #1a1a2e;
+}
+
+.calc-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.calc-body {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+.calc-info strong {
+  color: #ffd700;
+  font-size: 13px;
+}
+
+.calc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.calc-row label {
+  min-width: 60px;
+  font-size: 12px;
+  color: #888;
+}
+
+.calc-row input,
+.calc-row select {
+  flex: 1;
+  min-width: 50px;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 12px;
+}
+
+.app.light .calc-row input,
+.app.light .calc-row select,
+.app.light .calc-row select.light-select {
+  background: rgba(0, 0, 0, 0.03);
+  color: #1a1a2e;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.app.dark .calc-row select,
+.app.dark .capital-select,
+.app.dark .preference-selector select {
+  background: #1a1a2e;
+  color: #f0f0f0;
+  border-color: #3d3d5a;
+}
+
+.app.dark .calc-row select option,
+.app.dark .capital-select option,
+.app.dark .preference-selector select option {
+  background: #1a1a2e;
+  color: #f0f0f0;
+}
+
+.calc-hint {
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
+  display: block;
+  width: 100%;
+}
+
+.calc-btn {
+  padding: 6px 16px;
+  background: linear-gradient(135deg, #ffd700, #ff6b00);
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+  align-self: flex-start;
+}
+
+.calc-btn:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+.calc-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.calc-result-item {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+.calc-result-item span {
+  font-size: 9px;
+  color: #888;
+}
+
+.calc-result-item strong {
+  font-size: 12px;
+  color: #fff;
+}
+
+.app.light .calc-result-item strong {
+  color: #1a1a2e;
+}
+
+.calc-result-item small {
+  font-size: 9px;
+  color: #666;
+  margin-top: 1px;
+  display: block;
+}
+
+/* ===== ورودی‌های کلیک‌شونده ===== */
+.calc-input-wrapper {
+  flex: 1;
+  min-width: 50px;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+}
+
+.app.light .calc-input-wrapper {
+  background: rgba(0, 0, 0, 0.01);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: #1a1a2e;
+}
+
+.calc-input-wrapper:hover {
+  border-color: #ffd700;
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.calc-input-hint {
+  font-size: 8px;
+  color: #666;
+  margin-top: 1px;
+}
+
+/* ===== سرمایه‌گذاری ===== */
+.portfolio-section {
+  padding: 12px 14px;
+  margin-top: 16px;
+}
+
+.portfolio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.portfolio-header h2 {
+  font-size: 15px;
+  color: #fff;
+}
+
+.app.light .portfolio-header h2 {
+  color: #1a1a2e;
+}
+
+.portfolio-toggle-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.portfolio-subtitle {
+  color: #888;
+  font-size: 11px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.portfolio-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.capital-input-group {
+  flex: 2;
+  min-width: 160px;
+}
+
+.capital-input-group label {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 3px;
+}
+
+.capital-display {
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.app.light .capital-display {
+  background: rgba(0, 0, 0, 0.01);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: #1a1a2e;
+}
+
+.capital-display:hover {
+  border-color: #ffd700;
+}
+
+.capital-hint {
+  font-size: 9px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.capital-text-input {
+  flex: 2;
+  min-width: 80px;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 13px;
+  text-align: left;
+  direction: ltr;
+}
+
+.app.light .capital-text-input {
+  background: rgba(0, 0, 0, 0.03);
+  color: #1a1a2e;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.preference-selector {
+  flex: 1;
+  min-width: 80px;
+}
+
+.preference-selector label {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 3px;
+}
+
+.preference-selector select {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.portfolio-btn {
+  padding: 6px 16px;
+  background: linear-gradient(135deg, #ffd700, #ff6b00);
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.portfolio-btn:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+.portfolio-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.portfolio-results {
+  margin-top: 10px;
+}
+
+.portfolio-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  color: #888;
+}
+
+.portfolio-risks {
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: rgba(255, 215, 0, 0.06);
+  border-radius: 6px;
+  border-right: 2px solid #ffd700;
+}
+
+.portfolio-risks h4 {
+  font-size: 12px;
+  color: #ffd700;
+  margin-bottom: 2px;
+}
+
+.portfolio-risks ul {
+  list-style: none;
+  padding: 0;
+}
+
+.portfolio-risks li {
+  font-size: 11px;
+  color: #ccc;
+  padding: 2px 0;
+}
+
+.portfolio-advice {
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: rgba(52, 199, 89, 0.06);
+  border-radius: 6px;
+  border-right: 2px solid #34c759;
+}
+
+.portfolio-advice h4 {
+  font-size: 12px;
+  color: #34c759;
+  margin-bottom: 2px;
+}
+
+.portfolio-advice p {
+  font-size: 11px;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+.portfolio-card {
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.portfolio-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.portfolio-card-header h4 {
+  font-size: 13px;
+  color: #fff;
+}
+
+.app.light .portfolio-card-header h4 {
+  color: #1a1a2e;
+}
+
+.portfolio-allocations {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.allocation-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px 8px;
+  font-size: 11px;
+}
+
+.allocation-symbol {
+  font-weight: 600;
+  min-width: 40px;
+  color: #ffd700;
+}
+
+.allocation-amount {
+  color: #fff;
+}
+
+.app.light .allocation-amount {
+  color: #1a1a2e;
+}
+
+.allocation-bar {
+  flex: 1;
+  min-width: 30px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.allocation-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700, #ff6b00);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.portfolio-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+  color: #888;
+}
+
+/* ===== پنجره اطلاعات ===== */
+.info-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+  padding: 16px;
+}
+
+.info-modal-content {
+  max-width: 380px;
+  width: 100%;
+  padding: 20px;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.info-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  transition: all 0.3s;
+}
+
+.info-modal-close:hover {
+  color: #ff3b30;
+  transform: scale(1.1);
+}
+
+.info-modal-content h2 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #ffd700;
+}
+
+.info-factors,
+.info-news,
+.info-stats {
+  margin-bottom: 10px;
+}
+
+.info-factors h4,
+.info-news h4,
+.info-stats h4 {
+  font-size: 12px;
+  margin-bottom: 4px;
+  color: #888;
+}
+
+.info-factors ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-factors li {
+  padding: 2px 0;
+  font-size: 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #ccc;
+}
+
+.info-news p {
+  font-size: 11px;
+  color: #aaa;
+  line-height: 1.4;
+  padding: 4px 8px;
+  background: rgba(255, 215, 0, 0.06);
+  border-radius: 6px;
+  border-right: 2px solid #ffd700;
+}
+
+.info-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+}
+
+.info-stats div {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-stats span {
+  font-size: 9px;
+  color: #888;
+}
+
+.info-stats strong {
+  font-size: 12px;
+  color: #fff;
+}
+
+.app.light .info-stats strong {
+  color: #1a1a2e;
+}
+
+/* ===== کیبورد شناور ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1001;
-  padding: 20px;
+  padding: 16px;
 }
 
 .keyboard-modal {
   width: 100%;
-  max-width: 400px;
-  padding: 24px 20px 28px;
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  max-width: 320px;
+  padding: 16px 16px 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .keyboard-display {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 16px 20px;
-  margin-bottom: 20px;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
   text-align: center;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 600;
-  min-height: 70px;
+  min-height: 48px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .app.light .keyboard-display {
@@ -52,23 +1029,23 @@
 }
 
 .keyboard-field-label {
-  font-size: 12px !important;
+  font-size: 10px !important;
   color: #888 !important;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .keyboard-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .keyboard-grid button {
-  padding: 16px 0;
-  font-size: 22px;
+  padding: 10px 0;
+  font-size: 18px;
   font-weight: 600;
   border: none;
-  border-radius: 14px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
   cursor: pointer;
@@ -83,14 +1060,6 @@
 
 .keyboard-grid button:active {
   transform: scale(0.94);
-}
-
-.keyboard-grid button:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.app.light .keyboard-grid button:hover {
-  background: rgba(0, 0, 0, 0.08);
 }
 
 .key-double-zero {
@@ -111,104 +1080,89 @@
 .key-confirm {
   background: rgba(52, 199, 89, 0.2) !important;
   color: #34c759 !important;
-  font-size: 28px !important;
+  font-size: 24px !important;
 }
 
-/* ===== ورودی‌های کلیک‌شونده ماشین حساب ===== */
-.calc-input-wrapper {
-  flex: 1;
-  min-width: 60px;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-}
-
-.app.light .calc-input-wrapper {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #1a1a2e;
-}
-
-.calc-input-wrapper:hover {
-  border-color: #ffd700;
-  background: rgba(255, 215, 0, 0.05);
-}
-
-.calc-input-hint {
-  font-size: 10px;
-  color: #666;
-  margin-top: 2px;
-}
-
-.calc-hint {
-  font-size: 11px;
-  color: #666;
-  margin-top: 4px;
-  display: block;
-  width: 100%;
-}
-
-/* ===== نمایشگر سرمایه ===== */
-.capital-display {
-  padding: 12px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  font-size: 24px;
-  font-weight: 600;
+/* ===== فوتر ===== */
+.footer {
   text-align: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  min-height: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.app.light .capital-display {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #1a1a2e;
-}
-
-.capital-display:hover {
-  border-color: #ffd700;
-}
-
-.capital-hint {
+  padding: 12px 0;
+  color: #555;
   font-size: 11px;
-  color: #666;
-  margin-top: 4px;
+  margin-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 /* ===== واکنش‌گرایی ===== */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .header-titles h1 {
+    font-size: 17px;
+  }
+
+  .meters-container {
+    grid-template-columns: 1fr;
+  }
+
+  .prices-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calc-results {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .capital-input-row {
+    flex-direction: column;
+  }
+
+  .capital-select,
+  .capital-text-input {
+    width: 100%;
+  }
+
+  .portfolio-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .info-modal-content {
+    margin: 12px;
+    padding: 16px;
+  }
+
+  .info-stats {
+    grid-template-columns: 1fr;
+  }
+
   .keyboard-modal {
     max-width: 100%;
-    border-radius: 20px;
-    margin: 16px;
-    padding: 20px 16px 24px;
+    border-radius: 16px;
+    margin: 12px;
+    padding: 14px 12px 18px;
   }
   
   .keyboard-grid button {
-    padding: 14px 0;
-    font-size: 20px;
+    padding: 8px 0;
+    font-size: 16px;
   }
   
   .keyboard-display {
-    font-size: 24px;
-    min-height: 60px;
-    padding: 12px 16px;
+    font-size: 18px;
+    min-height: 40px;
+    padding: 8px 12px;
   }
 }
