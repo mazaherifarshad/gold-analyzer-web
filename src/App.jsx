@@ -13,15 +13,16 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [showInfo, setShowInfo] = useState(null);
 
+  // سرمایه‌گذاری (بدون اولویت)
   const [capital, setCapital] = useState(0);
   const [capitalDisplay, setCapitalDisplay] = useState('');
-  const [userPreference, setUserPreference] = useState('gold');
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
   const [showPortfolio, setShowPortfolio] = useState(false);
 
+  // ماشین حساب
   const [goldCalc, setGoldCalc] = useState({
-    weight: 1,
+    weight: 0,
     sellerPrice: 0,
     karat: 750,
     commission: 0,
@@ -39,6 +40,7 @@ function App() {
 
   const updateInterval = useRef(null);
 
+  // ===== دریافت داده =====
   const fetchData = async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
@@ -137,6 +139,7 @@ function App() {
     return () => clearInterval(updateInterval.current);
   }, []);
 
+  // ===== ماشین حساب خودکار =====
   useEffect(() => {
     if (prices.gold) calculateGold();
   }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
@@ -196,22 +199,30 @@ function App() {
     if (field === 'weight') currentVal = goldCalc.weight.toString();
     else if (field === 'sellerPrice') currentVal = goldCalc.sellerPrice.toString();
     else if (field === 'commission') currentVal = goldCalc.commission.toString();
+    
+    // اگر مقدار فعلی 0 است، خالی بگذار تا کاربر از صفر شروع کند
+    if (currentVal === '0') currentVal = '';
     setCalcInputDisplay(currentVal);
     setShowCalcKeyboard(true);
   };
 
   const handleCalcKeyClick = (num) => {
-    if (num === '00') {
+    if (num === '.') {
+      // اگر قبلاً اعشار وجود نداشت، اضافه کن
+      if (!calcInputDisplay.includes('.')) {
+        setCalcInputDisplay(prev => prev + '.');
+      }
+    } else if (num === '00') {
       setCalcInputDisplay(prev => prev + '00');
     } else if (num === '000') {
       setCalcInputDisplay(prev => prev + '000');
     } else if (num === '⌫') {
       setCalcInputDisplay(prev => prev.slice(0, -1));
     } else if (num === '✓') {
-      const val = Number(calcInputDisplay.replace(/,/g, '')) || 0;
-      if (activeCalcInput === 'weight') setGoldCalc(prev => ({ ...prev, weight: val || 0 }));
-      else if (activeCalcInput === 'sellerPrice') setGoldCalc(prev => ({ ...prev, sellerPrice: val || 0 }));
-      else if (activeCalcInput === 'commission') setGoldCalc(prev => ({ ...prev, commission: val || 0 }));
+      const val = Number(calcInputDisplay) || 0;
+      if (activeCalcInput === 'weight') setGoldCalc(prev => ({ ...prev, weight: val }));
+      else if (activeCalcInput === 'sellerPrice') setGoldCalc(prev => ({ ...prev, sellerPrice: val }));
+      else if (activeCalcInput === 'commission') setGoldCalc(prev => ({ ...prev, commission: val }));
       setShowCalcKeyboard(false);
       setActiveCalcInput(null);
     } else {
@@ -305,7 +316,7 @@ function App() {
             {showGoldCalc && (
               <div className="calc-body">
                 <div className="calc-info"><span>💰 قیمت پایه سایت (هر گرم طلا با عیار ۷۵۰):</span><strong>{formatMoney(prices.gold || 0)} ریال</strong></div>
-                <div className="calc-row"><label>وزن (گرم)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('weight')}><span>{goldCalc.weight}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
+                <div className="calc-row"><label>وزن (گرم)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('weight')}><span>{goldCalc.weight || '۰'}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
                 <div className="calc-row"><label>عیار</label><select value={goldCalc.karat} onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))} className={darkMode ? '' : 'light-select'}><option value="740">۷۴۰</option><option value="750">۷۵۰ (۱۸ عیار)</option><option value="916">۹۱۶ (۲۲ عیار)</option><option value="999">۹۹۹ (۲۴ عیار)</option></select></div>
                 <div className="calc-row"><label>قیمت فروشنده (ریال)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('sellerPrice')}><span>{goldCalc.sellerPrice ? formatMoney(goldCalc.sellerPrice) : '۰'}</span><span className="calc-input-hint">👆 کلیک</span></div><span className="calc-hint">💰 قیمت هر گرم طلا با عیار انتخابی در سایت: {formatMoney((prices.gold || 0) * (goldCalc.karat / 750))} ریال</span></div>
                 <div className="calc-row"><label>کارمزد (%)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('commission')}><span>{goldCalc.commission}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
@@ -323,7 +334,7 @@ function App() {
               <h2>💼 مشاور سرمایه‌گذاری</h2>
               <button className="portfolio-toggle-btn" onClick={() => setShowPortfolio(!showPortfolio)}>{showPortfolio ? '🔽' : '🔼'}</button>
             </div>
-            <p className="portfolio-subtitle">مبلغ سرمایه را با صفحه کلید مجازی وارد کنید.</p>
+            <p className="portfolio-subtitle">مبلغ سرمایه را وارد کنید تا بهترین پیشنهادات را دریافت کنید.</p>
             {showPortfolio && (
               <>
                 <div className="portfolio-controls">
@@ -337,18 +348,18 @@ function App() {
                       <div className="modal-overlay" onClick={() => setShowCapitalKeyboard(false)}>
                         <div className="keyboard-modal glass" onClick={(e) => e.stopPropagation()}>
                           <div className="keyboard-display"><span>{capitalDisplay || '۰'}</span></div>
-                          <div className="keyboard-grid">
-                            <button onClick={() => handleCapitalKeyClick('1')}>1</button>
-                            <button onClick={() => handleCapitalKeyClick('2')}>2</button>
-                            <button onClick={() => handleCapitalKeyClick('3')}>3</button>
+                          <div className="keyboard-grid keyboard-calculator">
+                            <button onClick={() => handleCapitalKeyClick('7')}>7</button>
+                            <button onClick={() => handleCapitalKeyClick('8')}>8</button>
+                            <button onClick={() => handleCapitalKeyClick('9')}>9</button>
                             <button onClick={() => handleCapitalKeyClick('00')} className="key-double-zero">۰۰</button>
                             <button onClick={() => handleCapitalKeyClick('4')}>4</button>
                             <button onClick={() => handleCapitalKeyClick('5')}>5</button>
                             <button onClick={() => handleCapitalKeyClick('6')}>6</button>
                             <button onClick={() => handleCapitalKeyClick('000')} className="key-triple-zero">۰۰۰</button>
-                            <button onClick={() => handleCapitalKeyClick('7')}>7</button>
-                            <button onClick={() => handleCapitalKeyClick('8')}>8</button>
-                            <button onClick={() => handleCapitalKeyClick('9')}>9</button>
+                            <button onClick={() => handleCapitalKeyClick('1')}>1</button>
+                            <button onClick={() => handleCapitalKeyClick('2')}>2</button>
+                            <button onClick={() => handleCapitalKeyClick('3')}>3</button>
                             <button onClick={() => handleCapitalKeyClick('0')}>0</button>
                             <button onClick={() => handleCapitalKeyClick('⌫')} className="key-delete">⌫</button>
                             <button onClick={() => handleCapitalKeyClick('✓')} className="key-confirm">✓</button>
@@ -356,14 +367,6 @@ function App() {
                         </div>
                       </div>
                     )}
-                  </div>
-                  <div className="preference-selector">
-                    <label>اولویت سرمایه‌گذاری</label>
-                    <select value={userPreference} onChange={(e) => setUserPreference(e.target.value)} className={darkMode ? '' : 'light-select'}>
-                      <option value="gold">🥇 طلا</option>
-                      <option value="usd">💵 دلار</option>
-                      <option value="coin">🪙 سکه</option>
-                    </select>
                   </div>
                   <button onClick={fetchPortfolio} className="portfolio-btn" disabled={portfolioLoading}>
                     {portfolioLoading ? '⏳ در حال تحلیل...' : '🔍 دریافت پیشنهادات'}
@@ -373,7 +376,6 @@ function App() {
                   <div className="portfolio-results">
                     <div className="portfolio-summary">
                       <span>💰 سرمایه: {formatMoney(portfolio.capital)} ریال</span>
-                      <span>📊 اولویت: {userPreference === 'gold' ? 'طلا' : userPreference === 'usd' ? 'دلار' : 'سکه'}</span>
                       <span>📅 {new Date(portfolio.timestamp).toLocaleString('fa-IR')}</span>
                     </div>
                     <div className="portfolio-risks">
@@ -382,7 +384,7 @@ function App() {
                     </div>
                     <div className="portfolio-advice">
                       <h4>💡 پیشنهاد جایگزین:</h4>
-                      <p>با توجه به شرایط بازار، پیشنهاد می‌شود به جای تمرکز بر یک دارایی، سبدی متشکل از {userPreference === 'gold' ? 'طلا و دلار' : userPreference === 'usd' ? 'دلار و طلا' : 'سکه و طلا'} تشکیل دهید تا ریسک شما کاهش یابد.</p>
+                      <p>با توجه به شرایط بازار، پیشنهاد می‌شود سبدی متشکل از طلا، دلار و سکه تشکیل دهید تا ریسک شما کاهش یابد.</p>
                     </div>
                     {portfolio.recommendations.map((rec, idx) => {
                       const roundedAllocations = {};
@@ -438,18 +440,19 @@ function App() {
                  activeCalcInput === 'commission' ? 'کارمزد (%)' : ''}
               </span>
             </div>
-            <div className="keyboard-grid">
-              <button onClick={() => handleCalcKeyClick('1')}>1</button>
-              <button onClick={() => handleCalcKeyClick('2')}>2</button>
-              <button onClick={() => handleCalcKeyClick('3')}>3</button>
+            <div className="keyboard-grid keyboard-calculator">
+              <button onClick={() => handleCalcKeyClick('7')}>7</button>
+              <button onClick={() => handleCalcKeyClick('8')}>8</button>
+              <button onClick={() => handleCalcKeyClick('9')}>9</button>
               <button onClick={() => handleCalcKeyClick('00')} className="key-double-zero">۰۰</button>
               <button onClick={() => handleCalcKeyClick('4')}>4</button>
               <button onClick={() => handleCalcKeyClick('5')}>5</button>
               <button onClick={() => handleCalcKeyClick('6')}>6</button>
               <button onClick={() => handleCalcKeyClick('000')} className="key-triple-zero">۰۰۰</button>
-              <button onClick={() => handleCalcKeyClick('7')}>7</button>
-              <button onClick={() => handleCalcKeyClick('8')}>8</button>
-              <button onClick={() => handleCalcKeyClick('9')}>9</button>
+              <button onClick={() => handleCalcKeyClick('1')}>1</button>
+              <button onClick={() => handleCalcKeyClick('2')}>2</button>
+              <button onClick={() => handleCalcKeyClick('3')}>3</button>
+              <button onClick={() => handleCalcKeyClick('.')} className="key-decimal">.</button>
               <button onClick={() => handleCalcKeyClick('0')}>0</button>
               <button onClick={() => handleCalcKeyClick('⌫')} className="key-delete">⌫</button>
               <button onClick={() => handleCalcKeyClick('✓')} className="key-confirm">✓</button>

@@ -118,7 +118,7 @@
 .update-btn-glass:hover {
   transform: rotate(180deg);
   background: rgba(255, 215, 0, 0.15);
-  border-color: #ffd700;
+  border-color: #e6a800;
 }
 
 .theme-btn-glass {
@@ -195,7 +195,7 @@
   height: 100%;
   border-radius: 4px;
   transition: width 0.8s ease;
-  background: #ffd700;
+  background: #e6a800;
 }
 
 .meter-value {
@@ -238,7 +238,11 @@
   font-size: 13px;
   font-weight: 600;
   margin-top: 2px;
-  color: #ffd700;
+  color: #e6a800;
+}
+
+.app.light .price-value {
+  color: #b8860b;
 }
 
 /* ===== تحلیل‌ها ===== */
@@ -294,8 +298,8 @@
 }
 
 .info-btn:hover {
-  background: rgba(255, 215, 0, 0.15);
-  color: #ffd700;
+  background: rgba(230, 168, 0, 0.15);
+  color: #e6a800;
 }
 
 .news-item {
@@ -304,9 +308,9 @@
   gap: 6px;
   padding: 4px 8px;
   margin: 4px 0 6px 0;
-  background: rgba(255, 215, 0, 0.06);
+  background: rgba(230, 168, 0, 0.06);
   border-radius: 6px;
-  border-right: 2px solid #ffd700;
+  border-right: 2px solid #e6a800;
   font-size: 11px;
   color: #ccc;
   line-height: 1.4;
@@ -358,7 +362,7 @@
 
 .confidence-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ffd700, #ff6b00);
+  background: linear-gradient(90deg, #e6a800, #ff6b00);
   border-radius: 3px;
   transition: width 0.5s;
 }
@@ -419,8 +423,12 @@
 }
 
 .calc-info strong {
-  color: #ffd700;
+  color: #e6a800;
   font-size: 13px;
+}
+
+.app.light .calc-info strong {
+  color: #b8860b;
 }
 
 .calc-row {
@@ -457,16 +465,14 @@
 }
 
 .app.dark .calc-row select,
-.app.dark .capital-select,
-.app.dark .preference-selector select {
+.app.dark .capital-select {
   background: #1a1a2e;
   color: #f0f0f0;
   border-color: #3d3d5a;
 }
 
 .app.dark .calc-row select option,
-.app.dark .capital-select option,
-.app.dark .preference-selector select option {
+.app.dark .capital-select option {
   background: #1a1a2e;
   color: #f0f0f0;
 }
@@ -481,7 +487,7 @@
 
 .calc-btn {
   padding: 6px 16px;
-  background: linear-gradient(135deg, #ffd700, #ff6b00);
+  background: linear-gradient(135deg, #e6a800, #ff6b00);
   border: none;
   border-radius: 6px;
   color: #000;
@@ -561,8 +567,8 @@
 }
 
 .calc-input-wrapper:hover {
-  border-color: #ffd700;
-  background: rgba(255, 215, 0, 0.05);
+  border-color: #e6a800;
+  background: rgba(230, 168, 0, 0.05);
 }
 
 .calc-input-hint {
@@ -652,7 +658,7 @@
 }
 
 .capital-display:hover {
-  border-color: #ffd700;
+  border-color: #e6a800;
 }
 
 .capital-hint {
@@ -680,32 +686,9 @@
   border-color: rgba(0, 0, 0, 0.08);
 }
 
-.preference-selector {
-  flex: 1;
-  min-width: 80px;
-}
-
-.preference-selector label {
-  display: block;
-  font-size: 11px;
-  color: #888;
-  margin-bottom: 3px;
-}
-
-.preference-selector select {
-  width: 100%;
-  padding: 5px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-
 .portfolio-btn {
   padding: 6px 16px;
-  background: linear-gradient(135deg, #ffd700, #ff6b00);
+  background: linear-gradient(135deg, #e6a800, #ff6b00);
   border: none;
   border-radius: 6px;
   color: #000;
@@ -745,15 +728,19 @@
 .portfolio-risks {
   padding: 8px 10px;
   margin-bottom: 8px;
-  background: rgba(255, 215, 0, 0.06);
+  background: rgba(230, 168, 0, 0.06);
   border-radius: 6px;
-  border-right: 2px solid #ffd700;
+  border-right: 2px solid #e6a800;
 }
 
 .portfolio-risks h4 {
   font-size: 12px;
-  color: #ffd700;
+  color: #e6a800;
   margin-bottom: 2px;
+}
+
+.app.light .portfolio-risks h4 {
+  color: #b8860b;
 }
 
 .portfolio-risks ul {
@@ -826,7 +813,11 @@
 .allocation-symbol {
   font-weight: 600;
   min-width: 40px;
-  color: #ffd700;
+  color: #e6a800;
+}
+
+.app.light .allocation-symbol {
+  color: #b8860b;
 }
 
 .allocation-amount {
@@ -848,7 +839,7 @@
 
 .allocation-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ffd700, #ff6b00);
+  background: linear-gradient(90deg, #e6a800, #ff6b00);
   border-radius: 3px;
   transition: width 0.5s ease;
 }
@@ -908,7 +899,11 @@
 .info-modal-content h2 {
   font-size: 16px;
   margin-bottom: 10px;
-  color: #ffd700;
+  color: #e6a800;
+}
+
+.app.light .info-modal-content h2 {
+  color: #b8860b;
 }
 
 .info-factors,
@@ -942,9 +937,9 @@
   color: #aaa;
   line-height: 1.4;
   padding: 4px 8px;
-  background: rgba(255, 215, 0, 0.06);
+  background: rgba(230, 168, 0, 0.06);
   border-radius: 6px;
-  border-right: 2px solid #ffd700;
+  border-right: 2px solid #e6a800;
 }
 
 .info-stats {
@@ -1034,13 +1029,14 @@
   margin-top: 2px;
 }
 
-.keyboard-grid {
+/* چیدمان ماشین حساب */
+.keyboard-calculator {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 
-.keyboard-grid button {
+.keyboard-calculator button {
   padding: 10px 0;
   font-size: 18px;
   font-weight: 600;
@@ -1053,23 +1049,23 @@
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.app.light .keyboard-grid button {
+.app.light .keyboard-calculator button {
   background: rgba(0, 0, 0, 0.04);
   color: #1a1a2e;
 }
 
-.keyboard-grid button:active {
+.keyboard-calculator button:active {
   transform: scale(0.94);
 }
 
 .key-double-zero {
-  background: rgba(255, 215, 0, 0.15) !important;
-  color: #ffd700 !important;
+  background: rgba(230, 168, 0, 0.15) !important;
+  color: #e6a800 !important;
 }
 
 .key-triple-zero {
-  background: rgba(255, 215, 0, 0.25) !important;
-  color: #ffd700 !important;
+  background: rgba(230, 168, 0, 0.25) !important;
+  color: #e6a800 !important;
 }
 
 .key-delete {
@@ -1081,6 +1077,17 @@
   background: rgba(52, 199, 89, 0.2) !important;
   color: #34c759 !important;
   font-size: 24px !important;
+}
+
+.key-decimal {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+
+.app.light .key-decimal {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #1a1a2e !important;
 }
 
 /* ===== فوتر ===== */
@@ -1129,11 +1136,6 @@
     flex-direction: column;
   }
 
-  .capital-select,
-  .capital-text-input {
-    width: 100%;
-  }
-
   .portfolio-btn {
     width: 100%;
     text-align: center;
@@ -1155,7 +1157,7 @@
     padding: 14px 12px 18px;
   }
   
-  .keyboard-grid button {
+  .keyboard-calculator button {
     padding: 8px 0;
     font-size: 16px;
   }
