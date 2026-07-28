@@ -13,16 +13,13 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [showInfo, setShowInfo] = useState(null);
 
-  // ===== سرمایه‌گذاری با کیبورد حرفه‌ای =====
   const [capital, setCapital] = useState(0);
   const [capitalDisplay, setCapitalDisplay] = useState('');
   const [userPreference, setUserPreference] = useState('gold');
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
   const [showPortfolio, setShowPortfolio] = useState(false);
-  const [showCapitalKeyboard, setShowCapitalKeyboard] = useState(false);
 
-  // ===== ماشین حساب با کیبورد شناور =====
   const [goldCalc, setGoldCalc] = useState({
     weight: 1,
     sellerPrice: 0,
@@ -35,18 +32,13 @@ function App() {
     isCheaper: false
   });
   const [showGoldCalc, setShowGoldCalc] = useState(false);
-  
-  // وضعیت برای کیبورد شناور ماشین حساب
-  const [activeCalcInput, setActiveCalcInput] = useState(null); // 'weight', 'sellerPrice', 'commission'
-  const [calcInputDisplay, setCalcInputDisplay] = useState('');
-  const [showCalcKeyboard, setShowCalcKeyboard] = useState(false);
 
   const [buyMeterGold, setBuyMeterGold] = useState(50);
   const [buyMeterUsd, setBuyMeterUsd] = useState(50);
   const [news, setNews] = useState([]);
+
   const updateInterval = useRef(null);
 
-  // ===== دریافت داده =====
   const fetchData = async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
@@ -56,9 +48,7 @@ function App() {
       ]);
       
       const priceMap = {};
-      pricesRes.data.forEach(p => {
-        priceMap[p.symbol] = p.price;
-      });
+      pricesRes.data.forEach(p => { priceMap[p.symbol] = p.price; });
       setPrices(priceMap);
       setAnalysis(analysisRes.data);
       
@@ -122,9 +112,7 @@ function App() {
     setPortfolioLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${API_URL}/portfolio`, { 
-        params: { capital } 
-      });
+      const response = await axios.get(`${API_URL}/portfolio`, { params: { capital } });
       setPortfolio(response.data);
       setShowPortfolio(true);
     } catch (err) {
@@ -149,7 +137,6 @@ function App() {
     return () => clearInterval(updateInterval.current);
   }, []);
 
-  // ===== ماشین حساب خودکار =====
   useEffect(() => {
     if (prices.gold) calculateGold();
   }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
@@ -169,7 +156,20 @@ function App() {
     }));
   };
 
-  // ===== کیبورد حرفه‌ای برای سرمایه =====
+  const formatMoney = (num) => num ? num.toLocaleString('fa-IR') : '۰';
+  const getSymbolName = (symbol) => ({ gold: 'طلا', usd: 'دلار', ounce: 'انس', coin: 'سکه' }[symbol] || symbol);
+  const getRecommendationColor = (rec) => {
+    if (rec?.includes('BUY')) return '#34c759';
+    if (rec?.includes('SELL')) return '#ff3b30';
+    return '#ffd60a';
+  };
+
+  // ===== کیبورد =====
+  const [showCapitalKeyboard, setShowCapitalKeyboard] = useState(false);
+  const [activeCalcInput, setActiveCalcInput] = useState(null);
+  const [calcInputDisplay, setCalcInputDisplay] = useState('');
+  const [showCalcKeyboard, setShowCalcKeyboard] = useState(false);
+
   const handleCapitalKeyClick = (num) => {
     if (num === '00') {
       setCapital(prev => prev * 100);
@@ -190,10 +190,8 @@ function App() {
     }
   };
 
-  // ===== کیبورد شناور برای ماشین حساب =====
   const openCalcKeyboard = (field) => {
     setActiveCalcInput(field);
-    // مقدار فعلی را به عنوان پیش‌فرض نمایش بده
     let currentVal = '';
     if (field === 'weight') currentVal = goldCalc.weight.toString();
     else if (field === 'sellerPrice') currentVal = goldCalc.sellerPrice.toString();
@@ -210,34 +208,15 @@ function App() {
     } else if (num === '⌫') {
       setCalcInputDisplay(prev => prev.slice(0, -1));
     } else if (num === '✓') {
-      // اعمال مقدار به فیلد مربوطه
       const val = Number(calcInputDisplay.replace(/,/g, '')) || 0;
-      if (activeCalcInput === 'weight') {
-        setGoldCalc(prev => ({ ...prev, weight: val || 0 }));
-      } else if (activeCalcInput === 'sellerPrice') {
-        setGoldCalc(prev => ({ ...prev, sellerPrice: val || 0 }));
-      } else if (activeCalcInput === 'commission') {
-        setGoldCalc(prev => ({ ...prev, commission: val || 0 }));
-      }
+      if (activeCalcInput === 'weight') setGoldCalc(prev => ({ ...prev, weight: val || 0 }));
+      else if (activeCalcInput === 'sellerPrice') setGoldCalc(prev => ({ ...prev, sellerPrice: val || 0 }));
+      else if (activeCalcInput === 'commission') setGoldCalc(prev => ({ ...prev, commission: val || 0 }));
       setShowCalcKeyboard(false);
       setActiveCalcInput(null);
     } else {
       setCalcInputDisplay(prev => prev + num);
     }
-  };
-
-  const formatMoney = (num) => num ? num.toLocaleString('fa-IR') : '۰';
-  const getSymbolName = (symbol) => ({ 
-    gold: 'طلا', 
-    usd: 'دلار', 
-    ounce: 'انس', 
-    coin: 'سکه' 
-  }[symbol] || symbol);
-
-  const getRecommendationColor = (rec) => {
-    if (rec?.includes('BUY')) return '#34c759';
-    if (rec?.includes('SELL')) return '#ff3b30';
-    return '#ffd60a';
   };
 
   return (
@@ -253,9 +232,7 @@ function App() {
         <div className="header-info">
           <span className="update-time">📅 {lastUpdate || 'در حال بارگذاری...'}</span>
           <button onClick={updateData} className="update-btn-glass" title="به‌روزرسانی">🔄</button>
-          <button onClick={() => setDarkMode(!darkMode)} className="theme-btn-glass">
-            {darkMode ? '☀️' : '🌙'}
-          </button>
+          <button onClick={() => setDarkMode(!darkMode)} className="theme-btn-glass">{darkMode ? '☀️' : '🌙'}</button>
         </div>
       </header>
 
@@ -265,45 +242,19 @@ function App() {
         <div className="loading">⏳ در حال بارگذاری...</div>
       ) : (
         <>
-          {/* کیلومترها */}
           <div className="meters-container">
             <div className="meter-card glass">
-              <div className="meter-header">
-                <span className="meter-icon">🥇</span>
-                <span className="meter-title">میل به خرید طلا</span>
-              </div>
-              <div className="meter-bar-wrapper">
-                <div className="meter-bar">
-                  <div className="meter-fill" style={{ width: `${buyMeterGold}%` }} />
-                  <span className="meter-value">{Math.round(buyMeterGold)}%</span>
-                </div>
-              </div>
-              <div className="meter-status">
-                {buyMeterGold > 60 ? `🟢 ${Math.round(buyMeterGold)}% میل به خرید` : 
-                 buyMeterGold < 40 ? `🔴 ${Math.round(buyMeterGold)}% میل به فروش` : 
-                 `⚪ ${Math.round(buyMeterGold)}% بازار متعادل`}
-              </div>
+              <div className="meter-header"><span className="meter-icon">🥇</span><span className="meter-title">میل به خرید طلا</span></div>
+              <div className="meter-bar-wrapper"><div className="meter-bar"><div className="meter-fill" style={{ width: `${buyMeterGold}%` }} /><span className="meter-value">{Math.round(buyMeterGold)}%</span></div></div>
+              <div className="meter-status">{buyMeterGold > 60 ? `🟢 ${Math.round(buyMeterGold)}% میل به خرید` : buyMeterGold < 40 ? `🔴 ${Math.round(buyMeterGold)}% میل به فروش` : `⚪ ${Math.round(buyMeterGold)}% بازار متعادل`}</div>
             </div>
             <div className="meter-card glass">
-              <div className="meter-header">
-                <span className="meter-icon">💵</span>
-                <span className="meter-title">میل به خرید دلار</span>
-              </div>
-              <div className="meter-bar-wrapper">
-                <div className="meter-bar">
-                  <div className="meter-fill" style={{ width: `${buyMeterUsd}%` }} />
-                  <span className="meter-value">{Math.round(buyMeterUsd)}%</span>
-                </div>
-              </div>
-              <div className="meter-status">
-                {buyMeterUsd > 60 ? `🟢 ${Math.round(buyMeterUsd)}% میل به خرید` : 
-                 buyMeterUsd < 40 ? `🔴 ${Math.round(buyMeterUsd)}% میل به فروش` : 
-                 `⚪ ${Math.round(buyMeterUsd)}% بازار متعادل`}
-              </div>
+              <div className="meter-header"><span className="meter-icon">💵</span><span className="meter-title">میل به خرید دلار</span></div>
+              <div className="meter-bar-wrapper"><div className="meter-bar"><div className="meter-fill" style={{ width: `${buyMeterUsd}%` }} /><span className="meter-value">{Math.round(buyMeterUsd)}%</span></div></div>
+              <div className="meter-status">{buyMeterUsd > 60 ? `🟢 ${Math.round(buyMeterUsd)}% میل به خرید` : buyMeterUsd < 40 ? `🔴 ${Math.round(buyMeterUsd)}% میل به فروش` : `⚪ ${Math.round(buyMeterUsd)}% بازار متعادل`}</div>
             </div>
           </div>
 
-          {/* قیمت‌ها */}
           <div className="prices-grid">
             {Object.entries(prices).map(([symbol, price]) => (
               <div key={symbol} className="price-card glass">
@@ -313,7 +264,6 @@ function App() {
             ))}
           </div>
 
-          {/* تحلیل‌ها */}
           <div className="analysis-grid">
             {analysis.map((item) => {
               const newsItem = news.find(n => n.symbol === item.symbol);
@@ -322,9 +272,7 @@ function App() {
                   <div className="card-header">
                     <h3>{getSymbolName(item.symbol)}</h3>
                     <div className="card-header-actions">
-                      <span className="recommendation" style={{ backgroundColor: getRecommendationColor(item.recommendation) }}>
-                        {item.recommendation}
-                      </span>
+                      <span className="recommendation" style={{ backgroundColor: getRecommendationColor(item.recommendation) }}>{item.recommendation}</span>
                       <button className="info-btn" onClick={() => setShowInfo(item.symbol)}>ⓘ</button>
                     </div>
                   </div>
@@ -341,9 +289,7 @@ function App() {
                     </div>
                   )}
                   <div className="card-confidence">
-                    <div className="confidence-bar">
-                      <div className="confidence-fill" style={{ width: `${item.confidence || 0}%` }} />
-                    </div>
+                    <div className="confidence-bar"><div className="confidence-fill" style={{ width: `${item.confidence || 0}%` }} /></div>
                     <span>اطمینان: {item.confidence || 0}%</span>
                   </div>
                 </div>
@@ -351,101 +297,33 @@ function App() {
             })}
           </div>
 
-          {/* ===== ماشین حساب با کیبورد شناور ===== */}
           <div className="gold-calculator glass">
             <div className="calc-header">
               <h2>🧮 ماشین حساب طلا</h2>
-              <button className="calc-toggle" onClick={() => setShowGoldCalc(!showGoldCalc)}>
-                {showGoldCalc ? '🔽' : '🔼'}
-              </button>
+              <button className="calc-toggle" onClick={() => setShowGoldCalc(!showGoldCalc)}>{showGoldCalc ? '🔽' : '🔼'}</button>
             </div>
-
             {showGoldCalc && (
               <div className="calc-body">
-                <div className="calc-info">
-                  <span>💰 قیمت پایه سایت (هر گرم طلا با عیار ۷۵۰):</span>
-                  <strong>{formatMoney(prices.gold || 0)} ریال</strong>
-                </div>
-                
-                <div className="calc-row">
-                  <label>وزن (گرم)</label>
-                  <div className="calc-input-wrapper" onClick={() => openCalcKeyboard('weight')}>
-                    <span>{goldCalc.weight}</span>
-                    <span className="calc-input-hint">👆 کلیک برای ورود</span>
-                  </div>
-                </div>
-                
-                <div className="calc-row">
-                  <label>عیار</label>
-                  <select 
-                    value={goldCalc.karat} 
-                    onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))}
-                    className={darkMode ? '' : 'light-select'}
-                  >
-                    <option value="740">۷۴۰</option>
-                    <option value="750">۷۵۰ (۱۸ عیار)</option>
-                    <option value="916">۹۱۶ (۲۲ عیار)</option>
-                    <option value="999">۹۹۹ (۲۴ عیار)</option>
-                  </select>
-                </div>
-                
-                <div className="calc-row">
-                  <label>قیمت فروشنده (ریال)</label>
-                  <div className="calc-input-wrapper" onClick={() => openCalcKeyboard('sellerPrice')}>
-                    <span>{goldCalc.sellerPrice ? formatMoney(goldCalc.sellerPrice) : '۰'}</span>
-                    <span className="calc-input-hint">👆 کلیک برای ورود</span>
-                  </div>
-                  <span className="calc-hint">💰 قیمت هر گرم طلا با عیار انتخابی در سایت: {formatMoney((prices.gold || 0) * (goldCalc.karat / 750))} ریال</span>
-                </div>
-                
-                <div className="calc-row">
-                  <label>کارمزد (%)</label>
-                  <div className="calc-input-wrapper" onClick={() => openCalcKeyboard('commission')}>
-                    <span>{goldCalc.commission}</span>
-                    <span className="calc-input-hint">👆 کلیک برای ورود</span>
-                  </div>
-                </div>
-
+                <div className="calc-info"><span>💰 قیمت پایه سایت (هر گرم طلا با عیار ۷۵۰):</span><strong>{formatMoney(prices.gold || 0)} ریال</strong></div>
+                <div className="calc-row"><label>وزن (گرم)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('weight')}><span>{goldCalc.weight}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
+                <div className="calc-row"><label>عیار</label><select value={goldCalc.karat} onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))} className={darkMode ? '' : 'light-select'}><option value="740">۷۴۰</option><option value="750">۷۵۰ (۱۸ عیار)</option><option value="916">۹۱۶ (۲۲ عیار)</option><option value="999">۹۹۹ (۲۴ عیار)</option></select></div>
+                <div className="calc-row"><label>قیمت فروشنده (ریال)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('sellerPrice')}><span>{goldCalc.sellerPrice ? formatMoney(goldCalc.sellerPrice) : '۰'}</span><span className="calc-input-hint">👆 کلیک</span></div><span className="calc-hint">💰 قیمت هر گرم طلا با عیار انتخابی در سایت: {formatMoney((prices.gold || 0) * (goldCalc.karat / 750))} ریال</span></div>
+                <div className="calc-row"><label>کارمزد (%)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('commission')}><span>{goldCalc.commission}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
                 <div className="calc-results">
-                  <div className="calc-result-item">
-                    <span>💰 قیمت فروشنده با کارمزد</span>
-                    <strong>{formatMoney(goldCalc.finalSellerPrice)} ریال</strong>
-                    <small>قیمت فروشنده: {formatMoney(goldCalc.sellerPrice)} + کارمزد {goldCalc.commission}%</small>
-                  </div>
-                  
-                  <div className="calc-result-item">
-                    <span>🏛️ قیمت سایت با کارمزد</span>
-                    <strong>{formatMoney(goldCalc.finalOfficialPrice)} ریال</strong>
-                    <small>قیمت سایت: {formatMoney(goldCalc.officialPrice)} + کارمزد {goldCalc.commission}%</small>
-                  </div>
-                  
-                  <div className="calc-result-item">
-                    <span>📊 اختلاف قیمت</span>
-                    <strong style={{ color: goldCalc.isCheaper ? '#34c759' : '#ff3b30' }}>
-                      {goldCalc.isCheaper ? '✅ ارزان‌تر' : '❌ گران‌تر'} 
-                      ({formatMoney(Math.abs(goldCalc.difference))} ریال)
-                    </strong>
-                    <small>
-                      {goldCalc.isCheaper 
-                        ? `فروشنده ${formatMoney(Math.abs(goldCalc.difference))} ریال ارزان‌تر از سایت` 
-                        : `فروشنده ${formatMoney(Math.abs(goldCalc.difference))} ریال گران‌تر از سایت`}
-                    </small>
-                  </div>
+                  <div className="calc-result-item"><span>💰 قیمت فروشنده با کارمزد</span><strong>{formatMoney(goldCalc.finalSellerPrice)} ریال</strong><small>قیمت فروشنده: {formatMoney(goldCalc.sellerPrice)} + کارمزد {goldCalc.commission}%</small></div>
+                  <div className="calc-result-item"><span>🏛️ قیمت سایت با کارمزد</span><strong>{formatMoney(goldCalc.finalOfficialPrice)} ریال</strong><small>قیمت سایت: {formatMoney(goldCalc.officialPrice)} + کارمزد {goldCalc.commission}%</small></div>
+                  <div className="calc-result-item"><span>📊 اختلاف قیمت</span><strong style={{ color: goldCalc.isCheaper ? '#34c759' : '#ff3b30' }}>{goldCalc.isCheaper ? '✅ ارزان‌تر' : '❌ گران‌تر'} ({formatMoney(Math.abs(goldCalc.difference))} ریال)</strong><small>{goldCalc.isCheaper ? `فروشنده ${formatMoney(Math.abs(goldCalc.difference))} ریال ارزان‌تر از سایت` : `فروشنده ${formatMoney(Math.abs(goldCalc.difference))} ریال گران‌تر از سایت`}</small></div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* ===== سرمایه‌گذاری با کیبورد حرفه‌ای ===== */}
           <div className="portfolio-section glass">
             <div className="portfolio-header">
               <h2>💼 مشاور سرمایه‌گذاری</h2>
-              <button className="portfolio-toggle-btn" onClick={() => setShowPortfolio(!showPortfolio)}>
-                {showPortfolio ? '🔽' : '🔼'}
-              </button>
+              <button className="portfolio-toggle-btn" onClick={() => setShowPortfolio(!showPortfolio)}>{showPortfolio ? '🔽' : '🔼'}</button>
             </div>
             <p className="portfolio-subtitle">مبلغ سرمایه را با صفحه کلید مجازی وارد کنید.</p>
-
             {showPortfolio && (
               <>
                 <div className="portfolio-controls">
@@ -455,30 +333,23 @@ function App() {
                       <span>{capitalDisplay || '۰'}</span>
                       <span className="capital-hint">👆 کلیک برای ورود</span>
                     </div>
-                    
-                    {/* کیبورد حرفه‌ای سرمایه */}
                     {showCapitalKeyboard && (
                       <div className="modal-overlay" onClick={() => setShowCapitalKeyboard(false)}>
                         <div className="keyboard-modal glass" onClick={(e) => e.stopPropagation()}>
-                          <div className="keyboard-display">
-                            <span>{capitalDisplay || '۰'}</span>
-                          </div>
+                          <div className="keyboard-display"><span>{capitalDisplay || '۰'}</span></div>
                           <div className="keyboard-grid">
                             <button onClick={() => handleCapitalKeyClick('1')}>1</button>
                             <button onClick={() => handleCapitalKeyClick('2')}>2</button>
                             <button onClick={() => handleCapitalKeyClick('3')}>3</button>
                             <button onClick={() => handleCapitalKeyClick('00')} className="key-double-zero">۰۰</button>
-                            
                             <button onClick={() => handleCapitalKeyClick('4')}>4</button>
                             <button onClick={() => handleCapitalKeyClick('5')}>5</button>
                             <button onClick={() => handleCapitalKeyClick('6')}>6</button>
                             <button onClick={() => handleCapitalKeyClick('000')} className="key-triple-zero">۰۰۰</button>
-                            
                             <button onClick={() => handleCapitalKeyClick('7')}>7</button>
                             <button onClick={() => handleCapitalKeyClick('8')}>8</button>
                             <button onClick={() => handleCapitalKeyClick('9')}>9</button>
                             <button onClick={() => handleCapitalKeyClick('0')}>0</button>
-                            
                             <button onClick={() => handleCapitalKeyClick('⌫')} className="key-delete">⌫</button>
                             <button onClick={() => handleCapitalKeyClick('✓')} className="key-confirm">✓</button>
                           </div>
@@ -486,14 +357,9 @@ function App() {
                       </div>
                     )}
                   </div>
-                  
                   <div className="preference-selector">
                     <label>اولویت سرمایه‌گذاری</label>
-                    <select 
-                      value={userPreference} 
-                      onChange={(e) => setUserPreference(e.target.value)}
-                      className={darkMode ? '' : 'light-select'}
-                    >
+                    <select value={userPreference} onChange={(e) => setUserPreference(e.target.value)} className={darkMode ? '' : 'light-select'}>
                       <option value="gold">🥇 طلا</option>
                       <option value="usd">💵 دلار</option>
                       <option value="coin">🪙 سکه</option>
@@ -503,7 +369,6 @@ function App() {
                     {portfolioLoading ? '⏳ در حال تحلیل...' : '🔍 دریافت پیشنهادات'}
                   </button>
                 </div>
-
                 {portfolio?.status === 'success' && (
                   <div className="portfolio-results">
                     <div className="portfolio-summary">
@@ -511,21 +376,14 @@ function App() {
                       <span>📊 اولویت: {userPreference === 'gold' ? 'طلا' : userPreference === 'usd' ? 'دلار' : 'سکه'}</span>
                       <span>📅 {new Date(portfolio.timestamp).toLocaleString('fa-IR')}</span>
                     </div>
-
                     <div className="portfolio-risks">
                       <h4>⚠️ ریسک‌های موجود:</h4>
-                      <ul>
-                        <li>🔴 نوسان بالای بازار در شرایط فعلی</li>
-                        <li>🟡 تأثیر اخبار سیاسی بر قیمت‌ها</li>
-                        <li>🟢 فرصت خرید در قیمت‌های مناسب</li>
-                      </ul>
+                      <ul><li>🔴 نوسان بالای بازار در شرایط فعلی</li><li>🟡 تأثیر اخبار سیاسی بر قیمت‌ها</li><li>🟢 فرصت خرید در قیمت‌های مناسب</li></ul>
                     </div>
-
                     <div className="portfolio-advice">
                       <h4>💡 پیشنهاد جایگزین:</h4>
                       <p>با توجه به شرایط بازار، پیشنهاد می‌شود به جای تمرکز بر یک دارایی، سبدی متشکل از {userPreference === 'gold' ? 'طلا و دلار' : userPreference === 'usd' ? 'دلار و طلا' : 'سکه و طلا'} تشکیل دهید تا ریسک شما کاهش یابد.</p>
                     </div>
-
                     {portfolio.recommendations.map((rec, idx) => {
                       const roundedAllocations = {};
                       const allowedAssets = ['gold', 'usd', 'coin'];
@@ -542,10 +400,7 @@ function App() {
                       const updatedRec = { ...rec, allocations: roundedAllocations };
                       return (
                         <div key={idx} className="portfolio-card glass">
-                          <div className="portfolio-card-header">
-                            <span className="scenario-icon">{rec.color}</span>
-                            <h4>سناریوی {rec.scenario}</h4>
-                          </div>
+                          <div className="portfolio-card-header"><span className="scenario-icon">{rec.color}</span><h4>سناریوی {rec.scenario}</h4></div>
                           <div className="portfolio-allocations">
                             {Object.entries(updatedRec.allocations).map(([symbol, data]) => (
                               <div key={symbol} className="allocation-item">
@@ -553,9 +408,7 @@ function App() {
                                 <span className="allocation-amount">{formatMoney(data.amount_toman)} ریال</span>
                                 <span className="allocation-percent">({data.weight_percent.toFixed(1)}%)</span>
                                 <span className="allocation-quantity">≈ {data.quantity} {data.unit}</span>
-                                <div className="allocation-bar">
-                                  <div className="allocation-fill" style={{ width: `${data.weight_percent}%` }} />
-                                </div>
+                                <div className="allocation-bar"><div className="allocation-fill" style={{ width: `${data.weight_percent}%` }} /></div>
                               </div>
                             ))}
                           </div>
@@ -568,14 +421,12 @@ function App() {
                     })}
                   </div>
                 )}
-                {portfolio?.status === 'error' && <div className="portfolio-error">{portfolio.message}</div>}
               </>
             )}
           </div>
         </>
       )}
 
-      {/* ===== کیبورد شناور ماشین حساب ===== */}
       {showCalcKeyboard && (
         <div className="modal-overlay" onClick={() => setShowCalcKeyboard(false)}>
           <div className="keyboard-modal glass" onClick={(e) => e.stopPropagation()}>
@@ -592,17 +443,14 @@ function App() {
               <button onClick={() => handleCalcKeyClick('2')}>2</button>
               <button onClick={() => handleCalcKeyClick('3')}>3</button>
               <button onClick={() => handleCalcKeyClick('00')} className="key-double-zero">۰۰</button>
-              
               <button onClick={() => handleCalcKeyClick('4')}>4</button>
               <button onClick={() => handleCalcKeyClick('5')}>5</button>
               <button onClick={() => handleCalcKeyClick('6')}>6</button>
               <button onClick={() => handleCalcKeyClick('000')} className="key-triple-zero">۰۰۰</button>
-              
               <button onClick={() => handleCalcKeyClick('7')}>7</button>
               <button onClick={() => handleCalcKeyClick('8')}>8</button>
               <button onClick={() => handleCalcKeyClick('9')}>9</button>
               <button onClick={() => handleCalcKeyClick('0')}>0</button>
-              
               <button onClick={() => handleCalcKeyClick('⌫')} className="key-delete">⌫</button>
               <button onClick={() => handleCalcKeyClick('✓')} className="key-confirm">✓</button>
             </div>
@@ -610,7 +458,6 @@ function App() {
         </div>
       )}
 
-      {/* ===== پنجره اطلاعات ===== */}
       {showInfo && (
         <div className="info-modal" onClick={() => setShowInfo(null)}>
           <div className="info-modal-content glass">
@@ -654,9 +501,7 @@ function App() {
                   <h2>{infoData.title}</h2>
                   <div className="info-factors">
                     <h4>🔍 عوامل مؤثر در تحلیل امروز:</h4>
-                    <ul>
-                      {infoData.factors.map((factor, idx) => <li key={idx}>{factor}</li>)}
-                    </ul>
+                    <ul>{infoData.factors.map((factor, idx) => <li key={idx}>{factor}</li>)}</ul>
                   </div>
                   {newsItem && (
                     <div className="info-news">
@@ -681,7 +526,7 @@ function App() {
 
       <footer className="footer">
         <p>Zarinsanj © 2026 | توسعه‌دهنده: F.Mazaheri</p>
-        <p style={{ fontSize: '12px', color: '#666' }}>منبع داده: TGJU | نسخه V3.1</p>
+        <p style={{ fontSize: '11px', color: '#666' }}>منبع داده: TGJU | نسخه V3.1</p>
       </footer>
     </div>
   );

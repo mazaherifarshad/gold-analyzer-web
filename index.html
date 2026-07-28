@@ -1,52 +1,13 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>زرین‌سنج | تحلیلگر طلا</title>
-    <!-- فونت و آیکون‌ها -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+  <title>Zarinsanj | تحلیل‌گر حرفه‌ای بازار طلا</title>
 </head>
 <body>
-    <div id="root">
-        <!-- هدر با لوگو -->
-        <header class="app-header">
-            <div class="logo-container">
-                <img src="logo.png" alt="F.MAZAHERI GOLD & JEWELRY" class="logo" />
-                <span class="brand-title">زرین‌سنج</span>
-            </div>
-            <div class="header-status">
-                <span class="live-badge">● زنده</span>
-            </div>
-        </header>
-
-        <!-- بخش جستجو (همان جایی که صفحه‌کلید مشکل داشت) -->
-        <main class="app-main">
-            <section class="search-section">
-                <div class="search-wrapper">
-                    <i class="fas fa-search search-icon"></i>
-                    <input 
-                        type="text" 
-                        id="goldSearch" 
-                        class="search-input" 
-                        placeholder="جستجوی قیمت طلا، سکه، ارز..."
-                        autocomplete="off"
-                    />
-                    <button class="clear-btn" id="clearBtn" style="display:none;">
-                        <i class="fas fa-times-circle"></i>
-                    </button>
-                </div>
-                <div class="search-suggestions" id="suggestions"></div>
-            </section>
-
-            <!-- کارت‌های اطلاعات طلا -->
-            <section class="cards-grid" id="cardsGrid">
-                <!-- محتوای داینامیک توسط JS پر می‌شود -->
-            </section>
-        </main>
-    </div>
-
-    <script src="script.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
