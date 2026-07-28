@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Zarinsanj API - نسخه نهایی و صحیح
-"""
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict
 from datetime import datetime
 import uvicorn
 import sqlite3
@@ -23,10 +19,10 @@ from sqlalchemy.pool import StaticPool
 
 Base = declarative_base()
 
-# ===== مدل‌های دیتابیس =====
+# ===== مدل‌ها =====
 class MarketHistory(Base):
     __tablename__ = 'market_history'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     symbol = Column(String(50), nullable=False, index=True)
     price = Column(Float, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
@@ -35,7 +31,7 @@ class MarketHistory(Base):
 
 class MarketCandle(Base):
     __tablename__ = 'market_candles'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     symbol = Column(String(50), nullable=False, index=True)
     timeframe = Column(String(10), nullable=False, index=True)
     candle_time = Column(DateTime, nullable=False, index=True)
@@ -52,10 +48,9 @@ class MarketCandle(Base):
         Index('idx_candle_symbol_timeframe_time', 'symbol', 'timeframe', 'candle_time'),
     )
 
-# ===== اتصال به دیتابیس =====
+# ===== دیتابیس =====
 DB_PATH = Path(__file__).parent / 'database' / 'market.db'
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-
 DATABASE_URL = f"sqlite:///{DB_PATH}"
 engine = create_engine(DATABASE_URL, connect_args={'check_same_thread': False}, poolclass=StaticPool, echo=False)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -96,7 +91,7 @@ class AnalysisResponse(BaseModel):
     reasons: List[str]
     timestamp: str
 
-# ===== تابع تحلیل =====
+# ===== تحلیل =====
 def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
     import pandas as pd
     import numpy as np
@@ -129,46 +124,34 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
     rsi = 100 - (100 / (1 + rs))
     current_rsi = rsi.iloc[-1] if not pd.isna(rsi.iloc[-1]) else 50
     
-    # روند با EMA
+    # روند
     ema_9 = df['close'].ewm(span=9, adjust=False).mean()
     ema_21 = df['close'].ewm(span=21, adjust=False).mean()
     current_price = df['close'].iloc[-1]
     
     if current_price > ema_9.iloc[-1] and ema_9.iloc[-1] > ema_21.iloc[-1]:
-        trend = 'STRONG UPTREND'
-        trend_score = 80
+        trend, trend_score = 'STRONG UPTREND', 80
     elif current_price > ema_9.iloc[-1]:
-        trend = 'UPTREND'
-        trend_score = 65
+        trend, trend_score = 'UPTREND', 65
     elif current_price < ema_9.iloc[-1] and ema_9.iloc[-1] < ema_21.iloc[-1]:
-        trend = 'STRONG DOWNTREND'
-        trend_score = 20
+        trend, trend_score = 'STRONG DOWNTREND', 20
     elif current_price < ema_9.iloc[-1]:
-        trend = 'DOWNTREND'
-        trend_score = 35
+        trend, trend_score = 'DOWNTREND', 35
     else:
-        trend = 'CONSOLIDATION'
-        trend_score = 50
+        trend, trend_score = 'CONSOLIDATION', 50
     
-    # امتیاز نهایی
     final_score = (trend_score * 0.6) + (current_rsi * 0.4)
     
-    # توصیه
     if final_score >= 75:
-        recommendation = 'STRONG BUY'
-        confidence = 85
+        recommendation, confidence = 'STRONG BUY', 85
     elif final_score >= 60:
-        recommendation = 'BUY'
-        confidence = 70
+        recommendation, confidence = 'BUY', 70
     elif final_score >= 45:
-        recommendation = 'HOLD'
-        confidence = 55
+        recommendation, confidence = 'HOLD', 55
     elif final_score >= 30:
-        recommendation = 'SELL'
-        confidence = 70
+        recommendation, confidence = 'SELL', 70
     else:
-        recommendation = 'STRONG SELL'
-        confidence = 85
+        recommendation, confidence = 'STRONG SELL', 85
     
     reasons = []
     if trend_score > 60:
@@ -194,7 +177,7 @@ def analyze_symbol(symbol: str, timeframe: str = '1m') -> dict:
         'timestamp': datetime.now().isoformat()
     }
 
-# ===== تابع پیشنهاد سرمایه‌گذاری =====
+# ===== پیشنهاد سرمایه‌گذاری =====
 def get_portfolio_recommendations(capital: float) -> List[Dict]:
     symbols = ['gold', 'usd', 'coin']
     analyses = {}
@@ -206,7 +189,6 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
     if not analyses:
         return []
     
-    # محاسبه بازده و ریسک
     returns = {}
     risks = {}
     for symbol, analysis in analyses.items():
@@ -215,7 +197,6 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
         returns[symbol] = max(0.1, min(0.9, 0.5 + trend_factor * 0.3 + rsi_factor * 0.2))
         risks[symbol] = 0.3 + abs(analysis['rsi'] - 50) / 100
     
-    # نسبت شارپ
     sharpe = {}
     total_sharpe = 0
     for symbol in returns:
@@ -275,7 +256,7 @@ def get_portfolio_recommendations(capital: float) -> List[Dict]:
     
     return recommendations
 
-# ===== توابع دریافت داده =====
+# ===== دریافت داده =====
 def fetch_and_store_all():
     subdomains = ["call2", "call3", "call4"]
     call = random.choice(subdomains)
@@ -286,6 +267,7 @@ def fetch_and_store_all():
     response.raise_for_status()
     current = response.json()["current"]
     
+    # قیمت‌ها به ریال هستند (هیچ ضربی انجام نمی‌شود)
     prices = {
         "gold": float(current["geram18"]["p"].replace(",", "")),
         "usd": float(current["price_dollar_rl"]["p"].replace(",", "")),
