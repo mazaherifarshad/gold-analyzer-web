@@ -509,3 +509,57 @@ async def health_check():
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get("/fix-db")
+async def fix_database():
+    """تعمیر دیتابیس - اضافه کردن ستون‌های گم‌شده"""
+    import sqlite3
+    from pathlib import Path
+    
+    try:
+        db_path = Path(__file__).parent / 'database' / 'market.db'
+        conn = sqlite3.connect(str(db_path))
+        cursor = conn.cursor()
+        
+        # بررسی و اضافه کردن ستون‌ها به market_history
+        cursor.execute("PRAGMA table_info(market_history)")
+        columns = [col[1] for col in cursor.fetchall()]
+        
+        added = []
+        if 'raw_data' not in columns:
+            cursor.execute("ALTER TABLE market_history ADD COLUMN raw_data TEXT")
+            added.append('raw_data')
+            print("✅ Added raw_data column to market_history")
+        
+        if 'source' not in columns:
+            cursor.execute("ALTER TABLE market_history ADD COLUMN source TEXT DEFAULT 'tgju'")
+            added.append('source')
+            print("✅ Added source column to market_history")
+        
+        # بررسی و اضافه کردن ستون‌ها به market_candles
+        cursor.execute("PRAGMA table_info(market_candles)")
+        columns = [col[1] for col in cursor.fetchall()]
+        
+        if 'tick_count' not in columns:
+            cursor.execute("ALTER TABLE market_candles ADD COLUMN tick_count INTEGER DEFAULT 0")
+            added.append('tick_count (market_candles)')
+            print("✅ Added tick_count column to market_candles")
+        
+        if 'updated_at' not in columns:
+            cursor.execute("ALTER TABLE market_candles ADD COLUMN updated_at DATETIME")
+            added.append('updated_at (market_candles)')
+            print("✅ Added updated_at column to market_candles")
+        
+        conn.commit()
+        conn.close()
+        
+        return {
+            "status": "success",
+            "message": "Database fixed successfully",
+            "columns_added": added,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
