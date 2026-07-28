@@ -13,19 +13,16 @@
   padding: 16px;
 }
 
-/* ===== حالت شب ===== */
 .app.dark {
   background: #0a0a14;
   color: #f0f0f0;
 }
 
-/* ===== حالت روز ===== */
 .app.light {
   background: #f5f5fa;
   color: #1a1a2e;
 }
 
-/* ===== Glassmorphism ===== */
 .glass {
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(16px);
@@ -431,12 +428,28 @@
   font-size: 13px;
 }
 
-.app.light .calc-row input,
+/* ===== اصلاح دراپ‌لیست‌ها در تم شب ===== */
+.app.dark .calc-row select,
+.app.dark .capital-select,
+.app.dark .preference-selector select {
+  background: #1a1a2e;
+  color: #f0f0f0;
+  border-color: #3d3d5a;
+}
+
+.app.dark .calc-row select option,
+.app.dark .capital-select option,
+.app.dark .preference-selector select option {
+  background: #1a1a2e;
+  color: #f0f0f0;
+}
+
 .app.light .calc-row select,
-.app.light .calc-row select.light-select {
-  background: rgba(0, 0, 0, 0.03);
+.app.light .capital-select,
+.app.light .preference-selector select {
+  background: #ffffff;
   color: #1a1a2e;
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: #ccc;
 }
 
 .calc-btn {
@@ -586,8 +599,6 @@
   padding: 6px 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
   font-size: 13px;
   flex: 1;
   min-width: 80px;
@@ -604,6 +615,12 @@
   font-size: 13px;
   text-align: left;
   direction: ltr;
+}
+
+.app.light .capital-text-input {
+  background: rgba(0, 0, 0, 0.03);
+  color: #1a1a2e;
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .preference-selector {
@@ -623,16 +640,8 @@
   padding: 6px 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
   font-size: 13px;
   cursor: pointer;
-}
-
-.app.light .preference-selector select.light-select {
-  background: rgba(0, 0, 0, 0.03);
-  color: #1a1a2e;
-  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .portfolio-btn {
