@@ -23,6 +23,7 @@ function App() {
     weight: 0,
     sellerPrice: 0,
     karat: 750,
+    customKarat: '',
     commission: 0,
     officialPrice: 0,
     finalSellerPrice: 0,
@@ -140,10 +141,11 @@ function App() {
 
   useEffect(() => {
     if (prices.gold) calculateGold();
-  }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.sellerPrice, goldCalc.commission]);
+  }, [prices.gold, goldCalc.weight, goldCalc.karat, goldCalc.customKarat, goldCalc.sellerPrice, goldCalc.commission]);
 
   const calculateGold = () => {
     const basePrice = prices.gold || 0;
+    const effectiveKarat = goldCalc.karat === 0 ? Number(goldCalc.customKarat) || 750 : goldCalc.karat;
     const sellerPrice = goldCalc.sellerPrice > 0 ? goldCalc.sellerPrice : basePrice;
     const finalSeller = sellerPrice + (sellerPrice * goldCalc.commission / 100);
     const finalOfficial = basePrice + (basePrice * goldCalc.commission / 100);
@@ -177,6 +179,9 @@ function App() {
     } else if (num === '000') {
       setCapital(prev => prev * 1000);
       setCapitalDisplay(prev => prev + '000');
+    } else if (num === 'C') {
+      setCapitalDisplay('');
+      setCapital(0);
     } else if (num === '⌫') {
       const newDisplay = capitalDisplay.slice(0, -1);
       setCapitalDisplay(newDisplay);
@@ -196,6 +201,7 @@ function App() {
     if (field === 'weight') currentVal = goldCalc.weight.toString();
     else if (field === 'sellerPrice') currentVal = goldCalc.sellerPrice.toString();
     else if (field === 'commission') currentVal = goldCalc.commission.toString();
+    else if (field === 'customKarat') currentVal = goldCalc.customKarat.toString();
     if (currentVal === '0') currentVal = '';
     setCalcInputDisplay(currentVal);
     setShowCalcKeyboard(true);
@@ -219,6 +225,7 @@ function App() {
       if (activeCalcInput === 'weight') setGoldCalc(prev => ({ ...prev, weight: val }));
       else if (activeCalcInput === 'sellerPrice') setGoldCalc(prev => ({ ...prev, sellerPrice: val }));
       else if (activeCalcInput === 'commission') setGoldCalc(prev => ({ ...prev, commission: val }));
+      else if (activeCalcInput === 'customKarat') setGoldCalc(prev => ({ ...prev, customKarat: val }));
       setShowCalcKeyboard(false);
       setActiveCalcInput(null);
     } else {
@@ -313,9 +320,39 @@ function App() {
               <div className="calc-body">
                 <div className="calc-info"><span>💰 قیمت پایه سایت (هر گرم طلا با عیار ۷۵۰):</span><strong>{formatMoney(prices.gold || 0)} ریال</strong></div>
                 <div className="calc-row"><label>وزن (گرم)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('weight')}><span>{goldCalc.weight || '۰'}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
-                <div className="calc-row"><label>عیار</label><select value={goldCalc.karat} onChange={(e) => setGoldCalc(prev => ({ ...prev, karat: Number(e.target.value) }))} className={darkMode ? '' : 'light-select'}><option value="740">۷۴۰</option><option value="750">۷۵۰ (۱۸ عیار)</option><option value="916">۹۱۶ (۲۲ عیار)</option><option value="999">۹۹۹ (۲۴ عیار)</option></select></div>
-                <div className="calc-row"><label>قیمت فروشنده (ریال)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('sellerPrice')}><span>{goldCalc.sellerPrice ? formatMoney(goldCalc.sellerPrice) : '۰'}</span><span className="calc-input-hint">👆 کلیک</span></div><span className="calc-hint">💰 قیمت هر گرم طلا با عیار انتخابی در سایت: {formatMoney((prices.gold || 0) * (goldCalc.karat / 750))} ریال</span></div>
-                <div className="calc-row"><label>کارمزد (%)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('commission')}><span>{goldCalc.commission}</span><span className="calc-input-hint">👆 کلیк</span></div></div>
+                <div className="calc-row">
+                  <label>عیار</label>
+                  <select 
+                    value={goldCalc.karat === 0 ? 'custom' : goldCalc.karat} 
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === 'custom') {
+                        setGoldCalc(prev => ({ ...prev, karat: 0 }));
+                      } else {
+                        setGoldCalc(prev => ({ ...prev, karat: Number(val) }));
+                      }
+                    }}
+                    className={darkMode ? '' : 'light-select'}
+                  >
+                    <option value="740">۷۴۰</option>
+                    <option value="750">۷۵۰ (۱۸ عیار)</option>
+                    <option value="916">۹۱۶ (۲۲ عیار)</option>
+                    <option value="999">۹۹۹ (۲۴ عیار)</option>
+                    <option value="custom">✏️ سفارشی</option>
+                  </select>
+                </div>
+                {goldCalc.karat === 0 && (
+                  <div className="calc-row">
+                    <label>عیار دلخواه</label>
+                    <div className="calc-input-wrapper" onClick={() => openCalcKeyboard('customKarat')}>
+                      <span>{goldCalc.customKarat || '۰'}</span>
+                      <span className="calc-input-hint">👆 کلیک</span>
+                    </div>
+                    <span className="calc-hint">مثلاً ۷۴۸ را وارد کنید</span>
+                  </div>
+                )}
+                <div className="calc-row"><label>قیمت فروشنده (ریال)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('sellerPrice')}><span>{goldCalc.sellerPrice ? formatMoney(goldCalc.sellerPrice) : '۰'}</span><span className="calc-input-hint">👆 کلیک</span></div><span className="calc-hint">💰 قیمت هر گرم طلا با عیار انتخابی در سایت: {formatMoney((prices.gold || 0) * (goldCalc.karat === 0 ? Number(goldCalc.customKarat) || 750 : goldCalc.karat) / 750)} ریال</span></div>
+                <div className="calc-row"><label>کارمزد (%)</label><div className="calc-input-wrapper" onClick={() => openCalcKeyboard('commission')}><span>{goldCalc.commission}</span><span className="calc-input-hint">👆 کلیک</span></div></div>
                 <div className="calc-results">
                   <div className="calc-result-item"><span>💰 قیمت فروشنده با کارمزد</span><strong>{formatMoney(goldCalc.finalSellerPrice)} ریال</strong><small>قیمت فروشنده: {formatMoney(goldCalc.sellerPrice)} + کارمزد {goldCalc.commission}%</small></div>
                   <div className="calc-result-item"><span>🏛️ قیمت سایت با کارمزد</span><strong>{formatMoney(goldCalc.finalOfficialPrice)} ریال</strong><small>قیمت سایت: {formatMoney(goldCalc.officialPrice)} + کارمزد {goldCalc.commission}%</small></div>
@@ -356,6 +393,7 @@ function App() {
                             <button onClick={() => handleCapitalKeyClick('1')}>1</button>
                             <button onClick={() => handleCapitalKeyClick('2')}>2</button>
                             <button onClick={() => handleCapitalKeyClick('3')}>3</button>
+                            <button onClick={() => handleCapitalKeyClick('C')} className="key-clear">C</button>
                             <button onClick={() => handleCapitalKeyClick('0')}>0</button>
                             <button onClick={() => handleCapitalKeyClick('⌫')} className="key-delete">⌫</button>
                             <button onClick={() => handleCapitalKeyClick('✓')} className="key-confirm">✓</button>
@@ -451,7 +489,8 @@ function App() {
               <span className="keyboard-field-label">
                 {activeCalcInput === 'weight' ? 'وزن (گرم)' : 
                  activeCalcInput === 'sellerPrice' ? 'قیمت فروشنده' : 
-                 activeCalcInput === 'commission' ? 'کارمزد (%)' : ''}
+                 activeCalcInput === 'commission' ? 'کارمزد (%)' : 
+                 activeCalcInput === 'customKarat' ? 'عیار دلخواه' : ''}
               </span>
             </div>
             <div className="keyboard-grid keyboard-calculator">
