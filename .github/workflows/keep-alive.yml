@@ -1,0 +1,14 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # هر 10 دقیقه یکبار اجرا میشود
+  workflow_dispatch:        # امکان اجرای دستی با کلیک دکمه
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the Render App
+        run: |
+          curl -s -o /dev/null -w "%{http_code}\n" https://gold-analyzer-web.onrender.com/health
