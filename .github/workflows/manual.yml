@@ -1,35 +1,20 @@
-name: Keep Render Alive and Fix DB if Needed
+name: Keep Alive & Fix DB
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # هر 5 دقیقه
-  workflow_dispatch:
+    - cron: '*/5 * * * *'  # هر ۵ دقیقه
+  workflow_dispatch:       # برای اجرای دستی
 
 jobs:
-  check-and-fix:
+  keep-alive:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Health
-        id: health_check
+      - name: 1. Ping Health
         run: |
-          # ارسال درخواست به health و ذخیره کد وضعیت و پاسخ
-          response=$(curl -s -w "%{http_code}" https://gold-analyzer-web.onrender.com/health)
-          http_code="${response: -3}"
-          body="${response%???}"
-          echo "http_code=$http_code" >> $GITHUB_OUTPUT
-          echo "body=$body" >> $GITHUB_OUTPUT
-          
-          # اگر وضعیت healthy نبود، ادامه بده به مرحله fix
-          if [[ "$http_code" -ne 200 ]] || [[ "$body" != *"\"status\":\"healthy\""* ]]; then
-            echo "Health check failed! Proceeding to fix-db."
-            echo "need_fix=true" >> $GITHUB_OUTPUT
-          else
-            echo "Health check passed. No fix needed."
-            echo "need_fix=false" >> $GITHUB_OUTPUT
-          fi
+          echo "Pinging /health ..."
+          curl -s -o /dev/null -w "Health Status Code: %{http_code}\n" https://gold-analyzer-web.onrender.com/health
 
-      - name: Fix Database if Needed
-        if: steps.health_check.outputs.need_fix == 'true'
+      - name: 2. Fix Database
         run: |
-          echo "Attempting to fix database..."
-          curl -s -X GET https://gold-analyzer-web.onrender.com/fix-db || echo "Fix-db request failed"
+          echo "Calling /fix-db to repair database..."
+          curl -s -X GET https://gold-analyzer-web.onrender.com/fix-db
