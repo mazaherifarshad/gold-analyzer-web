@@ -1,14 +1,35 @@
-name: Keep Render Alive
+name: Keep Render Alive and Fix DB if Needed
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # هر 10 دقیقه یکبار اجرا میشود
-  workflow_dispatch:        # امکان اجرای دستی با کلیک دکمه
+    - cron: '*/10 * * * *'  # هر 10 دقیقه
+  workflow_dispatch:
 
 jobs:
-  ping:
+  check-and-fix:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping the Render App
+      - name: Check Health
+        id: health_check
         run: |
-          curl -s -o /dev/null -w "%{http_code}\n" https://gold-analyzer-web.onrender.com/health
+          # ارسال درخواست به health و ذخیره کد وضعیت و پاسخ
+          response=$(curl -s -w "%{http_code}" https://gold-analyzer-web.onrender.com/health)
+          http_code="${response: -3}"
+          body="${response%???}"
+          echo "http_code=$http_code" >> $GITHUB_OUTPUT
+          echo "body=$body" >> $GITHUB_OUTPUT
+          
+          # اگر وضعیت healthy نبود، ادامه بده به مرحله fix
+          if [[ "$http_code" -ne 200 ]] || [[ "$body" != *"\"status\":\"healthy\""* ]]; then
+            echo "Health check failed! Proceeding to fix-db."
+            echo "need_fix=true" >> $GITHUB_OUTPUT
+          else
+            echo "Health check passed. No fix needed."
+            echo "need_fix=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fix Database if Needed
+        if: steps.health_check.outputs.need_fix == 'true'
+        run: |
+          echo "Attempting to fix database..."
+          curl -s -X GET https://gold-analyzer-web.onrender.com/fix-db || echo "Fix-db request failed"
