@@ -2,7 +2,7 @@ name: Keep Render Alive and Fix DB if Needed
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # هر 10 دقیقه
+    - cron: '*/5 * * * *'  # هر 5 دقیقه
   workflow_dispatch:
 
 jobs:
